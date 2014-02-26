@@ -346,9 +346,16 @@
             if ((index + headerLengthValue + dataLengthValue) < [data length]) {
                 jpegData = [data subdataWithRange:NSMakeRange(index + headerLengthValue, dataLengthValue)];
             }
+			else {
+				break;
+			}
 
 			if (maximumSize == nil) {
 				return jpegData;
+			}
+
+			if (previousData == nil) {
+				previousData = jpegData;
 			}
 
 			if (jpegData != nil) {
@@ -366,22 +373,15 @@
 						CFRelease(imageRepresentation);
 
 						if ((width > maximumSizeFloat) || (height > maximumSizeFloat)) {
-							if (previousData == nil) {
-								previousData = jpegData;
-							}
-
 							break;
 						}
 					}
 
 					previousData = jpegData;
-					index = [data indexOfBytes:pattern length:4 options:0 range:NSMakeRange(index + 4, [data length] - index - 4)];
-
-					continue;
 				}
 			}
 
-			return jpegData;
+			index = [data indexOfBytes:pattern length:4 options:0 range:NSMakeRange(index + 4, [data length] - index - 4)];
 		}
 
 		return previousData;
