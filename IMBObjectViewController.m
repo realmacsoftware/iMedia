@@ -2221,8 +2221,30 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 
 	if (view)
 	{
-		frame = [view convertRectToBase:frame];
-		frame.origin = [view.window convertBaseToScreen:frame.origin];
+		// The old convertRectToBase: and convertBaseToScreen: methods are deprecated and
+		// the use of them here doesn't work correctly on a Retina screen (the calculated
+		// frame is out of bounds of the target view).
+		//
+		// If we're building for a deployment of 10.6+ then we need to take care not to call
+		// the 10.7+ methods that handle Retina conversion correctly. The good news is because
+		// the first Retina Macs didn't run 10.6, we can safely assume that where competent
+		// calculation of Retina-based frame is required, we will have the benefit of the
+		// new convenience method on NSWindow.
+#define USE_OLD_CONVERT_METHOD (!defined(MAC_OS_X_VERSION_10_7) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_7))
+#if USE_OLD_CONVERT_METHOD
+		if (IMBRunningOnLionOrNewer() == NO)
+		{
+			frame = [view convertRectToBase:frame];
+			frame.origin = [view.window convertBaseToScreen:frame.origin];
+		}
+		else
+		{
+#endif
+		NSRect windowBasedRect = [view convertRect:frame toView:nil];
+		frame = [view.window convertRectToScreen:windowBasedRect];
+#if USE_OLD_CONVERT_METHOD
+		}
+#endif
 	}
 
 	return frame;
