@@ -381,7 +381,6 @@ static NSString* kCurrentNodeKey = @"currentNode";
 		}
 		else
 		{
-			[[NSNotificationCenter defaultCenter] removeObserver:self name:QTMovieDidEndNotification object:nil];	
 			[self.audioPlayer stop];
 
 			[self willChangeValueForKey:@"isPlaying"];
@@ -427,7 +426,7 @@ static NSString* kCurrentNodeKey = @"currentNode";
 			}
 		}	
 
-		// Create a QTMovie for the selected item...
+		// Create a NSSound for the selected item...
 			
 		if (error == nil)
 		{
