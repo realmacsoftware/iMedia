@@ -63,7 +63,7 @@
 
 #pragma mark CLASSES
 
-@class QTMovie;
+@class NSSound;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -71,10 +71,10 @@
 
 #pragma mark 
 
-@interface IMBAudioObjectViewController : IMBObjectViewController
+@interface IMBAudioObjectViewController : IMBObjectViewController <NSSoundDelegate>
 {
 	IBOutlet NSButton* _playButton;
-	QTMovie* _audioPlayer;
+	NSSound* _audioPlayer;
 }
 
 
@@ -83,7 +83,7 @@
 - (IBAction) startPlayingSelection:(id)inSender;
 - (void) playAudioObject:(IMBObject*)inObject;
 
-@property (retain) QTMovie* audioPlayer;
+@property (retain) NSSound* audioPlayer;
 @property BOOL isPlaying;
 
 @end
