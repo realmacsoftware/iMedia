@@ -355,13 +355,16 @@ typedef void (^IMBOpenPanelCompletionHandler)(NSURL* inURL);
 			@"Library is Missing",
 			@"Alert title");
 
-		NSString* format = NSLocalizedStringWithDefaultValue(
-			@"IMBAccessRightsViewController.missingLibraryMessage",
-			nil,
-			IMBBundle(),
-			@"The %@ library cannot be used because it is missing. It may have been deleted, moved, or renamed.",
-			@"Alert message");
-			
+		NSString* format = inNode.error.localizedDescription;
+        if (format == nil) {
+            format = NSLocalizedStringWithDefaultValue(
+                @"IMBAccessRightsViewController.missingLibraryMessage",
+                nil,
+                IMBBundle(),
+                @"The %@ library cannot be used because it is missing. It may have been deleted, moved, or renamed.",
+                @"Alert message");
+
+        }
 		NSString* ok = NSLocalizedStringWithDefaultValue(
 			@"IMBAccessRightsViewController.missingLibraryButton",
 			nil,

@@ -183,6 +183,7 @@
                 // it's a file URL. Non-file URLs may have to authenticated before they can be used (e.g Facebook).
 
                 self.accessibility = [inParser mediaSourceAccessibility];
+                self.error = [inParser mediaSourceAccessibilityError];
                 
 //                NSLog(@"Entitlements: %@ is accessible? %@", self.mediaSource, self.accessibility == kIMBResourceIsAccessible ? @"YES" :@"NO");
             }

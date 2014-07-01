@@ -271,6 +271,14 @@
 }
 
 
+// Subclasses have the opportunity to return a more specific error intended to be presented to the user
+// if media source is not accessible.
+
+- (NSError *)mediaSourceAccessibilityError
+{
+    return nil;
+}
+
 // Get object's resource current accessibility status
 
 - (IMBResourceAccessibility) accessibilityForObject:(IMBObject*)inObject

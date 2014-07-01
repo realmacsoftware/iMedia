@@ -239,6 +239,18 @@
 }
 
 
+- (NSError *)mediaSourceAccessibilityError
+{
+    if ([self mediaSourceAccessibility] == kIMBResourceDoesNotExist) {
+        NSString *errorString = NSLocalizedStringWithDefaultValue(@"IMBApertureParser.header.placeholderMessage", nil, IMBBundle(), @"IMBApertureParser.header.placeholderMessage", nil);
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                  errorString, NSLocalizedDescriptionKey, nil];
+        return [NSError errorWithDomain:kIMBErrorDomain code:-1 userInfo:userInfo];
+    }
+    return [super mediaSourceAccessibilityError];
+}
+
+
 //----------------------------------------------------------------------------------------------------------------------
 
 #pragma mark -
