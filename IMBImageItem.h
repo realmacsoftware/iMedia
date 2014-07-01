@@ -72,10 +72,6 @@
 + (CIImage *)imageWithIMBImageItem:(id <IMBImageItem>)item;
 @end
 
-@interface QTMovie (IMBImageItem)
-+ (QTMovie *)movieWithIMBImageItem:(id <IMBImageItem>)item;
-@end
-
 extern CGImageRef IMB_CGImageCreateWithImageItem(id <IMBImageItem> item);
 
 extern CGImageSourceRef IMB_CGImageSourceCreateWithImageItem(id <IMBImageItem> item, CFDictionaryRef options);

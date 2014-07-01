@@ -75,6 +75,14 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
+#pragma mark CONSTANTS
+
+static NSString* kCurrentNodeKey = @"currentNode";
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 #pragma mark 
 
 @interface IMBObjectViewController ()
@@ -144,12 +152,15 @@
 		nil,IMBBundle(), 
 		@"Time", 
 		@"Column title - should be a short word")];
+
+	[self addObserver:self forKeyPath:kCurrentNodeKey options:0 context:(void*)kCurrentNodeKey];
 }
 
 
 - (void) dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[self removeObserver:self forKeyPath:kCurrentNodeKey];
 	IMBRelease(_audioPlayer);
 	[super dealloc];
 }
@@ -293,7 +304,7 @@
 			break;
 			
             case kIMBResourceIsAccessible:
-			if (self.audioPlayer.rate > 0.0) [self startPlayingSelection:nil];
+			if (self.audioPlayer.isPlaying) [self startPlayingSelection:nil];
 			break;
                 
             default:
@@ -303,6 +314,19 @@
 	else
 	{
 		self.audioPlayer = nil;
+	}
+}
+
+
+- (void) observeValueForKeyPath:(NSString*)inKeyPath ofObject:(id)inObject change:(NSDictionary*)inChange context:(void*)inContext
+{
+	if (inContext == (void*)kCurrentNodeKey)
+	{
+		[self setIsPlaying:NO];
+	}
+	else
+	{
+		[super observeValueForKeyPath:inKeyPath ofObject:inObject change:inChange context:inContext];
 	}
 }
 
@@ -357,7 +381,6 @@
 		}
 		else
 		{
-			[[NSNotificationCenter defaultCenter] removeObserver:self name:QTMovieDidEndNotification object:nil];	
 			[self.audioPlayer stop];
 
 			[self willChangeValueForKey:@"isPlaying"];
@@ -386,7 +409,7 @@
 	{
 		NSError* error = inError;
 		NSURL* url = nil;
-		QTMovie* movie = nil;
+		NSSound* audioPlayer = nil;
 		
 		// Get the URL for the audio file. GarageBand files require special attention as the "playable"  
 		// file resides inside the document package...
@@ -403,34 +426,22 @@
 			}
 		}	
 
-		// Create a QTMovie for the selected item...
+		// Create a NSSound for the selected item...
 			
 		if (error == nil)
 		{
-			NSDictionary* attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-				url, QTMovieURLAttribute,
-				@YES,QTMovieOpenForPlaybackAttribute,
-				@NO,QTMovieOpenAsyncOKAttribute,
-				nil];
-				
-			movie = [QTMovie movieWithAttributes:attrs error:&error];
-			
-			[[NSNotificationCenter defaultCenter] 
-				addObserver:self 
-				selector:@selector(_movieDidEnd:) 
-				name:QTMovieDidEndNotification 
-				object:movie];
+			audioPlayer = [[[NSSound alloc] initWithContentsOfURL:url byReference:YES] autorelease];
+			audioPlayer.delegate = self;
 		}
 		
 		// Start playing it...
 		
-		if (movie)
+		if (audioPlayer)
 		{
-			[movie gotoBeginning];
-			[movie play];
+			[audioPlayer play];
 			
 			[self willChangeValueForKey:@"isPlaying"];
-			self.audioPlayer = movie;
+			self.audioPlayer = audioPlayer;
 			[self didChangeValueForKey:@"isPlaying"];
 		}
 		
@@ -452,7 +463,12 @@
 
 // When regular playback stops at end of file, reset our state so that highlight disappears on button...
 
-- (void) _movieDidEnd:(NSNotification*)inNotification
+//- (void) _movieDidEnd:(NSNotification*)inNotification
+//{
+//	[self setIsPlaying:NO];
+//}
+
+- (void) sound:(NSSound*)inSound didFinishPlaying:(BOOL)inFinished
 {
 	[self setIsPlaying:NO];
 }
