@@ -19,7 +19,7 @@
 "IMB.option.toolbarSize.iconOnly" = "Bare ikon";
 "IMB.option.toolbarSize.textOnly" = "Bare tekst";
 "IMB.window.infoButton" = "iMedia Info";
-"IMBApertureParser.header.placeholderMessage" = "Gå til Aperture Preferanser > Forhåndvisning > Del forhåndvisninger med iLife og iWork.\nSett det til \"alltid\".";
+"IMBApertureParser.header.placeholderMessage" = "Aperture-biblioteket kan ikke brukes fordi det mangler.\n\nPrøv \"Les inn på nytt\" etter innstilling av Aperture preferanser > \"Forhåndsvisning\" > \"Del XML med andre programmer\" til \"Alltid\"."";
 "IMBApertureParser.header.placeholderTitle" = "Vennligst tillat deling av forhåndvisninger";
 "IMBAudioViewController.countFormatPlural" = "%d spor";
 "IMBAudioViewController.countFormatSingular" = "%d spor";
