@@ -76,6 +76,11 @@
 @property (assign) NSUInteger displayPriority;
 @property BOOL isUserAdded;	
 
+// Subclasses can pverride this method to exclude certain objects. Default implementation returns YES to include
+// all files of given UTI...
+
+- (BOOL) canUseObject:(IMBObject*)inObject forPopulatingNode:(IMBNode*)inNode;
+
 // Helpers...
 
 - (IMBObject*) objectForURL:(NSURL*)inURL name:(NSString*)inName index:(NSUInteger)inIndex;

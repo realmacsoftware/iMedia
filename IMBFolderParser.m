@@ -239,8 +239,12 @@
             if (ok && UTTypeConformsTo((CFStringRef)type, (CFStringRef)_fileUTI))
             {
 				IMBObject* object = [self objectForURL:url name:localizedName index:index++];
-				[objects addObject:object];
-				inNode.displayedObjectCount++;
+                
+                if ([self canUseObject:object forPopulatingNode:inNode])
+                {
+                    [objects addObject:object];
+                    inNode.displayedObjectCount++;
+                }
 			}
 		}
 				
@@ -300,6 +304,14 @@
 	
     IMBDrain(pool);
 	return result;
+}
+
+
+// This is a hook for subclasses that can be overridden to exclude some object when populating a node...
+
+- (BOOL) canUseObject:(IMBObject*)inObject forPopulatingNode:(IMBNode*)inNode
+{
+    return YES;
 }
 
 
