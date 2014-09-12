@@ -175,7 +175,7 @@ static NSMutableDictionary* sLibraryControllers = nil;
 		
 		if (controller == nil)
 		{
-			controller = [[IMBLibraryController alloc] initWithMediaType:inMediaType];
+			controller = [[[self class] alloc] initWithMediaType:inMediaType];
 			[sLibraryControllers setObject:controller forKey:inMediaType];
 			[controller release];
 		}
