@@ -56,7 +56,7 @@
 #pragma mark HEADERS
 
 #import <XPCKit/XPCKit.h>
-#import "IMBAccessRightsController.h"
+#import <iMedia/IMBAccessRightsController.h>
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -78,9 +78,9 @@ dispatch_semaphore_t dispatch_semaphore()
 	static dispatch_once_t sOnceToken = 0;
     
     dispatch_once(&sOnceToken,
-                  ^{
-                      sSharedInstance = dispatch_semaphore_create(8);
-                  });
+    ^{
+        sSharedInstance = dispatch_semaphore_create(8);
+    });
     
  	return sSharedInstance;
 }
