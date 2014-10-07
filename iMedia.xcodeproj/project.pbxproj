@@ -689,7 +689,7 @@
 		308FC20616A949A000B42F49 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		308FC20716A949A100B42F49 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Localizable.strings; sourceTree = "<group>"; };
 		308FC20816A949A200B42F49 /* nb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nb; path = nb.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3091F6B415C9508E005019A1 /* no */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = no; path = no.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3091F6B415C9508E005019A1 /* no */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = no; path = no.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3092C3161712F14100E52444 /* IMBFacebookAccessController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBFacebookAccessController.h; sourceTree = "<group>"; };
 		3092C3171712F14100E52444 /* IMBFacebookAccessController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBFacebookAccessController.m; sourceTree = "<group>"; };
 		3094F7151715C0070016E810 /* PhFacebook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PhFacebook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4222,6 +4222,7 @@
 				307F96A2183D090E004F87E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		30B83AD91701AFDB000EC74E /* Build configuration list for PBXNativeTarget "im.edia.Facebook" */ = {
 			isa = XCConfigurationList;
