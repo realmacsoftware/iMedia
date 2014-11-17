@@ -28,6 +28,14 @@ function _resign_mach_o_file()
     local path="${1}"
     local entitlements="${2}"
 
+	# Don't freak out if the file doesn't exist ... just return quietly.
+	# Maybe the framework didn't end up bundling every binary the host app thought
+	# it would...
+	if [[ ! -f "${path}" ]]; then
+		echo "Couldn't find existing file for re-signing at path: ${path}"
+		return 0
+	fi
+
     local workspace=$(pwd)
     local tmp="/tmp/$RANDOM"
     local tmp_entitlement="/tmp/$RANDOM"
