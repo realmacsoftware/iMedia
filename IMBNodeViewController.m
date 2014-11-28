@@ -917,7 +917,6 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 		if (license)
 		{
 			NSImage *image = [[[NSImage alloc] initByReferencingFile:[IMBBundle() pathForResource:fileName ofType:@"pdf"]] autorelease];
-			[image setScalesWhenResized:YES];
 			[image setSize:NSMakeSize(16.0,16.0)];
 			cell.badgeIcon = image;
 		}

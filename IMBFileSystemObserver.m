@@ -196,7 +196,7 @@ NSString* kIMBPathDidChangeNotification = @"IMBPathDidChange";
 
 - (void) _setupFSEventsWatcher
 {
-	[[IMBFSEventsWatcher sharedFileWatcher] setDelegate:self];
+	[[IMBFSEventsWatcher sharedFileWatcher] setDelegate:(id)self];
 	[[IMBFSEventsWatcher sharedFileWatcher] setDispatchQueue:dispatch_get_main_queue()];
 }
 

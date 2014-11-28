@@ -104,7 +104,7 @@ int main(int argc,const char *argv[])
 	
 	sDispatchQueue = dispatch_queue_create("im.edia.FSEvents",DISPATCH_QUEUE_SERIAL);
 	IMBFSEventsWatcherDelegate* delegate = [[IMBFSEventsWatcherDelegate alloc] init];
-	[[IMBFSEventsWatcher sharedFileWatcher] setDelegate:delegate];
+	[[IMBFSEventsWatcher sharedFileWatcher] setDelegate:(id)delegate];
 	[[IMBFSEventsWatcher sharedFileWatcher] setDispatchQueue:sDispatchQueue];
 	
 	[IMBAccessRightsController sharedAccessRightsController];

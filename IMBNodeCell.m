@@ -260,7 +260,7 @@
 
 // Check if we clicked on a badge icon...
 
-- (NSUInteger) hitTestForEvent:(NSEvent*)inEvent inRect:(NSRect)inCellFrame ofView:(NSView*)inControlView
+- (NSCellHitResult) hitTestForEvent:(NSEvent*)inEvent inRect:(NSRect)inCellFrame ofView:(NSView*)inControlView
 {
 	if (_badgeIcon)
 	{

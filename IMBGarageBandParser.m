@@ -121,7 +121,6 @@
 - (IMBNode*) unpopulatedTopLevelNode:(NSError**)outError
 {
 	NSImage* icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFile:self.appPath];
-	[icon setScalesWhenResized:YES];
 	[icon setSize:NSMakeSize(16.0,16.0)];
 	
 	// Need to set this before instatiating the node, so that check for access rights works correctly...

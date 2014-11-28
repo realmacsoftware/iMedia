@@ -790,7 +790,6 @@ static IMBPanelController* sSharedPanelController = nil;
 
 	NSString* name = [nodeViewController displayName];
 	NSImage* icon = [nodeViewController icon];
-	[icon setScalesWhenResized:YES];
 	[icon setSize:NSMakeSize(32,32)];
 
 	NSToolbarItem* item = [[[NSToolbarItem alloc] initWithItemIdentifier:inIdentifier] autorelease];

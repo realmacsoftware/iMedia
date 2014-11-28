@@ -352,7 +352,6 @@
 	dispatch_once(&sOnceToken,^()
                   {
                       sGenericFolderIcon = [[[NSWorkspace imb_threadSafeWorkspace] iconForFileType: NSFileTypeForHFSTypeCode(kGenericFolderIcon)] retain];
-                      [sGenericFolderIcon setScalesWhenResized:YES];
                       [sGenericFolderIcon setSize:NSMakeSize(16,16)];
                       
                       if (sGenericFolderIcon == nil)
@@ -372,7 +371,6 @@
 	dispatch_once(&sOnceToken,^()
                   {
                       sLargeGenericFolderIcon = [[[NSWorkspace imb_threadSafeWorkspace] iconForFileType: NSFileTypeForHFSTypeCode(kGenericFolderIcon)] retain];
-                      [sLargeGenericFolderIcon setScalesWhenResized:YES];
                       [sLargeGenericFolderIcon setSize:NSMakeSize(128,128)];
                       
                       if (sLargeGenericFolderIcon == nil)
@@ -392,7 +390,6 @@
 	dispatch_once(&sOnceToken,^()
                   {
                       sGenericFileIcon = [[[NSWorkspace imb_threadSafeWorkspace] iconForFileType: NSFileTypeForHFSTypeCode(kGenericDocumentIcon)] retain];
-                      [sGenericFileIcon setScalesWhenResized:YES];
                       [sGenericFileIcon setSize:NSMakeSize(16,16)];
                   });
 	

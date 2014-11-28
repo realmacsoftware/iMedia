@@ -84,7 +84,6 @@
 	if (path)
 	{
 		NSImage *icon = [self iconForFile:path];
-		[icon setScalesWhenResized:YES];
 		[icon setSize:size];
 		return icon;
 	}

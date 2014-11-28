@@ -149,7 +149,6 @@ NSString* const IMBFlickrNodeProperty_UUID = @"uuid";
 	
 	IMBFlickrNode* node = [self genericFlickrNodeForRoot:root parser:parser];
 	node.icon = [NSImage imageNamed:NSImageNameFolderSmart];
-	[node.icon setScalesWhenResized:YES];
 	[node.icon setSize:NSMakeSize(16.0, 16.0)];
 	node.identifier = [self identifierWithMethod:IMBFlickrNodeMethod_MostInteresting query:@"30"];
 	//node.mediaSource = node.identifier;
@@ -165,7 +164,6 @@ NSString* const IMBFlickrNodeProperty_UUID = @"uuid";
 	
 	IMBFlickrNode* node = [self genericFlickrNodeForRoot:root parser:parser];
 	node.icon = [NSImage imageNamed:NSImageNameFolderSmart];
-	[node.icon setScalesWhenResized:YES];
 	[node.icon setSize:NSMakeSize(16.0, 16.0)];
 	node.identifier = [self identifierWithMethod:IMBFlickrNodeMethod_Recent query:@"30"];
 	//node.mediaSource = node.identifier;
@@ -342,7 +340,6 @@ NSString* const IMBFlickrNodeProperty_UUID = @"uuid";
 	//	Flickr stuff...
 	self.customNode = YES;
 	self.icon = [NSImage imageNamed:NSImageNameFolderSmart];
-	[self.icon setScalesWhenResized:YES];
 	[self.icon setSize:NSMakeSize(16.0, 16.0)];
 	self.identifier = [IMBFlickrNode identifierWithQueryParams:dictionary];
 	self.license = [[dictionary objectForKey:IMBFlickrNodeProperty_License] intValue];

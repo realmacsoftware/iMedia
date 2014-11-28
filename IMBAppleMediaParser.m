@@ -336,7 +336,6 @@ NSString* const kIMBiPhotoNodeObjectTypeFace  = @"faces";
 - (IMBNode*) unpopulatedTopLevelNode:(NSError**)outError
 {
 	NSImage* icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFile:self.appPath];
-	[icon setScalesWhenResized:YES];
 	[icon setSize:NSMakeSize(16.0,16.0)];
     
 	IMBNode* node = [[[IMBNode alloc] initWithParser:self topLevel:YES] autorelease];

@@ -340,7 +340,6 @@ static NSArray* sSupportedUTIs = nil;
 	NSString* libraryPath = [self.mediaSource path];
 	
 	NSImage* icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFile:self.appPath];
-	[icon setScalesWhenResized:YES];
 	[icon setSize:NSMakeSize(16.0,16.0)];
 
 	// Create the top-level node...
@@ -969,7 +968,6 @@ static NSArray* sSupportedUTIs = nil;
 + (NSImage*) largeFolderIcon
 {
 	NSImage* icon = [NSImage imb_genericFolderIcon];
-	[icon setScalesWhenResized:YES];
 	[icon setSize:NSMakeSize(64.0,64.0)];
 	
 	return icon;

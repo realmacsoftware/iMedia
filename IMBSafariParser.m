@@ -130,7 +130,6 @@
 	NSString* path = [url path];
 
 	NSImage* icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFile:self.appPath];
-	[icon setScalesWhenResized:YES];
 	[icon setSize:NSMakeSize(16.0,16.0)];
 	
 	// Create an empty (unpopulated) root node...
