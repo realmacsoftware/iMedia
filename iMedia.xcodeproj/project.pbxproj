@@ -285,6 +285,7 @@
 		D05D3A0C152AD0D000E30C43 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D09930FC1010FF9700C527B7 /* Quartz.framework */; };
 		D05D3A0D152AD0D000E30C43 /* iMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* iMedia.framework */; };
 		D05D3A0E152AD0D000E30C43 /* XPCKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3089F94A151C8FDD00D56DC0 /* XPCKit.framework */; };
+		D063A1EF1A28AC5500ED8BC3 /* ToolbarMovieFolderIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = D063A1EE1A28AC5500ED8BC3 /* ToolbarMovieFolderIcon.icns */; };
 		D065383615EFDC810081D8D3 /* IMBAccessRightsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D065383515EFDC810081D8D3 /* IMBAccessRightsViewController.xib */; };
 		D0680C3C1518CCCE00CED506 /* im.edia.Folder.xpc in Copy XPCServices */ = {isa = PBXBuildFile; fileRef = D0E96D021518C9BF004F3EE7 /* im.edia.Folder.xpc */; };
 		D08070BF10442CD700891137 /* IMBMovieObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D08070BD10442CD700891137 /* IMBMovieObjectViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -883,6 +884,7 @@
 		D05D3A19152AD2B400E30C43 /* im.edia.FireFox.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = im.edia.FireFox.entitlements; sourceTree = "<group>"; };
 		D05D3A1A152AD2CB00E30C43 /* im.edia.Chrome.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = im.edia.Chrome.entitlements; sourceTree = "<group>"; };
 		D05D3A1B152AD30500E30C43 /* im.edia.FSEvents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = im.edia.FSEvents.entitlements; sourceTree = "<group>"; };
+		D063A1EE1A28AC5500ED8BC3 /* ToolbarMovieFolderIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ToolbarMovieFolderIcon.icns; sourceTree = "<group>"; };
 		D065383515EFDC810081D8D3 /* IMBAccessRightsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMBAccessRightsViewController.xib; sourceTree = "<group>"; };
 		D0760AC210C5027100F2119C /* IMBProject.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = IMBProject.xcconfig; sourceTree = SOURCE_ROOT; };
 		D08070BD10442CD700891137 /* IMBMovieObjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBMovieObjectViewController.h; sourceTree = "<group>"; };
@@ -1523,6 +1525,7 @@
 				CEAF1F22125A7DBF001C3EBB /* iMedia.tiff */,
 				CEAF1F23125A7DBF001C3EBB /* i.tiff */,
 				CEAF1F24125A7DBF001C3EBB /* i2.tiff */,
+				D063A1EE1A28AC5500ED8BC3 /* ToolbarMovieFolderIcon.icns */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2698,6 +2701,7 @@
 				D0CA94C91049455B00725DA3 /* itunes-icon-audiobooks.png in Resources */,
 				D0CA94CA1049455B00725DA3 /* itunes-icon-folder7.png in Resources */,
 				D0CA94CB1049455B00725DA3 /* itunes-icon-library.png in Resources */,
+				D063A1EF1A28AC5500ED8BC3 /* ToolbarMovieFolderIcon.icns in Resources */,
 				D0CA94CC1049455B00725DA3 /* itunes-icon-movies.png in Resources */,
 				D0CA94CD1049455B00725DA3 /* itunes-icon-music.png in Resources */,
 				D0CA94CE1049455B00725DA3 /* itunes-icon-partyshuffle.png in Resources */,

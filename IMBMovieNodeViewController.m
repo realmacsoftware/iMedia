@@ -82,7 +82,16 @@
 {
 	NSBundle* coreTypes = [NSBundle	bundleWithPath:@"/System/Library/CoreServices/CoreTypes.bundle"];
 	NSString* path = [coreTypes pathForResource:@"ToolbarMovieFolderIcon.icns" ofType:nil];
-	return [[[NSImage alloc] initWithContentsOfFile:path] autorelease];
+	NSImage* image = [[[NSImage alloc] initWithContentsOfFile:path] autorelease];
+    
+    if (image == nil)
+    {
+        NSBundle* framework = [NSBundle bundleForClass:[self class]];
+        path = [framework pathForResource:@"ToolbarMovieFolderIcon.icns" ofType:nil];
+        image = [[[NSImage alloc] initWithContentsOfFile:path] autorelease];
+    }
+    
+    return image;
 }
 
 
