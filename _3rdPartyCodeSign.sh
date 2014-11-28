@@ -15,7 +15,7 @@
 CODE_SIGN_CERTIFICATE=$(security find-identity -v | grep "\"${CODE_SIGN_IDENTITY}" | awk '{print $2}' | sed -e '2,$d')
 
 echo "CONFIGURATION_BUILD_DIR: ${CONFIGURATION_BUILD_DIR}"
-echo " Using singing Identity: ${CODE_SIGN_IDENTITY}: SH1=${CODE_SIGN_CERTIFICATE}"
+echo " Using signing Identity: ${CODE_SIGN_IDENTITY}: SH1=${CODE_SIGN_CERTIFICATE}"
 
 
 #############################################################################################
@@ -27,6 +27,14 @@ function _resign_mach_o_file()
 {
     local path="${1}"
     local entitlements="${2}"
+
+	# Don't freak out if the file doesn't exist ... just return quietly.
+	# Maybe the framework didn't end up bundling every binary the host app thought
+	# it would...
+	if [[ ! -f "${path}" ]]; then
+		echo "Couldn't find existing file for re-signing at path: ${path}"
+		return 0
+	fi
 
     local workspace=$(pwd)
     local tmp="/tmp/$RANDOM"
