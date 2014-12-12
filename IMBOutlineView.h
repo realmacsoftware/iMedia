@@ -74,6 +74,8 @@ extern NSString* IMBIsDefaultAppearanceAttributeName;
 - (NSRect) badgeRectForRow:(NSInteger)inRow;
 - (void) showProgressWheels;
 
+- (IMBTableViewAppearance*) defaultAppearance;
+
 @end
 
 @protocol IMBOutlineViewDelegate <NSOutlineViewDelegate>
