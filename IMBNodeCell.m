@@ -200,7 +200,6 @@
 	if (self.isGroupCell)
 	{
 		titleRect.origin.x -= 3.0;
-		titleRect.origin.y += inFlipped ? 4.0 : -4.0;
 		titleRect.size.height -= kTextHeightAdjust;
 	}
 	else
