@@ -912,7 +912,7 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-// Return the oject count for the currently selected node. Please note that we ask the node first. Only if the 
+// Return the object count for the currently selected node. Please note that we ask the node first. Only if the
 // count is missing, we ask the NSArrayController. This way we can react to custom situations, like 3 images and 3 
 // subfolders being reported as "3 images" instead of "6 images"...
 
@@ -921,9 +921,10 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 	IMBNode* node = [self currentNode];
 	NSInteger count = node.displayedObjectCount;
 	
-	// If the node has an uninitialized count, or if we exist apart from a node view controller,
-	// then consult our array controller directly.
-	if ((count < 0) || (node == nil))
+	// If the node has an uninitialized count, or if we exist apart from a node view controller, or a search
+	// is currently active, then consult our array controller directly...
+	
+	if ((count < 0) || node == nil || ibObjectArrayController.searchString.length > 0)
 	{
 		count = (NSInteger) [[ibObjectArrayController arrangedObjects] count];
 	}
