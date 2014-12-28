@@ -68,6 +68,7 @@
 #import "IMBFlickrNode.h"
 #import "NSView+iMedia.h"
 #import "NSImage+iMedia.h"
+#import "NSObject+iMedia.h"
 #import "NSFileManager+iMedia.h"
 #import "NSCell+iMedia.h"
 #import "IMBTableViewAppearance+iMediaPrivate.h"
@@ -93,43 +94,6 @@ NSString* kIMBExpandAndSelectNodeWithIdentifierNotification = @"IMBExpandAndSele
 #pragma mark GLOBALS
 
 static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-
-#pragma mark 
-
-// Private methods...
-
-@interface IMBNodeViewController ()
-
-- (void) _startObservingLibraryController;
-- (void) _stopObservingLibraryController;
-
-- (NSMutableDictionary*) _preferences;
-- (void) _setPreferences:(NSMutableDictionary*)inDict;
-- (void) _saveStateToPreferences;
-- (void) _loadStateFromPreferences;
-- (NSMutableArray*) _expandedNodeIdentifiers;
-
-- (void) _nodesWillChange;
-- (void) _nodesDidChange;
-- (void) _updatePopupMenu;
-- (void) __updatePopupMenu;
-- (void) _syncPopupMenuSelection;
-- (void) __syncPopupMenuSelection;
-
-- (CGFloat) minimumNodeViewWidth;
-- (CGFloat) minimumLibraryViewHeight;
-- (CGFloat) minimumObjectViewHeight;
-- (NSSize) minimumViewSize;
-
-- (NSViewController*) _customHeaderViewControllerForNode:(IMBNode*)inNode;
-- (NSViewController*) _customObjectViewControllerForNode:(IMBNode*)inNode;
-- (NSViewController*) _customFooterViewControllerForNode:(IMBNode*)inNode;
-
-@end
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1224,6 +1188,10 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 - (void) _nodesWillChange
 {
     _nodeOutlineViewSavedVisibleRectOrigin = [ibNodeOutlineView visibleRect].origin;
+	
+	// Cancel any scheduled request to call this method. We just did, so this isn't necessary anymore...
+	
+	[self imb_cancelCoalescedSelector:@selector(_nodesWillChange) withObject:nil];
 }
 
 
@@ -1320,6 +1288,10 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 	// We are done, now the user is once again in charge...
 	
 	_isRestoringState = NO;
+
+	// Cancel any scheduled request to call this method. We just did, so this isn't necessary anymore...
+	
+	[self imb_cancelCoalescedSelector:@selector(_nodesDidChange) withObject:nil];
 }
 
 
@@ -1957,8 +1929,9 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 - (void) restoreState
 {
 	[self _loadStateFromPreferences];
-	[self _nodesWillChange];
-	[self _nodesDidChange];
+
+    [self imb_performCoalescedSelector:@selector(_nodesWillChange) withObject:nil afterDelay:1.0];
+    [self imb_performCoalescedSelector:@selector(_nodesDidChange) withObject:nil afterDelay:1.0];
 }
 
 
