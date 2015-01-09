@@ -1321,38 +1321,44 @@ static NSMutableDictionary* sLibraryControllers = nil;
 - (IMBParserMessenger*) addUserAddedNodeForFolder:(NSURL*)inFolderURL
 {
 	IMBParserMessenger* parserMessenger = nil;
-
+	
 	if (inFolderURL)
 	{
-		// Create an IMBFolderParser for our media type...
+		BOOL isFolder;
+		BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:inFolderURL.path isDirectory:&isFolder];
 		
-		NSString* mediaType = self.mediaType;
-		
-		if ([mediaType isEqualToString:kIMBMediaTypeImage])
+		if (exists && isFolder)
 		{
-			parserMessenger = [[[IMBImageFolderParserMessenger alloc] init] autorelease];
-		}
-		else if ([mediaType isEqualToString:kIMBMediaTypeAudio])
-		{
-			parserMessenger = [[[IMBAudioFolderParserMessenger alloc] init] autorelease];
-		}
-		else if ([mediaType isEqualToString:kIMBMediaTypeMovie])
-		{
-			parserMessenger = [[[IMBMovieFolderParserMessenger alloc] init] autorelease];
-		}
+			// Create an IMBFolderParser for our media type...
+			
+			NSString* mediaType = self.mediaType;
+			
+			if ([mediaType isEqualToString:kIMBMediaTypeImage])
+			{
+				parserMessenger = [[[IMBImageFolderParserMessenger alloc] init] autorelease];
+			}
+			else if ([mediaType isEqualToString:kIMBMediaTypeAudio])
+			{
+				parserMessenger = [[[IMBAudioFolderParserMessenger alloc] init] autorelease];
+			}
+			else if ([mediaType isEqualToString:kIMBMediaTypeMovie])
+			{
+				parserMessenger = [[[IMBMovieFolderParserMessenger alloc] init] autorelease];
+			}
 
-		parserMessenger.mediaSource = inFolderURL;
-		parserMessenger.isUserAdded = YES;
-		
-		// Register it with the IMBParserController and reload...
-		
-		if (parserMessenger)
-		{
-            [IMBAccessRightsViewController grantAccessRightsForFolder:parserMessenger completionHandler:^()
-            {
-                [[IMBParserController sharedParserController] addUserAddedParserMessenger:parserMessenger];
-                [self createTopLevelNodesWithParserMessenger:parserMessenger];
-            }];
+			parserMessenger.mediaSource = inFolderURL;
+			parserMessenger.isUserAdded = YES;
+			
+			// Register it with the IMBParserController and reload...
+			
+			if (parserMessenger)
+			{
+				[IMBAccessRightsViewController grantAccessRightsForFolder:parserMessenger completionHandler:^()
+				{
+					[[IMBParserController sharedParserController] addUserAddedParserMessenger:parserMessenger];
+					[self createTopLevelNodesWithParserMessenger:parserMessenger];
+				}];
+			}
 		}
 	}
 	
