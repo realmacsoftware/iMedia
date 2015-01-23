@@ -470,8 +470,15 @@ static NSMutableDictionary* sRegisteredParserMessengerClasses = nil;
 	
 	for (NSData* data in userAddedParserMessengers)
 	{
-		IMBParserMessenger* parsersMessenger = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-		[self addParserMessenger:parsersMessenger];
+		@try
+		{
+			IMBParserMessenger* parsersMessenger = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+			[self addParserMessenger:parsersMessenger];
+		}
+		@catch (NSException* exception)
+		{
+			NSLog(@"%s %@",__FUNCTION__,exception);
+		}
 	}
 }
 
