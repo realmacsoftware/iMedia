@@ -22,6 +22,10 @@
 
 /* Begin PBXBuildFile section */
 		274DF618114EF0B200AC8C03 /* IMBImageItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 274DF616114EF0B200AC8C03 /* IMBImageItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30007FDA1A8A57690032FB37 /* IMBApplePhotosParserMessenger.h in Headers */ = {isa = PBXBuildFile; fileRef = 30007FD81A8A57690032FB37 /* IMBApplePhotosParserMessenger.h */; };
+		30007FDB1A8A57690032FB37 /* IMBApplePhotosParserMessenger.m in Sources */ = {isa = PBXBuildFile; fileRef = 30007FD91A8A57690032FB37 /* IMBApplePhotosParserMessenger.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		30007FDE1A8A5EA00032FB37 /* IMBApplePhotosParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 30007FDC1A8A5EA00032FB37 /* IMBApplePhotosParser.h */; };
+		30007FDF1A8A5EA00032FB37 /* IMBApplePhotosParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 30007FDD1A8A5EA00032FB37 /* IMBApplePhotosParser.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		3000ADEC1612F6DA00EDC78E /* IMBTableViewAppearance+iMediaPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 3000ADEA1612F6DA00EDC78E /* IMBTableViewAppearance+iMediaPrivate.h */; };
 		3000ADF916159C2300EDC78E /* NSCell+iMedia.h in Headers */ = {isa = PBXBuildFile; fileRef = 3000ADF716159C2300EDC78E /* NSCell+iMedia.h */; };
 		3000ADFA16159C2300EDC78E /* NSCell+iMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 3000ADF816159C2300EDC78E /* NSCell+iMedia.m */; };
@@ -120,6 +124,9 @@
 		30B83AE01701B11F000EC74E /* im.edia.Facebook.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 30B83ADE1701B11F000EC74E /* im.edia.Facebook.entitlements */; };
 		30B83AE11701B1C8000EC74E /* im.edia.Facebook.xpc in Copy XPCServices */ = {isa = PBXBuildFile; fileRef = 30B83ADC1701AFDB000EC74E /* im.edia.Facebook.xpc */; };
 		30D700B0177A2928003CB6FE /* missing-thumbnail.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 30D700AF177A2928003CB6FE /* missing-thumbnail.jpg */; };
+		30DA32421A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 30DA32401A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h */; };
+		30DA32431A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DA32411A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		30DA32451A92142C0039B07C /* MediaLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30DA32441A92142C0039B07C /* MediaLibrary.framework */; };
 		30E4D4FE130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 30E4D4FC130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30E7771E1511055900413AEF /* SBUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 30E7771C1511055800413AEF /* SBUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30E7771F1511055900413AEF /* SBUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E7771D1511055800413AEF /* SBUtilities.m */; };
@@ -615,6 +622,10 @@
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		274DF616114EF0B200AC8C03 /* IMBImageItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBImageItem.h; sourceTree = "<group>"; };
 		274DF617114EF0B200AC8C03 /* IMBImageItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBImageItem.m; sourceTree = "<group>"; };
+		30007FD81A8A57690032FB37 /* IMBApplePhotosParserMessenger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBApplePhotosParserMessenger.h; sourceTree = "<group>"; };
+		30007FD91A8A57690032FB37 /* IMBApplePhotosParserMessenger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBApplePhotosParserMessenger.m; sourceTree = "<group>"; };
+		30007FDC1A8A5EA00032FB37 /* IMBApplePhotosParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBApplePhotosParser.h; sourceTree = "<group>"; };
+		30007FDD1A8A5EA00032FB37 /* IMBApplePhotosParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBApplePhotosParser.m; sourceTree = "<group>"; };
 		3000ADEA1612F6DA00EDC78E /* IMBTableViewAppearance+iMediaPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IMBTableViewAppearance+iMediaPrivate.h"; sourceTree = "<group>"; };
 		3000ADF716159C2300EDC78E /* NSCell+iMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCell+iMedia.h"; sourceTree = "<group>"; };
 		3000ADF816159C2300EDC78E /* NSCell+iMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCell+iMedia.m"; sourceTree = "<group>"; };
@@ -703,6 +714,9 @@
 		30C8ACC816F08996005674CA /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		30C8ACCA16F089B5005674CA /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		30D700AF177A2928003CB6FE /* missing-thumbnail.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "missing-thumbnail.jpg"; sourceTree = "<group>"; };
+		30DA32401A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBAppleMediaLibraryPropertySynchronizer.h; sourceTree = "<group>"; };
+		30DA32411A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBAppleMediaLibraryPropertySynchronizer.m; sourceTree = "<group>"; };
+		30DA32441A92142C0039B07C /* MediaLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaLibrary.framework; path = System/Library/Frameworks/MediaLibrary.framework; sourceTree = SDKROOT; };
 		30E4D4FC130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBiPhotoEventNodeObject.h; sourceTree = "<group>"; };
 		30E4D4FD130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBiPhotoEventNodeObject.m; sourceTree = "<group>"; };
 		30E7771C1511055800413AEF /* SBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SBUtilities.h; path = SandBoxingKit/SBUtilities.h; sourceTree = SOURCE_ROOT; };
@@ -1184,6 +1198,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30DA32451A92142C0039B07C /* MediaLibrary.framework in Frameworks */,
 				3094F7161715C0070016E810 /* PhFacebook.framework in Frameworks */,
 				D0DA9AE1102EB7BD008EC9F9 /* Carbon.framework in Frameworks */,
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
@@ -1381,6 +1396,19 @@
 			name = "iMedia Framework";
 			sourceTree = SOURCE_ROOT;
 		};
+		30007FD71A8A56EA0032FB37 /* Apple Photos */ = {
+			isa = PBXGroup;
+			children = (
+				30007FD81A8A57690032FB37 /* IMBApplePhotosParserMessenger.h */,
+				30007FD91A8A57690032FB37 /* IMBApplePhotosParserMessenger.m */,
+				30007FDC1A8A5EA00032FB37 /* IMBApplePhotosParser.h */,
+				30007FDD1A8A5EA00032FB37 /* IMBApplePhotosParser.m */,
+				30DA32401A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h */,
+				30DA32411A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.m */,
+			);
+			name = "Apple Photos";
+			sourceTree = "<group>";
+		};
 		306D987E16EF75F3004BE4EA /* Facebook */ = {
 			isa = PBXGroup;
 			children = (
@@ -1408,6 +1436,7 @@
 		307F9692183D090D004F87E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				30DA32441A92142C0039B07C /* MediaLibrary.framework */,
 				307F9693183D090D004F87E0 /* XCTest.framework */,
 			);
 			name = Frameworks;
@@ -1907,6 +1936,7 @@
 				30FD644A154587ED0036BDE2 /* Apple */,
 				D02E53C510A5558800B205BD /* Lightroom */,
 				D0F2DDB4152473500059DF8D /* iTunes */,
+				30007FD71A8A56EA0032FB37 /* Apple Photos */,
 				D0B6FAA21043227A00280DDC /* GarageBand */,
 				306D987E16EF75F3004BE4EA /* Facebook */,
 				D032CE8A109B311A00D84782 /* Flickr */,
@@ -2185,6 +2215,7 @@
 				D09930CC1010F6C100C527B7 /* IMBOperationQueue.h in Headers */,
 				D09930D01010F6C100C527B7 /* IMBParser.h in Headers */,
 				D09930D21010F6C100C527B7 /* IMBParserController.h in Headers */,
+				30007FDE1A8A5EA00032FB37 /* IMBApplePhotosParser.h in Headers */,
 				D09930C51010F6C100C527B7 /* IMBLibraryController.h in Headers */,
 				D09930CB1010F6C100C527B7 /* IMBObjectArrayController.h in Headers */,
 				D099324710111A2900C527B7 /* NSFileManager+iMedia.h in Headers */,
@@ -2212,6 +2243,7 @@
 				D049F0421034A86B003CC49C /* IMBIconCache.h in Headers */,
 				D0D635EC1035B4C500FF8631 /* IMBLightroomParser.h in Headers */,
 				D0D635EE1035B4C500FF8631 /* IMBApertureParser.h in Headers */,
+				30007FDA1A8A57690032FB37 /* IMBApplePhotosParserMessenger.h in Headers */,
 				8FC15E4C176A99EB007FF34F /* IMBLightroom5Parser.h in Headers */,
 				D0BF8C69103F32700014B3B7 /* IMBImageBrowserCell.h in Headers */,
 				D0E96D1C104410BD0015979F /* IMBPanelController.h in Headers */,
@@ -2264,6 +2296,7 @@
 				CEAF1F2F125A7DE4001C3EBB /* NSWindow_Flipr.h in Headers */,
 				CEAF1F3B125A80D4001C3EBB /* IMBHoverButton.h in Headers */,
 				CEA8A04B12D3EC70008CD7CB /* IMBSmartFolderObject.h in Headers */,
+				30DA32421A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h in Headers */,
 				30394AC812DC665000ACA531 /* IMBSkimmableObjectViewController.h in Headers */,
 				3025E5631306877700706DB2 /* IMBiPhotoEventObjectViewController.h in Headers */,
 				30E4D4FE130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.h in Headers */,
@@ -3033,7 +3066,9 @@
 				D0B31379151CA594003CB231 /* IMBiPhotoParser.m in Sources */,
 				D0B3137A151CA594003CB231 /* IMBiPhotoImageParser.m in Sources */,
 				D0B3137B151CA594003CB231 /* IMBiPhotoMovieParser.m in Sources */,
+				30007FDB1A8A57690032FB37 /* IMBApplePhotosParserMessenger.m in Sources */,
 				D0B3137C151CA594003CB231 /* IMBAppleMediaParser.m in Sources */,
+				30DA32431A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.m in Sources */,
 				D0C911BF1520CFEE006655C9 /* IMBPanelController.m in Sources */,
 				D0C911C11520CFF3006655C9 /* IMBNodeViewController.m in Sources */,
 				D0C911C21520D00A006655C9 /* IMBButtonObject.m in Sources */,
@@ -3067,6 +3102,7 @@
 				D0F2DDBA15247B010059DF8D /* IMBiTunesAudioParser.m in Sources */,
 				D0F2DDBB15247B080059DF8D /* IMBiTunesMovieParser.m in Sources */,
 				D054AFEB152984C300EBFA1C /* IMBGarageBandParserMessenger.m in Sources */,
+				30007FDF1A8A5EA00032FB37 /* IMBApplePhotosParser.m in Sources */,
 				D054B0011529A65100EBFA1C /* IMBGarageBandParser.m in Sources */,
 				D05D398F152A280F00E30C43 /* IMBFileWatcher.m in Sources */,
 				D05D3990152A280F00E30C43 /* IMBKQueue.m in Sources */,
@@ -3299,7 +3335,7 @@
 			baseConfigurationReference = D0CF005310C50908009EC68F /* IMBTargetDebug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -3316,7 +3352,7 @@
 			baseConfigurationReference = D0CF005410C50908009EC68F /* IMBTargetRelease.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
