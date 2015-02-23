@@ -115,7 +115,6 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 #pragma mark 
 
 @interface IMBObject ()
-@property (retain) NSData* atomic_bookmark;
 @end
 
 
@@ -127,7 +126,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 @implementation IMBObject
 
 @synthesize location = _location;
-@synthesize atomic_bookmark = _bookmark;
+@synthesize locationBookmark = _locationBookmark;
 @synthesize name = _name;
 @synthesize identifier = _identifier;
 @synthesize persistentResourceIdentifier = _persistentResourceIdentifier;
@@ -179,7 +178,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 - (void) dealloc
 {
 	IMBRelease(_location);
-	IMBRelease(_bookmark);
+	IMBRelease(_locationBookmark);
 	IMBRelease(_name);
 	IMBRelease(_identifier);
 	IMBRelease(_persistentResourceIdentifier);
@@ -210,7 +209,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	if ((self = [super init]))
 	{
 		self.location = [coder decodeObjectForKey:@"location"];
-		self.atomic_bookmark = [coder decodeObjectForKey:@"bookmark"];
+		self.locationBookmark = [coder decodeObjectForKey:@"locationBookmark"];
 		self.name = [coder decodeObjectForKey:@"name"];
 		self.identifier = [coder decodeObjectForKey:@"identifier"];
 		self.persistentResourceIdentifier = [coder decodeObjectForKey:@"persistentResourceIdentifier"];
@@ -241,6 +240,9 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 		}
 	}
 	
+    if (!self.imageLocation) {
+        NSLog(@"Image location was not set on decoding of object: %@ !!!!!!", self.name);
+    }
 	return self;
 }
 
@@ -250,7 +252,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	NSKeyedArchiver* coder = (NSKeyedArchiver*)inCoder;
 	
 	[coder encodeObject:self.location forKey:@"location"];
-	[coder encodeObject:self.bookmark forKey:@"bookmark"];
+	[coder encodeObject:self.locationBookmark forKey:@"locationBookmark"];
 	[coder encodeObject:self.name forKey:@"name"];
 	[coder encodeObject:self.identifier forKey:@"identifier"];
 	[coder encodeObject:self.persistentResourceIdentifier forKey:@"persistentResourceIdentifier"];
@@ -294,7 +296,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	IMBObject* copy = [[[self class] allocWithZone:inZone] init];
 	
 	copy.location = self.location;
-	copy.atomic_bookmark = self.bookmark;
+	copy.locationBookmark = self.locationBookmark;
 	copy.name = self.name;
 	copy.identifier = self.identifier;
 	copy.persistentResourceIdentifier = self.persistentResourceIdentifier;
@@ -327,15 +329,6 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 #pragma mark 
 #pragma mark Helpers
-
-//- (void) setIdentifier:(NSString *)identifier
-//{
-//    if (identifier == nil) {
-//        NSLog(@"Nil identifier");
-//    } else {
-//        _identifier = identifier;
-//    }
-//}
 
 
 // Convert location to url...
@@ -789,7 +782,6 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 @implementation IMBObject (FileAccess)
 
-
 /**
  @abstract
  Asynchronously requests a bookmark for self and sets it within self.
@@ -800,7 +792,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
  */
 - (void) requestBookmarkWithQueue:(dispatch_queue_t)inQueue completionBlock:(void(^)(NSError*))inCompletionBlock
 {
-	if (self.bookmark == nil)
+	if (self.locationBookmark == nil)
 	{
 		void (^completionBlock)(NSError*) = [inCompletionBlock copy];
 		IMBParserMessenger* messenger = self.parserMessenger;
@@ -819,7 +811,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 				}
 				else
 				{
-					self.atomic_bookmark = inBookmark;
+					self.locationBookmark = inBookmark;
 				}
 				
 				completionBlock(inError);
@@ -860,10 +852,10 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	BOOL isStale = NO;
 	NSURL* url = nil;
 	
-	if (self.atomic_bookmark)
+	if (self.locationBookmark)
 	{
 		url = [NSURL 
-			URLByResolvingBookmarkData:self.atomic_bookmark 
+			URLByResolvingBookmarkData:self.locationBookmark
 			options:0
 			relativeToURL:nil
 			bookmarkDataIsStale:&isStale 
@@ -877,9 +869,12 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 //----------------------------------------------------------------------------------------------------------------------
 
 
+/**
+ Returns the same value as locationBookmark property. Method kept for backward compatibility.
+ */
 - (NSData*) bookmark
 {
-	return self.atomic_bookmark;
+	return self.locationBookmark;
 }
 
 
