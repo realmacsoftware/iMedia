@@ -79,7 +79,7 @@
     for (IMBObject *object in objects)
     {
         // Do we need to load an image from the internet? (this is for Facebook and the like)
-        if ((![object.imageLocation isFileURL]) &&
+        if ([object isKindOfClass:[NSURL class]] && (![object.imageLocation isFileURL]) &&
             [object.imageRepresentationType isEqualToString:IKImageBrowserNSDataRepresentationType])
         {
             delegateToSuper = NO;
@@ -121,7 +121,7 @@
     for (IMBObject *object in objects)
     {
         // Do we need to load an image from the internet? (this is for Facebook and the like)
-        if ((![object.imageLocation isFileURL]) &&
+        if ([object isKindOfClass:[NSURL class]] && (![object.imageLocation isFileURL]) &&
             [object.imageRepresentationType isEqualToString:IKImageBrowserNSDataRepresentationType])
         {
             // Load image asynchronously
