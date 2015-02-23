@@ -357,6 +357,19 @@
         date = [parser dateFromString:self];
     }
     
+    // This is for self expressed in time interval since 1970
+    
+    if (!date) {
+        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+        f.numberStyle = NSNumberFormatterDecimalStyle;
+        f.allowsFloats = YES;
+        f.decimalSeparator = @".";
+        NSNumber *timeInterval = [f numberFromString:self];
+        if ([timeInterval integerValue] > 0) {
+            date = [NSDate dateWithTimeIntervalSinceReferenceDate:[timeInterval integerValue]];
+        }
+    }
+    
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 	[formatter setFormatterBehavior:NSDateFormatterBehavior10_4];
 	[formatter setDateStyle:NSDateFormatterMediumStyle];    // medium date
