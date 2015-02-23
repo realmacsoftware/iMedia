@@ -32,9 +32,9 @@
 #import <pwd.h>
 #import <XPCKit/XPCKit.h>
 
-
 //----------------------------------------------------------------------------------------------------------------------
 
+#define ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC 1
 
 #pragma mark
 #pragma mark Sandbox Check
@@ -281,8 +281,16 @@ void SBPerformSelectorAsync(id inConnection,id inTarget,SEL inSelector,id inObje
    
     else
     {
+#if ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC
         id targetCopy = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:inTarget]];
         id objectCopy = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:inObject]];
+#else
+        id targetCopy = inTarget;
+        id objectCopy = inObject;
+#endif
+//        NSLog(@"Asynchronous perform on target object %@", targetCopy);
+//        NSLog(@"Asynchronous perform with parameter object %@", objectCopy);
+        
         
         dispatch_retain(returnHandlerQueue);
 
@@ -305,8 +313,9 @@ void SBPerformSelectorAsync(id inConnection,id inTarget,SEL inSelector,id inObje
 			// This is extremely useful for debugging purposes, but leads to a performance hit in non-sandboxed
 			// host apps. For this reason the following line may be commented out once our code base is stable...
 			
+#if ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC
 			result = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:result]];
-			
+#endif
 			dispatch_async(returnHandlerQueue,^()
 			{
 				inReturnHandler(result,error);
