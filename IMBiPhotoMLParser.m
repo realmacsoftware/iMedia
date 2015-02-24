@@ -1,21 +1,19 @@
 //
-//  IMBApplePhotosParser.m
+//  IMBiPhotoMLParser.m
 //  iMedia
 //
-//  Created by Jörg Jacobsen on 10.02.15.
+//  Created by Jörg Jacobsen on 24.02.15.
 //
 //
 
-#import "IMBApplePhotosParser.h"
+#import "IMBiPhotoMLParser.h"
 
 /**
  Attribute key supported by Photos media source (as of OS X 10.10.3)
  */
-NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
+NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
 
-#pragma mark -
-
-@implementation IMBApplePhotosImageParser
+@implementation IMBiPhotoMLImageParser
 
 #pragma mark Configuration
 
@@ -32,14 +30,14 @@ NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
  */
 - (NSString*) iMedia2PersistentResourceIdentifierPrefix
 {
-    return @"IMBApplePhotosImageParser";
+    return @"IMBiPhotoMLImageParser";
 }
 
 @end
 
 #pragma mark -
 
-@implementation IMBApplePhotosMovieParser
+@implementation IMBiPhotoMLMovieParser
 
 #pragma mark Configuration
 
@@ -56,14 +54,14 @@ NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
  */
 - (NSString*) iMedia2PersistentResourceIdentifierPrefix
 {
-    return @"IMBApplePhotosMovieParser";
+    return @"IMBiPhotoMLMovieParser";
 }
 
 @end
 
 #pragma mark -
 
-@implementation IMBApplePhotosParser
+@implementation IMBiPhotoMLParser
 
 #pragma mark Configuration
 
@@ -72,7 +70,7 @@ NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
  */
 + (NSString *)mediaSourceIdentifier
 {
-    return MLMediaSourcePhotosIdentifier;
+    return MLMediaSourceiPhotoIdentifier;
 }
 
 /**
@@ -83,7 +81,7 @@ NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
  */
 - (NSURL *)mediaSourceURLForGroup:(MLMediaGroup *)mediaGroup
 {
-    return self.AppleMediaSource.attributes[kIMBMediaSourceAttributeLibraryURL];
+    return mediaGroup.attributes[kIMBMediaRootGroupAttributeLibraryURL];
 }
 
 /**
@@ -92,34 +90,42 @@ NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
 {
     if (outError) *outError = nil;
     
-    // Map metadata information from Photos library representation (MLMediaObject.attributes) to iMedia representation
+    // Map metadata information from iPhoto library representation (MLMediaObject.attributes) to iMedia representation
     
     NSDictionary *internalMetadata = inObject.preliminaryMetadata;
     NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionary];
     
-    // Width, height
-    
-    NSString *resolutionString = internalMetadata[@"resolutionString"];
-    if ([resolutionString isKindOfClass:[NSString class]]) {
-        NSSize size = NSSizeFromString(resolutionString);
-        externalMetadata[@"width"] = [NSString stringWithFormat:@"%d", (int)size.width];
-        externalMetadata[@"height"] = [NSString stringWithFormat:@"%d", (int)size.height];
-    }
-    
-    // Creation date and time
-    
-    id timeInterval = internalMetadata[@"DateAsTimerInterval"];
-    NSString *timeIntervalString = nil;
-    if ([timeInterval isKindOfClass:[NSNumber class]]) {
-        timeIntervalString = [((NSNumber *)timeInterval) stringValue];
-    } else if ([timeInterval isKindOfClass:[NSString class]]) {
-        timeIntervalString = timeInterval;
-    }
-    if (timeIntervalString) {
-        externalMetadata[@"dateTime"] = timeIntervalString;
-    }
+//    // Width, height
+//    
+//    NSString *resolutionString = internalMetadata[@"resolutionString"];
+//    if ([resolutionString isKindOfClass:[NSString class]]) {
+//        NSSize size = NSSizeFromString(resolutionString);
+//        externalMetadata[@"width"] = [NSString stringWithFormat:@"%d", (int)size.width];
+//        externalMetadata[@"height"] = [NSString stringWithFormat:@"%d", (int)size.height];
+//    }
+//    
+//    // Creation date and time
+//    
+//    id timeInterval = internalMetadata[@"DateAsTimerInterval"];
+//    NSString *timeIntervalString = nil;
+//    if ([timeInterval isKindOfClass:[NSNumber class]]) {
+//        timeIntervalString = [((NSNumber *)timeInterval) stringValue];
+//    } else if ([timeInterval isKindOfClass:[NSString class]]) {
+//        timeIntervalString = timeInterval;
+//    }
+//    if (timeIntervalString) {
+//        externalMetadata[@"dateTime"] = timeIntervalString;
+//    }
     
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
+}
+
+/**
+ Hardcoded library name.
+ */
+- (NSString *)libraryName
+{
+    return @"iPhoto (Apple Media Library)";
 }
 
 @end

@@ -1,22 +1,19 @@
 //
-//  IMBApplePhotosParserMessenger.m
+//  IMBiPhotoMLParserMessenger.m
 //  iMedia
 //
-//  Created by Jörg Jacobsen on 10.02.15.
+//  Created by Jörg Jacobsen on 24.02.15.
 //
 //
 
 #import <MediaLibrary/MediaLibrary.h>
-#import "NSObject+iMedia.h"
-#import "IMBApplePhotosParserMessenger.h"
-#import "IMBApplePhotosParser.h"
-#import "IMBMovieObjectViewController.h"
-#import "IMBAppleMediaLibraryPropertySynchronizer.h"
 
+#import "IMBiPhotoMLParserMessenger.h"
+#import "IMBMovieObjectViewController.h"
 
 #pragma mark -
 
-@implementation IMBApplePhotosImageParserMessenger
+@implementation IMBiPhotoMLImageParserMessenger
 
 #pragma mark Configuration
 
@@ -42,17 +39,17 @@
 }
 
 + (NSString*) identifier {
-    return @"com.karelia.imedia.ApplePhotos.image";
+    return @"com.karelia.imedia.iPhotoML.image";
 }
 
 + (NSString*) parserClassName {
-    return @"IMBApplePhotosImageParser";
+    return @"IMBiPhotoMLImageParser";
 }
 
 #pragma mark - XPC Methods
 
 /**
- Returns the cache of all parsers associated with Photos media objects of same media type.
+ Returns the cache of all parsers associated with iPhoto media objects of same media type.
  */
 + (NSMutableArray *)parsers
 {
@@ -69,7 +66,7 @@
 
 #pragma mark -
 
-@implementation IMBApplePhotosMovieParserMessenger
+@implementation IMBiPhotoMLMovieParserMessenger
 
 #pragma mark Configuration
 
@@ -95,17 +92,17 @@
 }
 
 + (NSString*) identifier {
-    return @"com.karelia.imedia.ApplePhotos.movie";
+    return @"com.karelia.imedia.iPhotoML.movie";
 }
 
 + (NSString*) parserClassName {
-    return @"IMBApplePhotosMovieParser";
+    return @"IMBiPhotoMLMovieParser";
 }
 
 #pragma mark - XPC Methods
 
 /**
- Returns the cache of all parsers associated with Photos media objects of same media type.
+ Returns the cache of all parsers associated with iPhoto media objects of same media type.
  */
 + (NSMutableArray *)parsers
 {
@@ -132,20 +129,20 @@
 
 #pragma mark -
 
-@implementation IMBApplePhotosParserMessenger
+@implementation IMBiPhotoMLParserMessenger
 
 /**
  Returns the identifier for the app that is associated with sources handled by the parser. Must be subclassed.
  */
 + (NSString *)sourceAppBundleIdentifier
 {
-    return MLMediaSourcePhotosIdentifier;
+    return MLMediaSourceiPhotoIdentifier;
 }
 
 
 + (NSString*) xpcServiceIdentifierPostfix
 {
-    return @"ApplePhotos";
+    return @"iPhotoML";
 }
 
 @end

@@ -96,7 +96,7 @@ static int kMediaObjectsKVOContext;
         instance.semaphore = dispatch_semaphore_create(0);
         [instance.observedObject addObserver:instance forKeyPath:instance.key options:0 context:NULL];
         instance.valueForKey = [instance.observedObject valueForKey:instance.key];
-        NSLog(@"Property value %@.%@ is %@", instance.observedObject, instance.key, instance.valueForKey);
+//        NSLog(@"Property value %@.%@ is %@", instance.observedObject, instance.key, instance.valueForKey);
         
         if (!instance.valueForKey) {
             // Value not present yet, will be provided asynchronously through KVO. Wait for it.
@@ -113,7 +113,7 @@ static int kMediaObjectsKVOContext;
     if (context == NULL) {
 //        self.valueForKey = change[NSKeyValueChangeNewKey];
         self.valueForKey = [object valueForKey:keyPath];
-        NSLog(@"Property value %@.%@ is %@", self.observedObject, self.key, self.valueForKey);
+//        NSLog(@"Property value %@.%@ is %@", self.observedObject, self.key, self.valueForKey);
         dispatch_semaphore_signal(self.semaphore);
     }
 }

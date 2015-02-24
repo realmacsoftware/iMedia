@@ -6,13 +6,14 @@
 //
 //
 
-#import <MediaLibrary/MediaLibrary.h>
 #import <iMedia/iMedia.h>
+
+#import "IMBAppleMediaLibraryParserMessenger.h"
 
 /**
  Base class for messenger classes that support different Apple Photos app media types.
  */
-@interface IMBApplePhotosParserMessenger : IMBParserMessenger
+@interface IMBApplePhotosParserMessenger : IMBAppleMediaLibraryParserMessenger
 
 @end
 
