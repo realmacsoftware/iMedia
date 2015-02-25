@@ -223,12 +223,14 @@
  */
 - (MLMediaGroup *)mediaGroupForNode:(IMBNode *)node
 {
-    NSString *mediaLibraryIdentifier = [node.identifier stringByReplacingOccurrencesOfString:[self identifierPrefix] withString:@""];
-    return [self.AppleMediaSource mediaGroupForIdentifier:mediaLibraryIdentifier];
+    NSString *mediaGroupIdentifier = [node.identifier stringByReplacingOccurrencesOfString:[self identifierPrefix] withString:@""];
+    return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
 }
 
 /**
  Returns YES if media group contains at least one media object of media type associated with the receiver. NO otherwise.
+ @discussion
+ This method will take a long time to return if you provide a media group that contains a lot of media objects. Use with extreme care!
  */
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
