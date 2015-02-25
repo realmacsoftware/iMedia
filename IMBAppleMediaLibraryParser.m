@@ -115,9 +115,10 @@
     NSMutableArray* subnodes = [inParentNode mutableArrayForPopulatingSubnodes];
     
     for (MLMediaGroup *mediaGroup in [parentGroup childGroups]) {
+        
         // Create node for this album...
         
-        if ([self shouldUseMediaGroup:mediaGroup]) {
+        if (YES/*[self shouldUseMediaGroup:mediaGroup]*/) {     // Current impl. of -should... is too expensive here
             IMBNode* albumNode = [[IMBNode alloc] initWithParser:self topLevel:NO];
             
             albumNode.isLeafNode = [[mediaGroup childGroups] count] == 0;
@@ -140,7 +141,7 @@
     // Create the objects array on demand  - even if turns out to be empty after exiting this method, because without creating an array we would cause an endless loop...
     
     NSMutableArray* objects = [NSMutableArray array];
-    
+
     NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
     
     for (MLMediaObject *mediaObject in mediaObjects)
