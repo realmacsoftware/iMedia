@@ -178,12 +178,19 @@
     
     // IKImageBrowser can also deal with NSData type (IKImageBrowserNSDataRepresentationType)
     
+    NSURL *url = nil;
     if (inObject.imageLocation)
     {
+        url = [self URLForBookmark:(NSData *)inObject.imageLocation error:&error];
+    } else {
+        MLMediaObject *mediaObject = [self mediaObjectForObject:inObject];
+        url = mediaObject.thumbnailURL;
+    }
+    
+    if (url) {
         id thumbnail = nil;
-        NSURL* url = [self URLForBookmark:(NSData *)inObject.imageLocation error:&error];
         
-        //        BOOL accessGranted = [url startAccessingSecurityScopedResource];
+        [url startAccessingSecurityScopedResource];
         
         if ([inObject.imageRepresentationType isEqualToString:IKImageBrowserNSImageRepresentationType]) {
             thumbnail = (id)[[NSImage alloc] initWithContentsOfURL:url];
@@ -197,12 +204,10 @@
             inObject.imageRepresentationType = IKImageBrowserNSDataRepresentationType;
             thumbnail = (id)[NSData dataWithContentsOfURL:url];
         }
-        //        [url stopAccessingSecurityScopedResource];
+        [url stopAccessingSecurityScopedResource];
         
         return thumbnail;
-    }
-    else
-    {
+    } else {
         inObject.imageRepresentationType = IKImageBrowserCGImageRepresentationType;
         return (id)[self thumbnailFromLocalImageFileForObject:inObject error:outError];
     }
@@ -253,6 +258,13 @@
 
 #pragma mark - Media Object
 
+/**
+ */
+- (MLMediaObject *)mediaObjectForObject:(IMBObject *)object
+{
+    NSString *mediaObjectIdentifier = [object.identifier stringByReplacingOccurrencesOfString:[self identifierPrefix] withString:@""];
+    return [self.AppleMediaSource mediaObjectForIdentifier:mediaObjectIdentifier];
+}
 /**
  */
 - (BOOL)shouldUseMediaObject:(MLMediaObject *)mediaObject
