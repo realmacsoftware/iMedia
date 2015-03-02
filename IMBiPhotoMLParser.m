@@ -13,6 +13,15 @@
  */
 NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
 
+NSString *kIMBiPhotoMediaGroupIdentifierEvents = @"AllProjectsItem";
+NSString *kIMBiPhotoMediaGroupIdentifierPhotos = @"allPhotosAlbum";
+NSString *kIMBiPhotoMediaGroupIdentifierFaces = @"peopleAlbum";
+NSString *kIMBiPhotoMediaGroupIdentifierPlaces = @"allPlacedPhotosAlbum";
+NSString *kIMBiPhotoMediaGroupIdentifierLast12Months = @"lastNMonthsAlbum";
+NSString *kIMBiPhotoMediaGroupIdentifierLastImport = @"lastImportAlbum";
+NSString *kIMBiPhotoMediaGroupIdentifierFlagged = @"flaggedAlbum";
+NSString *kIMBiPhotoMediaGroupIdentifierEventFilterBar = @"eventFilterBarAlbum";
+
 @implementation IMBiPhotoMLImageParser
 
 #pragma mark Configuration
@@ -128,4 +137,22 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
     return @"iPhoto (Apple Media Library)";
 }
 
+- (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                          kIMBiPhotoMediaGroupIdentifierEventFilterBar,
+                                          nil];
+    return (![unqualifiedGroupIdentifiers containsObject:mediaGroup.identifier]);
+}
+
+- (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
+{
+    NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                        kIMBiPhotoMediaGroupIdentifierEvents,
+                                        kIMBiPhotoMediaGroupIdentifierPhotos,
+                                        nil];
+    
+//    NSLog(@"Identifier for media group %@: %@", mediaGroup.name, mediaGroup.identifier);
+    return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
+}
 @end
