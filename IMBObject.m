@@ -240,9 +240,9 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 		}
 	}
 	
-    if (!self.imageLocation) {
-        NSLog(@"Image location was not set on decoding of object: %@ !!!!!!", self.name);
-    }
+//    if (!self.imageLocation) {
+//        NSLog(@"Image location was not set on decoding of object: %@ !!!!!!", self.name);
+//    }
 	return self;
 }
 
