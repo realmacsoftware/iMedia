@@ -36,4 +36,21 @@
  */
 @property (strong) MLMediaSource *AppleMediaSource;
 
+/**
+ Returns whether the node given should be shown in the node hierarchy.
+ 
+ @discussion
+ This implementation always returns YES. You are welcome to override in your subclass parser.
+ */
+
+- (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup;
+
+/**
+ Returns whether the group given should use the same media objects as its parent.
+ 
+ @discussion
+ This implementation always returns NO. You are welcome to override in your subclass parser (will boost performance).
+ */
+- (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup;
+
 @end

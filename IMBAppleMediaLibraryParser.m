@@ -13,6 +13,20 @@
 #import "IMBAppleMediaLibraryParser.h"
 #import "IMBAppleMediaLibraryPropertySynchronizer.h"
 
+#define CREATE_MEDIA_OBJECTS_CONCURRENTLY 0
+
+#define MEASURE_EXECUTION_TIME 1
+
+#if MEASURE_EXECUTION_TIME
+    #define START_MEASURE(id) NSDate *start ## id = [NSDate date]
+    #define STOP_MEASURE(id)  NSDate *stop ## id  = [NSDate date]
+    #define LOG_MEASURED_TIME(id,description) NSLog(@"Took %f secs to execute %@", [stop ## id timeIntervalSinceDate:start ## id], description)
+#else
+    #define START_MEASURE(id)
+    #define STOP_MEASURE(id)
+    #define LOG_MEASURED_TIME(id,description)
+#endif
+
 @implementation IMBAppleMediaLibraryParser
 
 @synthesize AppleMediaLibrary = _AppleMediaLibrary;
@@ -112,58 +126,85 @@
 {
     NSError *error = nil;
     MLMediaGroup *parentGroup = [self mediaGroupForNode:inParentNode];
-    NSMutableArray* subnodes = [inParentNode mutableArrayForPopulatingSubnodes];
+    if (!inParentNode.objects) {
+        // Create the objects array on demand  - even if turns out to be empty after exiting this method, because without creating an array we would cause an endless loop...
+        
+        NSMutableArray* objects = [NSMutableArray array];
+        
+        START_MEASURE(1);
+        NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
+        STOP_MEASURE(1);
+        LOG_MEASURED_TIME(1,[@"fetch of media Objects for group " stringByAppendingString:parentGroup.name]);
+        
+#if CREATE_MEDIA_OBJECTS_CONCURRENTLY
+        dispatch_group_t dispatchGroup = dispatch_group_create();
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(8);
+#endif
+        
+        START_MEASURE(2);
+        
+        for (MLMediaObject *mediaObject in mediaObjects)
+        {
+#if CREATE_MEDIA_OBJECTS_CONCURRENTLY
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            dispatch_group_async(dispatchGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+#endif
+                if ([self shouldUseMediaObject:mediaObject])
+                {
+                    
+                    IMBObject *object = [self objectForMediaObject:mediaObject];
+                    
+                    @synchronized(objects) {
+                        [objects addObject:object];
+                    }
+                }
+#if CREATE_MEDIA_OBJECTS_CONCURRENTLY
+                dispatch_semaphore_signal(semaphore);
+            });
+#endif
+        }
+#if CREATE_MEDIA_OBJECTS_CONCURRENTLY
+        dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER);
+        dispatch_release(dispatchGroup);
+        dispatch_release(semaphore);
+#endif
+        inParentNode.objects = objects;
+        
+        STOP_MEASURE(2);
+        LOG_MEASURED_TIME(2,[@"IMBObjects creation for group " stringByAppendingString:parentGroup.name]);
+    }
     
-    for (MLMediaGroup *mediaGroup in [parentGroup childGroups]) {
+    NSMutableArray* subnodes = [inParentNode mutableArrayForPopulatingSubnodes];
+    NSArray *childGroups = [parentGroup childGroups];
+    
+    NSLog(@"Group %@ has %zd child groups", parentGroup.name, [childGroups count]);
+    
+    START_MEASURE(3);
+    
+    for (MLMediaGroup *mediaGroup in childGroups) {
         
-        // Create node for this album...
-        
-        if (YES/*[self shouldUseMediaGroup:mediaGroup]*/) {     // Current impl. of -should... is too expensive here
-            IMBNode* albumNode = [[IMBNode alloc] initWithParser:self topLevel:NO];
+        if ([self shouldUseMediaGroup:mediaGroup]) {
+            // Create node for this album...
             
-            albumNode.isLeafNode = [[mediaGroup childGroups] count] == 0;
-            albumNode.icon = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:mediaGroup];
-            //            albumNode.highlightIcon = ...;
-            albumNode.name = [mediaGroup name];
-            albumNode.watchedPath = inParentNode.watchedPath;	// These two lines are important to make file watching work for nested
-            albumNode.watcherType = kIMBWatcherTypeNone;        // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
+            IMBNode *childNode = [self nodeForParentNode:inParentNode MediaGroup:mediaGroup];
             
-            albumNode.identifier = [self globalIdentifierForLocalIdentifier:[mediaGroup identifier]];
+            // Optimization for subnodes that share the same media objects with their parent node
+            
+            if ([self shouldReuseMediaObjectsOfParentGroupForGroup:mediaGroup]) {
+                childNode.objects = inParentNode.objects;
+                [self populateNode:childNode error:&error];
+            }
             
             // Add the new album node to its parent (inRootNode)...
             
-            [subnodes addObject:albumNode];
+            [subnodes addObject:childNode];
             
             //        NSLog(@"Subgroup of Photos root node: %@", [mediaGroup name]);
+            
         }
     }
-    
-    // Create the objects array on demand  - even if turns out to be empty after exiting this method, because without creating an array we would cause an endless loop...
-    
-    NSMutableArray* objects = [NSMutableArray array];
-
-    NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
-    
-    for (MLMediaObject *mediaObject in mediaObjects)
-    {
-        if ([self shouldUseMediaObject:mediaObject])
-        {
-            IMBObject *object = [[IMBObject alloc] init];
-            [objects addObject:object];
-            
-            object.parserIdentifier = [self identifier];
-            object.accessibility = kIMBResourceIsAccessible;
-            object.name = [self nameForMediaObject:mediaObject];
-            object.location = mediaObject.URL;
-            object.locationBookmark = [self bookmarkForURL:mediaObject.URL error:&error];
-            object.imageLocation = [self bookmarkForURL:mediaObject.thumbnailURL error:&error];
-            object.imageRepresentationType = IKImageBrowserNSImageRepresentationType;
-            object.preliminaryMetadata = mediaObject.attributes;
-            
-//            NSLog(@"Media object URL: %@", [object location]);
-        }
-    }
-    inParentNode.objects = objects;
+    STOP_MEASURE(3);
+    LOG_MEASURED_TIME(3,[@"subnodes creation for group " stringByAppendingString:parentGroup.name]);
     
     if (*outError) *outError = error;
     return YES;
@@ -226,6 +267,25 @@
 #pragma mark - Media Group
 
 /**
+ Converts an MLMediaLibrary group into iMedia's "native" IMBNode.
+ */
+- (IMBNode *)nodeForParentNode:(IMBNode *)parentNode MediaGroup:(MLMediaGroup *)mediaGroup
+{
+    IMBNode* node = [[IMBNode alloc] initWithParser:self topLevel:NO];
+    
+    node.isLeafNode = [[mediaGroup childGroups] count] == 0;
+    node.icon = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:mediaGroup];
+// albumNode.highlightIcon = ...;
+    node.name = [mediaGroup name];
+    node.watchedPath = parentNode.watchedPath;	// These two lines are important to make file watching work for nested
+    node.watcherType = kIMBWatcherTypeNone;     // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
+    
+    node.identifier = [self globalIdentifierForLocalIdentifier:[mediaGroup identifier]];
+    
+    return node;
+}
+
+/**
  */
 - (MLMediaGroup *)mediaGroupForNode:(IMBNode *)node
 {
@@ -234,37 +294,61 @@
 }
 
 /**
- Returns YES if media group contains at least one media object of media type associated with the receiver. NO otherwise.
+ Returns whether the node given should be shown in the node hierarchy.
+ 
  @discussion
- This method will take a long time to return if you provide a media group that contains a lot of media objects. Use with extreme care!
+ This implementation always returns YES. You are welcome to override in your subclass parser.
  */
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
-    __block BOOL should = NO;
-    
-    // We should use this media group if it has at least one media object qualifying
-    
-    NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
-    
-    [mediaObjects enumerateObjectsUsingBlock:^(MLMediaObject *mediaObject, NSUInteger idx, BOOL *stop) {
-        if ([self shouldUseMediaObject:mediaObject]) {
-            should = YES;
-            *stop = YES;
-        }
-    }];
-    
-    return should;
+    return YES;
+}
+
+/**
+ Returns whether the group given should use the same media objects as its parent.
+ 
+ @discussion
+ This implementation always returns NO. You are welcome to override in your subclass parser (will boost performance).
+ */
+- (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
+{
+    return NO;
 }
 
 #pragma mark - Media Object
 
 /**
+ Converts an MLMediaLibrary object into iMedia's "native" IMBObject.
+ */
+ - (IMBObject *)objectForMediaObject:(MLMediaObject *)mediaObject
+{
+    IMBObject *object = [[IMBObject alloc] init];
+    
+    object.identifier = mediaObject.identifier;
+    object.parserIdentifier = [self identifier];
+    object.accessibility = kIMBResourceIsAccessible;
+    object.name = [self nameForMediaObject:mediaObject];
+    object.location = mediaObject.URL;
+    
+// Since the following two operations are expensive we postpone them to the point when we actually need the data
+//    object.locationBookmark = [self bookmarkForURL:mediaObject.URL error:&error];
+//    object.imageLocation = [self bookmarkForURL:mediaObject.thumbnailURL error:&error];
+    
+    object.imageRepresentationType = IKImageBrowserNSImageRepresentationType;
+    object.preliminaryMetadata = mediaObject.attributes;
+    
+//    NSLog(@"Media object URL: %@", [object location]);
+    return object;
+}
+
+/**
+ Fetches the object from Apple's media library that corresponds to iMedia's "native" IMBObject.
  */
 - (MLMediaObject *)mediaObjectForObject:(IMBObject *)object
 {
-    NSString *mediaObjectIdentifier = [object.identifier stringByReplacingOccurrencesOfString:[self identifierPrefix] withString:@""];
-    return [self.AppleMediaSource mediaObjectForIdentifier:mediaObjectIdentifier];
+    return [self.AppleMediaSource mediaObjectForIdentifier:object.identifier];
 }
+
 /**
  */
 - (BOOL)shouldUseMediaObject:(MLMediaObject *)mediaObject

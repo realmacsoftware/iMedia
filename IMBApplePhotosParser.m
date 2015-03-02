@@ -13,6 +13,13 @@
  */
 NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
 
+NSString *kIMBPhotosMediaGroupIdentifierMoments = @"AllMomentsGroup";
+NSString *kIMBPhotosMediaGroupIdentifierCollections = @"AllCollectionsGroup";
+NSString *kIMBPhotosMediaGroupIdentifierYears = @"AllYearsGroup";
+NSString *kIMBPhotosMediaGroupIdentifierPlaces = @"allPlacedPhotosAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierShared = @"com.apple.Photos.SharedGroup";
+NSString *kIMBPhotosMediaGroupIdentifierAlbums = @"TopLevelAlbums";
+
 #pragma mark -
 
 @implementation IMBApplePhotosImageParser
@@ -122,4 +129,23 @@ NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
 }
 
+- (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                         kIMBPhotosMediaGroupIdentifierMoments,
+                                         kIMBPhotosMediaGroupIdentifierCollections,
+                                         nil];
+    return (![unqualifiedGroupIdentifiers containsObject:mediaGroup.identifier]);
+}
+
+- (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
+{
+    NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                        kIMBPhotosMediaGroupIdentifierMoments,
+                                        kIMBPhotosMediaGroupIdentifierCollections,
+                                        kIMBPhotosMediaGroupIdentifierYears,
+                                        nil];
+    
+    return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
+}
 @end
