@@ -460,7 +460,7 @@
 	{
 		for (IMBObject* object in inNode.objects)
 		{
-			object.identifier = [inParser identifierForObject:object];
+			if (!object.identifier) object.identifier = [inParser identifierForObject:object];
 			object.persistentResourceIdentifier = [inParser persistentResourceIdentifierForObject:object];
 		}
 		
