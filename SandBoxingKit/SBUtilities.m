@@ -34,7 +34,7 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 
-#define ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC 0
+#define ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC 1
 
 #pragma mark
 #pragma mark Sandbox Check
