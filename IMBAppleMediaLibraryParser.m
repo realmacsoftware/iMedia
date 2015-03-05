@@ -109,7 +109,6 @@
     node.accessibility = self.mediaSource ? [self mediaSourceAccessibility] : kIMBResourceIsAccessible;
     node.isAccessRevocable = NO;
     node.identifier = [self globalIdentifierForMediaGroup:rootMediaGroup];
-    node.displayedObjectCount = 0;  // No media objects in top-level node
     
     if ([self mediaSourceAccessibility] == kIMBResourceIsAccessible) {
         node.watchedPath = [self.mediaSource path];
