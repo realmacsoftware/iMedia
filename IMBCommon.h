@@ -141,7 +141,7 @@ typedef NSUInteger IMBErrorCode;
 
 enum
 {
-    kIMBResourceDoesNotExist,
+    kIMBResourceDoesNotExist = 1,
     kIMBResourceNoPermission,   // Implies that the resource exists
     kIMBResourceIsAccessible
 };
