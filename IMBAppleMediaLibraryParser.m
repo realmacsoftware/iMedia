@@ -20,11 +20,11 @@
 #if MEASURE_EXECUTION_TIME
     #define START_MEASURE(id) NSDate *start ## id = [NSDate date]
     #define STOP_MEASURE(id)  NSDate *stop ## id  = [NSDate date]
-    #define LOG_MEASURED_TIME(id,description) NSLog(@"Took %f secs to execute %@", [stop ## id timeIntervalSinceDate:start ## id], description)
+    #define LOG_MEASURED_TIME(id, ...) NSLog(@"Took %f secs to execute %@", [stop ## id timeIntervalSinceDate:start ## id], [NSString stringWithFormat: __VA_ARGS__])
 #else
     #define START_MEASURE(id)
     #define STOP_MEASURE(id)
-    #define LOG_MEASURED_TIME(id,description)
+    #define LOG_MEASURED_TIME(id, ...)
 #endif
 
 @implementation IMBAppleMediaLibraryParser
@@ -108,7 +108,7 @@
     node.mediaSource = self.mediaSource;
     node.accessibility = self.mediaSource ? [self mediaSourceAccessibility] : kIMBResourceIsAccessible;
     node.isAccessRevocable = NO;
-    node.identifier = [self globalIdentifierForLocalIdentifier:[rootMediaGroup identifier]];
+    node.identifier = [self globalIdentifierForMediaGroup:rootMediaGroup];
     node.displayedObjectCount = 0;  // No media objects in top-level node
     
     if ([self mediaSourceAccessibility] == kIMBResourceIsAccessible) {
@@ -134,7 +134,7 @@
         START_MEASURE(1);
         NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
         STOP_MEASURE(1);
-        LOG_MEASURED_TIME(1,[@"fetch of media Objects for group " stringByAppendingString:parentGroup.name]);
+        LOG_MEASURED_TIME(1, @"fetch of media Objects for group %@", parentGroup.name);
         
 #if CREATE_MEDIA_OBJECTS_CONCURRENTLY
         dispatch_group_t dispatchGroup = dispatch_group_create();
@@ -171,7 +171,7 @@
         inParentNode.objects = objects;
         
         STOP_MEASURE(2);
-        LOG_MEASURED_TIME(2,[@"IMBObjects creation for group " stringByAppendingString:parentGroup.name]);
+        LOG_MEASURED_TIME(2, @"IMBObjects creation for group %@", parentGroup.name);
     }
     
     NSMutableArray* subnodes = [inParentNode mutableArrayForPopulatingSubnodes];
@@ -204,7 +204,7 @@
         }
     }
     STOP_MEASURE(3);
-    LOG_MEASURED_TIME(3,[@"subnodes creation for group " stringByAppendingString:parentGroup.name]);
+    LOG_MEASURED_TIME(3, @"subnodes creation for group %@", parentGroup.name);
     
     if (*outError) *outError = error;
     return YES;
@@ -280,7 +280,7 @@
     node.watchedPath = parentNode.watchedPath;	// These two lines are important to make file watching work for nested
     node.watcherType = kIMBWatcherTypeNone;     // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
     
-    node.identifier = [self globalIdentifierForLocalIdentifier:[mediaGroup identifier]];
+    node.identifier = [self globalIdentifierForMediaGroup:mediaGroup];
     
     return node;
 }
@@ -313,6 +313,18 @@
 - (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
 {
     return NO;
+}
+
+- (NSString *)globalIdentifierForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSParameterAssert(mediaGroup.identifier != nil);
+    
+    if (mediaGroup.identifier) {
+        return [[self identifierPrefix] stringByAppendingString:mediaGroup.identifier];
+    } else {
+        NSLog(@"%s: media group %@ has no identifier", __FUNCTION__, mediaGroup.name);
+        return [self identifierPrefix];
+    }
 }
 
 #pragma mark - Media Object
@@ -388,11 +400,6 @@
 {
     NSString *mediaSourcePath = [self.mediaSource path];
     return mediaSourcePath ? mediaSourcePath : [[self class] mediaSourceIdentifier];
-}
-
-- (NSString *)globalIdentifierForLocalIdentifier:(NSString *)identifier
-{
-    return [[self identifierPrefix] stringByAppendingString:identifier];
 }
 
 /**
