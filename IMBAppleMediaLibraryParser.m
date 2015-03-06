@@ -13,9 +13,9 @@
 #import "IMBAppleMediaLibraryParser.h"
 #import "IMBAppleMediaLibraryPropertySynchronizer.h"
 
-#define CREATE_MEDIA_OBJECTS_CONCURRENTLY 0
+#define CREATE_MEDIA_OBJECTS_CONCURRENTLY 1
 
-#define MEASURE_EXECUTION_TIME 1
+#define MEASURE_EXECUTION_TIME 0
 
 #if MEASURE_EXECUTION_TIME
     #define START_MEASURE(id) NSDate *start ## id = [NSDate date]

@@ -162,7 +162,7 @@ NSString *kIMBiPhotoMediaGroupIdentifierEventFilterBar = @"eventFilterBarAlbum";
 - (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
 {
     NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
-                                        kIMBiPhotoMediaGroupIdentifierEvents,
+//                                        kIMBiPhotoMediaGroupIdentifierEvents,
                                         kIMBiPhotoMediaGroupIdentifierPhotos,
                                         nil];
     
