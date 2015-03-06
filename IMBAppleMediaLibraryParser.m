@@ -66,6 +66,15 @@
 }
 
 /**
+ Returns a set of group identifiers identifying all groups that were automatically created by the app that owns the media library. Must be subclassed.
+ */
+- (NSSet *)identifiersOfNonUserCreatedGroups
+{
+    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
+    return nil;
+}
+
+/**
  */
 - (instancetype)initializeMediaLibrary
 {
@@ -198,7 +207,7 @@
             
             [subnodes addObject:childNode];
             
-            //        NSLog(@"Subgroup of Photos root node: %@", [mediaGroup name]);
+//            NSLog(@"Initializing subgroup: %@ (%@)", [mediaGroup name], [mediaGroup identifier]);
             
         }
     }
@@ -275,7 +284,7 @@
     node.isLeafNode = [[mediaGroup childGroups] count] == 0;
     node.icon = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:mediaGroup];
 // albumNode.highlightIcon = ...;
-    node.name = [mediaGroup name];
+    node.name = [self localizedNameForMediaGroup:mediaGroup];
     node.watchedPath = parentNode.watchedPath;	// These two lines are important to make file watching work for nested
     node.watcherType = kIMBWatcherTypeNone;     // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
     
@@ -323,6 +332,27 @@
     } else {
         NSLog(@"%s: media group %@ has no identifier", __FUNCTION__, mediaGroup.name);
         return [self identifierPrefix];
+    }
+}
+
+/**
+ Returns whether a media group was created automatically by the app that owns the media library (and not by the user).
+ */
+- (BOOL)nonUserCreatedGroup:(MLMediaGroup *)mediaGroup
+{
+    return [[self identifiersOfNonUserCreatedGroups] containsObject:mediaGroup.identifier];
+}
+
+/**
+ Despite its claims that a media group's name property returns a localized name for non-user created groups it always returns an english name for Photos and iPhoto libraries (as of 2015-03-06). So, we localize ourselves.
+ */
+- (NSString *)localizedNameForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    if ([self nonUserCreatedGroup:mediaGroup]) {
+        NSString *localizationKey = [NSString stringWithFormat:@"%@.%@", [[self class] mediaSourceIdentifier], mediaGroup.identifier];
+        return NSLocalizedStringWithDefaultValue(localizationKey, nil, IMBBundle(), nil, @"Localized string key must match media source identifier concatenated via dot with media group identifier");
+    } else {
+        return mediaGroup.name;
     }
 }
 

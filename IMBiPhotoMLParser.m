@@ -95,6 +95,20 @@ NSString *kIMBiPhotoMediaGroupIdentifierEventFilterBar = @"eventFilterBarAlbum";
 
 /**
  */
+- (NSSet *)identifiersOfNonUserCreatedGroups
+{
+    return [NSSet setWithObjects:kIMBiPhotoMediaGroupIdentifierEvents,
+            kIMBiPhotoMediaGroupIdentifierPhotos,
+            kIMBiPhotoMediaGroupIdentifierFaces,
+            kIMBiPhotoMediaGroupIdentifierPlaces,
+            kIMBiPhotoMediaGroupIdentifierLast12Months,
+            kIMBiPhotoMediaGroupIdentifierLastImport,
+            kIMBiPhotoMediaGroupIdentifierFlagged,
+            nil];
+}
+
+/**
+ */
 - (NSDictionary*) metadataForObject:(IMBObject*)inObject error:(NSError**)outError
 {
     if (outError) *outError = nil;

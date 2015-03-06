@@ -13,12 +13,23 @@
  */
 NSString *kIMBMediaSourceAttributeLibraryURL = @"libraryURL";
 
+/* Top Level */
 NSString *kIMBPhotosMediaGroupIdentifierMoments = @"AllMomentsGroup";
 NSString *kIMBPhotosMediaGroupIdentifierCollections = @"AllCollectionsGroup";
 NSString *kIMBPhotosMediaGroupIdentifierYears = @"AllYearsGroup";
 NSString *kIMBPhotosMediaGroupIdentifierPlaces = @"allPlacedPhotosAlbum";
 NSString *kIMBPhotosMediaGroupIdentifierShared = @"com.apple.Photos.SharedGroup";
 NSString *kIMBPhotosMediaGroupIdentifierAlbums = @"TopLevelAlbums";
+
+/* Albums */
+NSString *kIMBPhotosMediaGroupIdentifierAllPhotos = @"allPhotosAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierPeople= @"peopleAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierLastImport = @"lastImportAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierFavorites = @"favoritesAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierPanoramas = @"panoramaAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierVideos = @"videoAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierSloMos = @"videoSloMoAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierBursts = @"burstAlbum";
 
 #pragma mark -
 
@@ -91,6 +102,28 @@ NSString *kIMBPhotosMediaGroupIdentifierAlbums = @"TopLevelAlbums";
 - (NSURL *)mediaSourceURLForGroup:(MLMediaGroup *)mediaGroup
 {
     return self.AppleMediaSource.attributes[kIMBMediaSourceAttributeLibraryURL];
+}
+
+/**
+ */
+- (NSSet *)identifiersOfNonUserCreatedGroups
+{
+    return [NSSet setWithObjects:kIMBPhotosMediaGroupIdentifierMoments,
+            kIMBPhotosMediaGroupIdentifierCollections,
+            kIMBPhotosMediaGroupIdentifierYears,
+            kIMBPhotosMediaGroupIdentifierPlaces,
+            kIMBPhotosMediaGroupIdentifierShared,
+            kIMBPhotosMediaGroupIdentifierAlbums,
+            
+            kIMBPhotosMediaGroupIdentifierAllPhotos,
+            kIMBPhotosMediaGroupIdentifierPeople,
+            kIMBPhotosMediaGroupIdentifierLastImport,
+            kIMBPhotosMediaGroupIdentifierFavorites,
+            kIMBPhotosMediaGroupIdentifierPanoramas,
+            kIMBPhotosMediaGroupIdentifierVideos,
+            kIMBPhotosMediaGroupIdentifierSloMos,
+            kIMBPhotosMediaGroupIdentifierBursts,
+            nil];
 }
 
 /**
