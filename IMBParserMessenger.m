@@ -340,6 +340,7 @@
 	NSMutableArray* topLevelNodes = nil;
 	NSArray* parsers = [self parserInstancesWithError:&error];
 	
+    dispatch_group_t dispatchGroup = dispatch_group_create();
 	if (error == nil)
 	{
 		topLevelNodes = [NSMutableArray arrayWithCapacity:parsers.count];
@@ -348,16 +349,22 @@
 		{
 			if (error == nil)
 			{
-				IMBNode* node = [parser unpopulatedTopLevelNode:&error];
-				
-				if (node) 
-				{
-					[self _setParserIdentifierWithParser:parser onNodeTree:node];
-					[topLevelNodes addObject:node];
-				}
+                dispatch_group_async(dispatchGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    IMBNode* node = [parser unpopulatedTopLevelNode:&error];
+                    
+                    if (node)
+                    {
+                        [self _setParserIdentifierWithParser:parser onNodeTree:node];
+                        @synchronized(topLevelNodes){
+                            [topLevelNodes addObject:node];
+                        }
+                    }
+                });
 			}
 		}
 	}
+    dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER);
+    dispatch_release(dispatchGroup);
 	
 	if (outError) *outError = error;
 	return (NSArray*)topLevelNodes;
