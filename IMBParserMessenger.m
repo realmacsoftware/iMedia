@@ -177,6 +177,7 @@
 
 + (NSString*) parserClassName
 {
+    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
 	return nil;
 }
 
