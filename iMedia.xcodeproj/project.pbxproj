@@ -64,6 +64,8 @@
 		30231595176890F900A38B24 /* IMBFacebookObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 30231593176890F900A38B24 /* IMBFacebookObject.h */; };
 		30231596176890F900A38B24 /* IMBFacebookObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 30231594176890F900A38B24 /* IMBFacebookObject.m */; };
 		3025E5631306877700706DB2 /* IMBiPhotoEventObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3025E5611306877700706DB2 /* IMBiPhotoEventObjectViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3031D3451AB090DC00D80464 /* IMBApertureParserConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 3031D3431AB090DC00D80464 /* IMBApertureParserConfiguration.h */; };
+		3031D3461AB090DC00D80464 /* IMBApertureParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 3031D3441AB090DC00D80464 /* IMBApertureParserConfiguration.m */; };
 		30394AC812DC665000ACA531 /* IMBSkimmableObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 30394AC612DC665000ACA531 /* IMBSkimmableObjectViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		303FFD6A152CBC3B0026B8CF /* IMBSkimmableObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 303FFD68152CBC3B0026B8CF /* IMBSkimmableObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		303FFD6B152CBC3B0026B8CF /* IMBSkimmableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 303FFD69152CBC3B0026B8CF /* IMBSkimmableObject.m */; };
@@ -667,6 +669,8 @@
 		30231594176890F900A38B24 /* IMBFacebookObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBFacebookObject.m; sourceTree = "<group>"; };
 		3025E5611306877700706DB2 /* IMBiPhotoEventObjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBiPhotoEventObjectViewController.h; sourceTree = "<group>"; };
 		3025E5621306877700706DB2 /* IMBiPhotoEventObjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBiPhotoEventObjectViewController.m; sourceTree = "<group>"; };
+		3031D3431AB090DC00D80464 /* IMBApertureParserConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBApertureParserConfiguration.h; sourceTree = "<group>"; };
+		3031D3441AB090DC00D80464 /* IMBApertureParserConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBApertureParserConfiguration.m; sourceTree = "<group>"; };
 		30394AC612DC665000ACA531 /* IMBSkimmableObjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBSkimmableObjectViewController.h; sourceTree = "<group>"; };
 		30394AC712DC665000ACA531 /* IMBSkimmableObjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBSkimmableObjectViewController.m; sourceTree = "<group>"; };
 		303FFD68152CBC3B0026B8CF /* IMBSkimmableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBSkimmableObject.h; sourceTree = "<group>"; };
@@ -1417,6 +1421,8 @@
 			children = (
 				301C61F01AAF0FAA00A0E15F /* IMBiPhotoParserConfiguration.h */,
 				301C61F11AAF0FAA00A0E15F /* IMBiPhotoParserConfiguration.m */,
+				3031D3431AB090DC00D80464 /* IMBApertureParserConfiguration.h */,
+				3031D3441AB090DC00D80464 /* IMBApertureParserConfiguration.m */,
 				301C61F41AAF22CD00A0E15F /* IMBApplePhotosParserConfiguration.h */,
 				301C61F51AAF22CD00A0E15F /* IMBApplePhotosParserConfiguration.m */,
 				301C61F81AAF45C200A0E15F /* IMBiTunesParserConfiguration.h */,
@@ -2377,6 +2383,7 @@
 				30F61B6A155D4A4D0092A99C /* NSObject+iMedia.h in Headers */,
 				FC1484121598881A00F6FDB8 /* IMBFlickrParserMessenger.h in Headers */,
 				FC1484161598881A00F6FDB8 /* IMBFlickrSession.h in Headers */,
+				3031D3451AB090DC00D80464 /* IMBApertureParserConfiguration.h in Headers */,
 				FC14841B1598884E00F6FDB8 /* IMBLoadMoreObject.h in Headers */,
 				3091F6BD15C9508E005019A1 /* IMBURLGetSizeOperation.h in Headers */,
 				3091F6BF15C9508E005019A1 /* IMBURLDownloadOperation.h in Headers */,
@@ -3140,6 +3147,7 @@
 				D08640841524467000B4FD7F /* IMBMetadataTransformer.m in Sources */,
 				D0F2DDB9152475C00059DF8D /* IMBiTunesParserMessenger.m in Sources */,
 				D0F2DDBA15247B010059DF8D /* IMBiTunesAudioParser.m in Sources */,
+				3031D3461AB090DC00D80464 /* IMBApertureParserConfiguration.m in Sources */,
 				D0F2DDBB15247B080059DF8D /* IMBiTunesMovieParser.m in Sources */,
 				D054AFEB152984C300EBFA1C /* IMBGarageBandParserMessenger.m in Sources */,
 				D054B0011529A65100EBFA1C /* IMBGarageBandParser.m in Sources */,
