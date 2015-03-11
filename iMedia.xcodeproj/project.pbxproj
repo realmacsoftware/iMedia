@@ -60,7 +60,7 @@
 		301C61F61AAF22CD00A0E15F /* IMBApplePhotosParserConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 301C61F41AAF22CD00A0E15F /* IMBApplePhotosParserConfiguration.h */; };
 		301C61F71AAF22CD00A0E15F /* IMBApplePhotosParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 301C61F51AAF22CD00A0E15F /* IMBApplePhotosParserConfiguration.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		301C61FA1AAF45C200A0E15F /* IMBiTunesParserConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 301C61F81AAF45C200A0E15F /* IMBiTunesParserConfiguration.h */; };
-		301C61FB1AAF45C200A0E15F /* IMBiTunesParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 301C61F91AAF45C200A0E15F /* IMBiTunesParserConfiguration.m */; };
+		301C61FB1AAF45C200A0E15F /* IMBiTunesParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 301C61F91AAF45C200A0E15F /* IMBiTunesParserConfiguration.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		30231595176890F900A38B24 /* IMBFacebookObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 30231593176890F900A38B24 /* IMBFacebookObject.h */; };
 		30231596176890F900A38B24 /* IMBFacebookObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 30231594176890F900A38B24 /* IMBFacebookObject.m */; };
 		3025E5631306877700706DB2 /* IMBiPhotoEventObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3025E5611306877700706DB2 /* IMBiPhotoEventObjectViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
