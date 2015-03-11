@@ -99,6 +99,8 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
 }
 
+/**
+ */
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
     NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
@@ -108,6 +110,8 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
     return (![unqualifiedGroupIdentifiers containsObject:mediaGroup.identifier]);
 }
 
+/**
+ */
 - (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
 {
     NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
