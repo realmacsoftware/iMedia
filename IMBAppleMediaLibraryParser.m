@@ -31,67 +31,54 @@
 
 @synthesize AppleMediaLibrary = _AppleMediaLibrary;
 @synthesize AppleMediaSource = _AppleMediaSource;
-@synthesize appPath = _appPath;
+@synthesize configuration = _configuration;
 
-/**
- Returns the identifier for the app that is associated with sources handled by the parser. Must be subclassed.
- 
- @see MLMediaLibrary media source identifiers
- */
-+ (NSString *)mediaSourceIdentifier
+#pragma mark - Configuration
+
+- (NSString *)identifier
 {
-    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
-    return nil;
+    return [self.configuration mediaSourceIdentifier];
 }
 
-/**
- Internal media type is specific to Apple Media Library based parsers and not to be confused with kIMBMediaTypeImage and its siblings. Must be subclassed.
- */
-+ (MLMediaType)internalMediaType
+- (NSString *)mediaType
 {
-    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
-    return 0;
-}
-
-/**
- Returns the URL denoting the actual media source on disk. Must be subclassed.
- 
- @discussion
- If the URL is not accessible to a concrete parser it may return nil but implications of doing so are not yet fully understood.
- */
-- (NSURL *)mediaSourceURLForGroup:(MLMediaGroup *)mediaGroup
-{
-    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
-    return nil;
-}
-
-/**
- Returns a set of group identifiers identifying all groups that were automatically created by the app that owns the media library. Must be subclassed.
- */
-- (NSSet *)identifiersOfNonUserCreatedGroups
-{
-    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
-    return nil;
+    switch ([self.configuration mediaType]) {
+        case MLMediaTypeImage:
+            return kIMBMediaTypeImage;
+            break;
+            
+        case MLMediaTypeMovie:
+            return kIMBMediaTypeMovie;
+            break;
+            
+        case MLMediaTypeAudio:
+            return kIMBMediaTypeAudio;
+            break;
+            
+        default:
+            return kIMBMediaTypeImage;
+    }
 }
 
 /**
  */
 - (instancetype)initializeMediaLibrary
 {
-    NSDictionary *libraryOptions = @{MLMediaLoadIncludeSourcesKey : [NSArray arrayWithObject:[[self class] mediaSourceIdentifier]]};
+    NSDictionary *libraryOptions = @{MLMediaLoadIncludeSourcesKey : [NSArray arrayWithObject:[self.configuration mediaSourceIdentifier]]};
     self.AppleMediaLibrary = [[MLMediaLibrary alloc] initWithOptions:libraryOptions];
     NSDictionary *mediaSources = [IMBAppleMediaLibraryPropertySynchronizer mediaSourcesForMediaLibrary:self.AppleMediaLibrary];
-    self.AppleMediaSource = mediaSources[[[self class] mediaSourceIdentifier]];
+    self.AppleMediaSource = mediaSources[[self.configuration mediaSourceIdentifier]];
     
     return self;
 }
 
-#pragma mark - Mandatory overrides from superclass we can handle here
+#pragma mark - Mandatory overrides from superclass
 
 /**
  */
 - (IMBNode *)unpopulatedTopLevelNode:(NSError **)outError
 {
+    START_MEASURE(1);
     NSError *error = nil;
     
     // (Re-)instantiate media library and media source (in Apple speak), because content might have changed on disk. Note though that this yet doesn't seem to have an effect when media library changes (Apple doesn't seem to update its object cache).
@@ -104,14 +91,14 @@
     if (!rootMediaGroup) return nil;
 
     // Assign media source URL as late as possible since some media sources only provide it through attributes dictionary of root media group (e.g. iPhoto)
-    self.mediaSource = [self mediaSourceURLForGroup:rootMediaGroup];
+//    self.mediaSource = [self mediaSourceURLForGroup:rootMediaGroup];
     
     //  create an empty root node (unpopulated and without subnodes)
     
     IMBNode *node = [[IMBNode alloc] initWithParser:self topLevel:YES];
     node.name = [self libraryName];
     node.groupType = kIMBGroupTypeLibrary;
-    node.icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFile:self.appPath];
+    node.icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFile:[self appPath]];
     node.isIncludedInPopup = YES;
     node.isLeafNode = NO;
     node.mediaSource = self.mediaSource;
@@ -125,6 +112,8 @@
     if (outError) {
         *outError = error;
     }
+    STOP_MEASURE(1);
+    LOG_MEASURED_TIME(1, @"Create unpopulated top-level node %@", [self.configuration mediaSourceIdentifier]);
     return node;
 }
 
@@ -194,7 +183,7 @@
         if ([self shouldUseMediaGroup:mediaGroup]) {
             // Create node for this album...
             
-            IMBNode *childNode = [self nodeForParentNode:inParentNode MediaGroup:mediaGroup];
+            IMBNode *childNode = [self nodeForMediaGroup:mediaGroup parentNode:inParentNode];
             
             // Optimization for subnodes that share the same media objects with their parent node
             
@@ -263,6 +252,21 @@
     return nil;
 }
 
+- (NSDictionary *)metadataForObject:(IMBObject *)inObject error:(NSError *__autoreleasing *)outError
+{
+    NSError *error = nil;
+    NSDictionary *metadata = nil;
+    if ([self.configuration respondsToSelector:@selector(metadataForObject:error:)])
+    {
+        metadata = [self.configuration metadataForObject:inObject error:&error];
+    } else {
+        metadata = @{};
+    }
+    if (outError) *outError = error;
+
+    return metadata;
+}
+
 /**
  */
 - (NSData*) bookmarkForObject:(IMBObject*)inObject error:(NSError**)outError
@@ -277,7 +281,7 @@
 /**
  Converts an MLMediaLibrary group into iMedia's "native" IMBNode.
  */
-- (IMBNode *)nodeForParentNode:(IMBNode *)parentNode MediaGroup:(MLMediaGroup *)mediaGroup
+- (IMBNode *)nodeForMediaGroup:(MLMediaGroup *)mediaGroup parentNode:(IMBNode *)parentNode
 {
     IMBNode* node = [[IMBNode alloc] initWithParser:self topLevel:NO];
     
@@ -297,29 +301,29 @@
  */
 - (MLMediaGroup *)mediaGroupForNode:(IMBNode *)node
 {
-    NSString *mediaGroupIdentifier = [node.identifier stringByReplacingOccurrencesOfString:[self identifierPrefix] withString:@""];
+    NSString *mediaGroupIdentifier = [node.identifier substringFromIndex:[[self identifierPrefix] length]];
     return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
 }
 
 /**
- Returns whether the node given should be shown in the node hierarchy.
- 
- @discussion
- This implementation always returns YES. You are welcome to override in your subclass parser.
+ Delegates the message to the receiver's parser configuration if it implements it. Otherwise returns YES.
  */
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
+    if ([self.configuration respondsToSelector:@selector(shouldUseMediaGroup:)]) {
+        return [self.configuration shouldUseMediaGroup:mediaGroup];
+    }
     return YES;
 }
 
 /**
- Returns whether the group given should use the same media objects as its parent.
- 
- @discussion
- This implementation always returns NO. You are welcome to override in your subclass parser (will boost performance).
+ Delegates the message to the receiver's parser configuration if it implements it. Otherwise returns NO.
  */
 - (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
 {
+    if ([self.configuration respondsToSelector:@selector(shouldReuseMediaObjectsOfParentGroupForGroup:)]) {
+        return [self.configuration shouldReuseMediaObjectsOfParentGroupForGroup:mediaGroup];
+    }
     return NO;
 }
 
@@ -340,7 +344,7 @@
  */
 - (BOOL)nonUserCreatedGroup:(MLMediaGroup *)mediaGroup
 {
-    return [[self identifiersOfNonUserCreatedGroups] containsObject:mediaGroup.identifier];
+    return [[self.configuration identifiersOfNonUserCreatedGroups] containsObject:mediaGroup.identifier];
 }
 
 /**
@@ -349,7 +353,7 @@
 - (NSString *)localizedNameForMediaGroup:(MLMediaGroup *)mediaGroup
 {
     if ([self nonUserCreatedGroup:mediaGroup]) {
-        NSString *localizationKey = [NSString stringWithFormat:@"%@.%@", [[self class] mediaSourceIdentifier], mediaGroup.identifier];
+        NSString *localizationKey = [NSString stringWithFormat:@"%@.%@", [self.configuration mediaSourceIdentifier], mediaGroup.identifier];
         return NSLocalizedStringWithDefaultValue(localizationKey, nil, IMBBundle(), nil, @"Localized string key must match media source identifier concatenated via dot with media group identifier");
     } else {
         return mediaGroup.name;
@@ -394,7 +398,7 @@
  */
 - (BOOL)shouldUseMediaObject:(MLMediaObject *)mediaObject
 {
-    return ([[self class] internalMediaType] == mediaObject.mediaType);
+    return ([self.configuration mediaType] == mediaObject.mediaType);
 }
 
 /**
@@ -420,15 +424,27 @@
 
 #pragma mark - Utility
 
+/**
+ Returns path to app bundle associated with.
+ */
+- (NSString *) appPath
+{
+    return [[NSWorkspace imb_threadSafeWorkspace] absolutePathForAppBundleWithIdentifier:[self.configuration sourceAppBundleIdentifier]];
+}
+
 - (NSString *)libraryName
 {
-    return [[NSBundle bundleWithPath:self.appPath] localizedInfoDictionary][@"CFBundleDisplayName"];
+    if ([self.configuration respondsToSelector:@selector(libraryName)]) {
+        return [self.configuration libraryName];
+    } else {
+        return [[NSBundle bundleWithPath:[self appPath]] localizedInfoDictionary][@"CFBundleDisplayName"];
+    }
 }
 
 - (NSString *)identifierPrefix
 {
     NSString *mediaSourcePath = [self.mediaSource path];
-    return mediaSourcePath ? mediaSourcePath : [[self class] mediaSourceIdentifier];
+    return mediaSourcePath ? mediaSourcePath : [self.configuration mediaSourceIdentifier];
 }
 
 /**
