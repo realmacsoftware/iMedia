@@ -29,12 +29,26 @@ IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
 {
     if (outError) *outError = nil;
     
-    // Map metadata information from iPhoto library representation (MLMediaObject.attributes) to iMedia representation
+    // Map metadata information from iTunes library representation (MLMediaObject.attributes) to iMedia representation
     
-//    NSDictionary *internalMetadata = inObject.preliminaryMetadata;
+    NSDictionary *internalMetadata = inObject.preliminaryMetadata;
     NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionary];
     
-    // Add iTunes-specific entries to external dictionary here
+    double duration = [[internalMetadata objectForKey:@"Total Time"] doubleValue] / 1000.0;
+    [externalMetadata setObject:[NSNumber numberWithDouble:duration] forKey:@"duration"];
+    
+    NSString* artist = [internalMetadata objectForKey:@"Artist"];
+    if (artist) [externalMetadata setObject:artist forKey:@"artist"];
+    
+    NSString* album = [internalMetadata objectForKey:@"Album"];
+    if (album) [externalMetadata setObject:album forKey:@"album"];
+    
+    NSString* genre = [internalMetadata objectForKey:@"Genre"];
+    if (genre) [externalMetadata setObject:genre forKey:@"genre"];
+    
+//    NSString* comment = [internalMetadata objectForKey:@"Comment"];
+//    if (comment) [externalMetadata setObject:comment forKey:@"comment"];
+    
     
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
 }
