@@ -1670,15 +1670,15 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 				[menu addItem:item];
 				[item release];
 				
-				title = NSLocalizedStringWithDefaultValue(
-					@"IMBObjectViewController.menuItem.download",
-					nil,IMBBundle(),
-					@"Download",
-					@"Menu item in context menu of IMBObjectViewController");
-
 // Don't add the download: menu item because the download: method was commented out in
 // commit c03e3effc3dd3c0d6fb044be4e8c765e64981760 ... need to figure out whether download
 // works or not, and add the menu back only then?
+//                title = NSLocalizedStringWithDefaultValue(
+//                                                          @"IMBObjectViewController.menuItem.download",
+//                                                          nil,IMBBundle(),
+//                                                          @"Download",
+//                                                          @"Menu item in context menu of IMBObjectViewController");
+//                
 //				item = [[NSMenuItem alloc] initWithTitle:title action:@selector(download:) keyEquivalent:@""];
 //				[item setRepresentedObject:location];
 //				[item setTarget:self];

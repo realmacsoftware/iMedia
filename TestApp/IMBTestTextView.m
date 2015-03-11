@@ -101,7 +101,7 @@
         }
     }
 	
-    if (YES) {
+    if (delegateToSuper) {
         return [super performDragOperation:inSender];
     } else {
         return YES;
