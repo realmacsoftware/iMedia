@@ -11,3 +11,15 @@
 @interface IMBAppleMediaLibraryParserMessenger : IMBParserMessenger
 
 @end
+
+@interface IMBAppleMediaLibraryImageParserMessenger : IMBAppleMediaLibraryParserMessenger
+
+@end
+
+@interface IMBAppleMediaLibraryMovieParserMessenger : IMBAppleMediaLibraryParserMessenger
+
+@end
+
+@interface IMBAppleMediaLibraryAudioParserMessenger : IMBAppleMediaLibraryParserMessenger
+
+@end
