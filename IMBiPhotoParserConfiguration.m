@@ -7,6 +7,7 @@
 //
 
 #import "IMBiPhotoParserConfiguration.h"
+#import "NSImage+iMedia.h"
 
 /**
  Attribute keys supported by iPhoto media source (as of OS X 10.10.3)
@@ -51,10 +52,9 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
     
     // Map metadata information from iPhoto library representation (MLMediaObject.attributes) to iMedia representation
     
-//    NSDictionary *internalMetadata = inObject.preliminaryMetadata;
-    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionary];
+    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionaryWithDictionary:inObject.preliminaryMetadata];
     
-    // Add iPhoto-specific entries to external dictionary here
+    [externalMetadata addEntriesFromDictionary:[NSImage imb_metadataFromImageAtURL:inObject.URL checkSpotlightComments:NO]];
     
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
 }
