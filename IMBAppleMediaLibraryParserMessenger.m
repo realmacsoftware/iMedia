@@ -36,7 +36,10 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
  */
 + (void) load {
     @autoreleasepool {
-        [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeImage];
+        // Apple Media Library framework public since OS X 10.9
+        if (NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeImage];
+        }
     }
 }
 
@@ -91,7 +94,10 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
  */
 + (void) load {
     @autoreleasepool {
-        [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeMovie];
+        // Apple Media Library framework public since OS X 10.9
+        if (NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeMovie];
+        }
     }
 }
 
@@ -147,7 +153,10 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
  */
 + (void) load {
     @autoreleasepool {
-        [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeAudio];
+        // Apple Media Library framework public since OS X 10.9
+        if (NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeAudio];
+        }
     }
 }
 

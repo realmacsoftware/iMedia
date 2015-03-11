@@ -134,7 +134,7 @@
 		30D700B0177A2928003CB6FE /* missing-thumbnail.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 30D700AF177A2928003CB6FE /* missing-thumbnail.jpg */; };
 		30DA32421A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 30DA32401A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h */; };
 		30DA32431A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 30DA32411A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		30DA32451A92142C0039B07C /* MediaLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30DA32441A92142C0039B07C /* MediaLibrary.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		30DA32451A92142C0039B07C /* MediaLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30DA32441A92142C0039B07C /* MediaLibrary.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		30E4D4FE130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 30E4D4FC130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30E7771E1511055900413AEF /* SBUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 30E7771C1511055800413AEF /* SBUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30E7771F1511055900413AEF /* SBUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E7771D1511055800413AEF /* SBUtilities.m */; };
