@@ -2679,9 +2679,6 @@
 					307F9690183D090D004F87E0 = {
 						TestTargetID = 8DC2EF4F0486A6940098B216;
 					};
-					8DC2EF4F0486A6940098B216 = {
-						DevelopmentTeam = 8M57J3JQZP;
-					};
 					D09933541011B26E00C527B7 = {
 						SystemCapabilities = {
 							com.apple.Sandbox = {
@@ -3387,6 +3384,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -3404,6 +3402,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
