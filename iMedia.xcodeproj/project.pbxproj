@@ -65,7 +65,7 @@
 		30231596176890F900A38B24 /* IMBFacebookObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 30231594176890F900A38B24 /* IMBFacebookObject.m */; };
 		3025E5631306877700706DB2 /* IMBiPhotoEventObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3025E5611306877700706DB2 /* IMBiPhotoEventObjectViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3031D3451AB090DC00D80464 /* IMBApertureParserConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 3031D3431AB090DC00D80464 /* IMBApertureParserConfiguration.h */; };
-		3031D3461AB090DC00D80464 /* IMBApertureParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 3031D3441AB090DC00D80464 /* IMBApertureParserConfiguration.m */; };
+		3031D3461AB090DC00D80464 /* IMBApertureParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 3031D3441AB090DC00D80464 /* IMBApertureParserConfiguration.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		30394AC812DC665000ACA531 /* IMBSkimmableObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 30394AC612DC665000ACA531 /* IMBSkimmableObjectViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		303FFD6A152CBC3B0026B8CF /* IMBSkimmableObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 303FFD68152CBC3B0026B8CF /* IMBSkimmableObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		303FFD6B152CBC3B0026B8CF /* IMBSkimmableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 303FFD69152CBC3B0026B8CF /* IMBSkimmableObject.m */; };
