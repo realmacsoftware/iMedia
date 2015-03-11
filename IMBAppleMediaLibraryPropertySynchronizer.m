@@ -8,8 +8,6 @@
 
 #import "IMBAppleMediaLibraryPropertySynchronizer.h"
 
-static int kMediaObjectsKVOContext;
-
 @interface IMBAppleMediaLibraryPropertySynchronizer ()
 
 @property (nonatomic, strong) id observedObject;
