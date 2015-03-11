@@ -337,26 +337,33 @@
 - (NSArray*) unpopulatedTopLevelNodes:(NSError**)outError
 {
 	NSError* error = nil;
-	NSMutableArray* topLevelNodes = nil;
+    NSMutableArray* topLevelNodes = nil;
+    NSMutableArray* errors = [NSMutableArray array];
 	NSArray* parsers = [self parserInstancesWithError:&error];
 	
     dispatch_group_t dispatchGroup = dispatch_group_create();
 	if (error == nil)
 	{
 		topLevelNodes = [NSMutableArray arrayWithCapacity:parsers.count];
-	
+
 		for (IMBParser* parser in parsers)
 		{
 			if (error == nil)
 			{
                 dispatch_group_async(dispatchGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    IMBNode* node = [parser unpopulatedTopLevelNode:&error];
+                    NSError *nodeCreationError = nil;
+                    IMBNode* node = [parser unpopulatedTopLevelNode:&nodeCreationError];
                     
                     if (node)
                     {
                         [self _setParserIdentifierWithParser:parser onNodeTree:node];
                         @synchronized(topLevelNodes){
                             [topLevelNodes addObject:node];
+                        }
+                    }
+                    if (nodeCreationError) {
+                        @synchronized(errors) {
+                            [errors addObject:error];
                         }
                     }
                 });
@@ -366,7 +373,7 @@
     dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER);
     dispatch_release(dispatchGroup);
 	
-	if (outError) *outError = error;
+	if (outError && [errors count] > 0) *outError = errors[0];
 	return (NSArray*)topLevelNodes;
 }
 
