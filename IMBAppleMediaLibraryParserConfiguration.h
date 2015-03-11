@@ -19,6 +19,11 @@ typedef IMBAppleMediaLibraryParserConfiguration *(^IMBMLParserConfigurationFacto
 extern IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory;
 
 /**
+ Parser configuration factory for Apple Aperture app.
+ */
+extern IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory;
+
+/**
  Parser configuration factory for Apple Photos app.
  */
 extern IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory;

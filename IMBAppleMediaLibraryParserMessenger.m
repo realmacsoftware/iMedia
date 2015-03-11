@@ -72,7 +72,9 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
     {
-        [@[IMBMLiPhotoParserConfigurationFactory, IMBMLPhotosParserConfigurationFactory] enumerateObjectsUsingBlock:
+        [@[IMBMLiPhotoParserConfigurationFactory,
+           IMBMLApertureParserConfigurationFactory,
+           IMBMLPhotosParserConfigurationFactory] enumerateObjectsUsingBlock:
          ^(IMBMLParserConfigurationFactory parserConfigurationFactory, NSUInteger idx, BOOL *stop)
          {
              IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
@@ -131,7 +133,9 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
     dispatch_once(&onceToken, ^
                   {
                       [@[IMBMLiPhotoParserConfigurationFactory,
-                         IMBMLPhotosParserConfigurationFactory] enumerateObjectsUsingBlock:
+                         IMBMLApertureParserConfigurationFactory,
+                         IMBMLPhotosParserConfigurationFactory,
+                         IMBMLiTunesParserConfigurationFactory] enumerateObjectsUsingBlock:
                        ^(IMBMLParserConfigurationFactory parserConfigurationFactory, NSUInteger idx, BOOL *stop)
                        {
                            IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
