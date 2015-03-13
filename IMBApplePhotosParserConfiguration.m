@@ -107,6 +107,26 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
                                           kIMBPhotosMediaGroupIdentifierMoments,
                                           kIMBPhotosMediaGroupIdentifierCollections,
                                           nil];
+    switch (self.mediaType) {
+        case MLMediaTypeImage:
+            unqualifiedGroupIdentifiers = [unqualifiedGroupIdentifiers
+                                           setByAddingObjectsFromSet:[NSSet setWithObjects:
+                                                                      kIMBPhotosMediaGroupIdentifierSloMos,
+                                                                      kIMBPhotosMediaGroupIdentifierVideos,
+                                                                      nil]];
+            break;
+            
+        case MLMediaTypeMovie:
+            unqualifiedGroupIdentifiers = [unqualifiedGroupIdentifiers
+                                           setByAddingObjectsFromSet:[NSSet setWithObjects:
+                                                                      kIMBPhotosMediaGroupIdentifierPanoramas,
+                                                                      kIMBPhotosMediaGroupIdentifierBursts,
+                                                                      nil]];
+            break;
+            
+        default:
+            break;
+    }
     return (![unqualifiedGroupIdentifiers containsObject:mediaGroup.identifier]);
 }
 
