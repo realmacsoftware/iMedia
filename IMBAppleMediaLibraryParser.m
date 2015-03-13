@@ -123,11 +123,14 @@
 {
     NSError *error = nil;
     MLMediaGroup *parentGroup = [self mediaGroupForNode:inParentNode];
-    if (!inParentNode.objects) {
-        // Create the objects array on demand  - even if turns out to be empty after exiting this method, because without creating an array we would cause an endless loop...
-        
-        NSMutableArray* objects = [NSMutableArray array];
-        
+    NSArray *childGroups = [parentGroup childGroups];
+
+    // Create the objects array on demand  - even if turns out to be empty after exiting this method, because without creating an array we would cause an endless loop...
+    
+    NSMutableArray* objects = [NSMutableArray array];
+    
+    if (!inParentNode.objects && ([childGroups count] == 0 || ![self.configuration shouldPopulateNodesWithNodeObjects]))
+    {
         START_MEASURE(1);
         NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
         STOP_MEASURE(1);
@@ -165,14 +168,11 @@
         dispatch_release(dispatchGroup);
         dispatch_release(semaphore);
 #endif
-        inParentNode.objects = objects;
-        
         STOP_MEASURE(2);
         LOG_MEASURED_TIME(2, @"IMBObjects creation for group %@", parentGroup.name);
     }
     
     NSMutableArray* subnodes = [inParentNode mutableArrayForPopulatingSubnodes];
-    NSArray *childGroups = [parentGroup childGroups];
     
     NSLog(@"Group %@ has %zd child groups", parentGroup.name, [childGroups count]);
     
@@ -196,10 +196,16 @@
             
             [subnodes addObject:childNode];
             
+            if ([childGroups count] > 0 && [self.configuration shouldPopulateNodesWithNodeObjects]) {
+                [objects addObject:[self nodeObjectForNode:childNode]];
+            }
+            
 //            NSLog(@"Initializing subgroup: %@ (%@)", [mediaGroup name], [mediaGroup identifier]);
             
         }
     }
+    if (!inParentNode.objects) inParentNode.objects = objects;
+
     STOP_MEASURE(3);
     LOG_MEASURED_TIME(3, @"subnodes creation for group %@", parentGroup.name);
     
@@ -306,6 +312,23 @@
 }
 
 /**
+ */
+- (IMBNodeObject *)nodeObjectForNode:(IMBNode *)node
+{
+    IMBNodeObject* object = [[IMBNodeObject alloc] init];
+    object.identifier = node.identifier;
+    object.representedNodeIdentifier = node.identifier;
+//    object.location = url;
+    object.imageRepresentation = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:[self mediaGroupForNode:node]];
+//    object.needsImageRepresentation = NO;
+    object.name = node.name;
+    object.metadata = nil;
+    object.parserIdentifier = self.identifier;
+    
+    return object;
+}
+
+/**
  Delegates the message to the receiver's parser configuration if it implements it. Otherwise returns YES.
  */
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
@@ -391,7 +414,14 @@
  */
 - (MLMediaObject *)mediaObjectForObject:(IMBObject *)object
 {
-    return [self.AppleMediaSource mediaObjectForIdentifier:object.identifier];
+    if ([object isKindOfClass:[IMBNodeObject class]]) {
+        IMBNodeObject *nodeObject = (IMBNodeObject *)object;
+        NSString *mediaGroupIdentifier = [nodeObject.representedNodeIdentifier substringFromIndex:[[self identifierPrefix] length]];
+        MLMediaGroup *mediaGroup = (MLMediaGroup *)[self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
+        return [self keyMediaObjectForMediaGroup:mediaGroup];
+    } else {
+        return [self.AppleMediaSource mediaObjectForIdentifier:object.identifier];
+    }
 }
 
 /**
@@ -410,6 +440,22 @@
     } else {
         return [[mediaObject.URL lastPathComponent] stringByDeletingPathExtension];
     }
+}
+
+/**
+ */
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    MLMediaObject *mediaObject = nil;
+    
+    if ([self.configuration respondsToSelector:@selector(keyMediaObjectForMediaGroup:fromMediaSource:)]) {
+        mediaObject = [self.configuration keyMediaObjectForMediaGroup:mediaGroup fromMediaSource:self.AppleMediaSource];
+    }
+    if (mediaObject == nil) {
+        NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
+        mediaObject = [mediaObjects lastObject];
+    }
+    return mediaObject;
 }
 
 /**

@@ -84,4 +84,14 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
     
     return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
 }
+
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup fromMediaSource:(MLMediaSource *)mediaSource
+{
+    NSString *keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
+    
+    if (keyPhotoKey) {
+        return [mediaSource mediaObjectForIdentifier:keyPhotoKey];
+    }
+    return nil;
+}
 @end

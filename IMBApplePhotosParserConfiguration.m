@@ -104,8 +104,8 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
     NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
-                                          kIMBPhotosMediaGroupIdentifierMoments,
-                                          kIMBPhotosMediaGroupIdentifierCollections,
+//                                          kIMBPhotosMediaGroupIdentifierMoments,
+//                                          kIMBPhotosMediaGroupIdentifierCollections,
                                           nil];
     switch (self.mediaType) {
         case MLMediaTypeImage:

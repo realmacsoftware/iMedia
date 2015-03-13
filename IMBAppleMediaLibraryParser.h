@@ -35,6 +35,11 @@
  */
 - (NSSet *)identifiersOfNonUserCreatedGroups;
 
+/**
+ Returns whether a node is populated with node objects rather than media objects when node is not a leaf node.
+ */
+- (BOOL)shouldPopulateNodesWithNodeObjects;
+
 @optional
 
 /**
@@ -69,6 +74,9 @@
  */
 - (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup;
 
+/**
+ */
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup fromMediaSource:(MLMediaSource *)mediaSource;
 @end
 
 /**
