@@ -114,7 +114,8 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 #pragma mark 
 
-@interface IMBObject ()
+@interface IMBObject (FileAccessPrivate)
+- (NSURL*) _URLByRequestingAndResolvingBookmark;
 @end
 
 
@@ -555,45 +556,22 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 #pragma mark 
 #pragma mark NSPasteboard Protocols
 
-
-// Request a bookmark for the resource to get entitled for it. Requesting bookmarks is asynchronous, i.e.
-// we need a semaphore to wait for bookmark so method can return synchronously...
-
-- (NSURL*) _synchronouslyResolvedBookmarkURL
-{
-	dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-	
-	[self requestBookmarkWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0)
-				   completionBlock:^(NSError* inError)
-	{
-		if (inError)
-		{
-			dispatch_async(dispatch_get_main_queue(),^()
-			{
-				[NSApp presentError:inError];
-			});
-		}
-		dispatch_semaphore_signal(semaphore);
-	}];
-
-	dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-	dispatch_release(semaphore);
-	
-	NSURL* url = [self URLByResolvingBookmark];
-	return url;
-}
-
-
 - (void) pasteboard:(NSPasteboard*)inPasteboard item:(NSPasteboardItem*)inItem provideDataForType:(NSString*)inType
 {
 	// If we want a URL, we need to request the bookmark and resolve it, or the sandbox will interfere...
 	
 	if ([inType isEqualToString:(NSString*)kUTTypeFileURL])
 	{
-        NSURL* url = [self _synchronouslyResolvedBookmarkURL];
+        NSURL* url = [self _URLByRequestingAndResolvingBookmark];
         if (url) [inItem setString:[url absoluteString] forType:(NSString*)kUTTypeFileURL];
 	}
 	
+    else if ([inType isEqualToString:(NSString*)kUTTypeBookmark])
+    {
+        [self _URLByRequestingAndResolvingBookmark];
+        [inItem setData:self.locationBookmark forType:(NSString*)kUTTypeBookmark];
+    }
+    
 	// For IMBObjects simply use self...
 	
     else if ([inType isEqualToString:(NSString*)kIMBObjectPasteboardType])
@@ -613,9 +591,9 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 - (NSURL*) previewItemURL
 {
-	if (self.accessibility == kIMBResourceIsAccessible)
+	if (self.accessibility == kIMBResourceIsAccessible || self.accessibility == kIMBResourceIsAccessibleSecurityScoped)
 	{
-        return [self _synchronouslyResolvedBookmarkURL];
+        return [self _URLByRequestingAndResolvingBookmark];
 	}
 	
 	return nil;
@@ -840,6 +818,32 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
     [self requestBookmarkWithQueue:dispatch_get_main_queue() completionBlock:inCompletionBlock];
 }
 
+/**
+ Synchronous version of -requestBookmarkWithQueue:completionBlock:.
+ 
+ @see requestBookmarkWithQueue:completionBlock:
+ */
+- (BOOL)requestBookmarkWithError:(NSError **)outError
+{
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block BOOL success = YES;
+    
+    [self requestBookmarkWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0)
+                   completionBlock:^(NSError* inError)
+     {
+         if (inError) {
+             success = NO;
+             if (outError) *outError = inError;
+         }
+         dispatch_semaphore_signal(semaphore);
+     }];
+    
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    dispatch_release(semaphore);
+    return success;
+}
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -856,7 +860,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	{
 		url = [NSURL 
 			URLByResolvingBookmarkData:self.locationBookmark
-			options:0
+			options:NSURLBookmarkResolutionWithSecurityScope
 			relativeToURL:nil
 			bookmarkDataIsStale:&isStale 
 			error:&error];
@@ -880,5 +884,19 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 //----------------------------------------------------------------------------------------------------------------------
 
+
+@end
+
+@implementation IMBObject (FileAccessPrivate)
+
+// Request bookmark if it is not set and resolve it to its corresponding URL.
+
+- (NSURL*) _URLByRequestingAndResolvingBookmark
+{
+    if ([self requestBookmarkWithError:nil]) {
+        return [self URLByResolvingBookmark];
+    }
+    return nil;
+}
 
 @end

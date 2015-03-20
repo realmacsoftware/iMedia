@@ -256,6 +256,13 @@ extern NSString* kIMBObjectPasteboardType;
  */
 - (void) requestBookmarkWithCompletionBlock:(void(^)(NSError*))inCompletionBlock;
 
+/**
+ Synchronous version of -requestBookmarkWithQueue:completionBlock:.
+ 
+ @see requestBookmarkWithQueue:completionBlock:
+ */
+- (BOOL) requestBookmarkWithError:(NSError **)error;
+
 - (NSURL*) URLByResolvingBookmark;
 
 @end

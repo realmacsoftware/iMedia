@@ -9,6 +9,7 @@
 #import "NSObject+iMedia.h"
 #import "NSWorkspace+iMedia.h"
 #import "NSURL+iMedia.h"
+#import "IMBConfig.h"
 #import "IMBNodeObject.h"
 #import "IMBAppleMediaLibraryParser.h"
 #import "IMBAppleMediaLibraryPropertySynchronizer.h"
@@ -279,7 +280,8 @@
 {
     NSError* error = nil;
     
-    return[self bookmarkForURL:inObject.URL error:&error];
+    MLMediaObject *mediaObject = [self mediaObjectForObject:inObject];
+    return[self bookmarkForURL:mediaObject.URL error:&error];
 }
 
 #pragma mark - Media Group
@@ -394,10 +396,16 @@
     
     object.identifier = mediaObject.identifier;
     object.parserIdentifier = [self identifier];
-    object.accessibility = kIMBResourceIsAccessible;
     object.name = [self nameForMediaObject:mediaObject];
-    object.location = mediaObject.URL;
-    
+
+    if ([IMBConfig clientAppCanHandleSecurityScopedBookmarks])
+    {
+        // In this case do not provide URL to framework because it will lose security scope anyway because of encode/decode dance
+        object.accessibility = kIMBResourceIsAccessibleSecurityScoped;
+    } else {
+        object.location = mediaObject.URL;
+        object.accessibility = [self accessibilityForObject:object];
+    }
 // Since the following two operations are expensive we postpone them to the point when we actually need the data
 //    object.locationBookmark = [self bookmarkForURL:mediaObject.URL error:&error];
 //    object.imageLocation = [self bookmarkForURL:mediaObject.thumbnailURL error:&error];
@@ -501,7 +509,10 @@
     NSError *error = nil;
     
     [URL startAccessingSecurityScopedResource];
-    NSData *bookmark = [URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:&error];
+    NSData *bookmark = [URL bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope|NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
+                     includingResourceValuesForKeys:nil
+                                      relativeToURL:nil
+                                              error:&error];
     [URL stopAccessingSecurityScopedResource];
     
     if (outError) *outError = error;

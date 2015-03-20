@@ -69,84 +69,65 @@
 
 -(BOOL)performDragOperation:(id<NSDraggingInfo>)inSender
 {
-    BOOL delegateToSuper = YES;
-    
-	// Get an array of IMBObjects from the dragging pasteboard...
-	
 	NSPasteboard* pasteboard = [inSender draggingPasteboard];
 	NSArray* objects = [pasteboard imb_IMBObjects];
     
+    BOOL isPerformDragHandled = NO;
+    NSError *lastError = nil;
+	
     for (IMBObject *object in objects)
     {
-        // Do we need to load an image from the internet? (this is for Facebook and the like)
-        if ([object isKindOfClass:[NSURL class]] && (![object.imageLocation isFileURL]) &&
-            [object.imageRepresentationType isEqualToString:IKImageBrowserNSDataRepresentationType])
+        if (object.accessibility == kIMBResourceIsAccessibleSecurityScoped)
         {
-            delegateToSuper = NO;
+            // As an alternative, you can use the asynchronous variant of this method if you anticipate the user dragging thousands of resources at once (requesting a bookmark does add some overhead) and if your completion block code is thread-safe:
+            //            [object requestBookmarkWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0)
+            //                             completionBlock:^(NSError *error) {
+            //                                 // Your dragging code here
+            //                             }];
             
-//            // Load image asynchronously
-//            NSImage *image = [[NSImage alloc] initWithContentsOfURL:[object location]];
-//            
-//            // Update progress indicator (optional)
-//            
-//            // Wait for load to finish
-//            
-//            // Insert image into text view
-//            NSTextAttachmentCell *attachmentCell = [[NSTextAttachmentCell alloc] initImageCell:image];
-//            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-//            [attachment setAttachmentCell: attachmentCell ];
-//            NSAttributedString *attributedString = [NSAttributedString  attributedStringWithAttachment: attachment];
-//            [[self textStorage] appendAttributedString:attributedString];
-//            [self setNeedsDisplay:YES];
+            NSError *error = nil;
+            if ([object requestBookmarkWithError:&error])
+            {
+                NSURL *URL = [object URLByResolvingBookmark];
+                
+                [URL startAccessingSecurityScopedResource];
+                
+                // This only works if URL denotes an NSImage-compatible location (hey, it's only a test app after all)
+                NSImage *image = [[NSImage alloc] initWithContentsOfURL:URL];
+                
+                [URL stopAccessingSecurityScopedResource];
+                
+                // Insert image into view
+                
+                NSTextAttachmentCell *attachmentCell = [[NSTextAttachmentCell alloc] initImageCell:image];
+                NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+                [attachment setAttachmentCell: attachmentCell ];
+                NSAttributedString *attributedString = [NSAttributedString  attributedStringWithAttachment: attachment];
+                [[self textStorage] insertAttributedString:attributedString atIndex:self.selectedRange.location];
+                
+                [self setNeedsDisplay:YES];
+            } else {
+                lastError = error;
+            }
         }
+        isPerformDragHandled = YES;
     }
-	
-    if (delegateToSuper) {
-        return [super performDragOperation:inSender];
-    } else {
+    if (isPerformDragHandled) {
+        if (lastError) [NSApp presentError:lastError];
         return YES;
+    } else {
+        return [super performDragOperation:inSender];
     }
 }
 
 
 - (void) concludeDragOperation:(id<NSDraggingInfo>)inSender
 {
-    //	[super concludeDragOperation:inSender];
-	
-	// Get an array of IMBObjects from the dragging pasteboard...
-	
 	NSPasteboard* pasteboard = [inSender draggingPasteboard];
 	NSArray* objects = [pasteboard imb_IMBObjects];
 	
-    for (IMBObject *object in objects)
-    {
-        // Do we need to load an image from the internet? (this is for Facebook and the like)
-        if ([object isKindOfClass:[NSURL class]] && (![object.imageLocation isFileURL]) &&
-            [object.imageRepresentationType isEqualToString:IKImageBrowserNSDataRepresentationType])
-        {
-            // Load image asynchronously
-            NSImage *image = [[NSImage alloc] initWithContentsOfURL:[object location]];
-            
-            // Update progress indicator (optional)
-            
-            // Wait for load to finish
-            
-            // Insert image into text view
-            NSTextAttachmentCell *attachmentCell = [[NSTextAttachmentCell alloc] initImageCell:image];
-            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-            [attachment setAttachmentCell: attachmentCell];
-            NSAttributedString *attributedString = [NSAttributedString  attributedStringWithAttachment: attachment];
-            [[self textStorage] beginEditing];
-            NSLog(@"Cursor position: %ld", (unsigned long)[self selectedRange].location);
-            [[self textStorage] insertAttributedString:attributedString atIndex:[self selectedRange].location];
-            [[self textStorage] endEditing];
-            [self setNeedsDisplay:YES];
-        }
-    }
-	
-	// Tell the app delegate so that it can update its badge cache with these objects...
-	
-	[(IMBTestAppDelegate*) draggingDelegate concludeDragOperationForObjects:objects];
+	// Tell the app delegate that it can update its badge cache with these objects...
+    [(IMBTestAppDelegate*) draggingDelegate concludeDragOperationForObjects:objects];
 }
 
 

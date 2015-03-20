@@ -1955,7 +1955,10 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 	while (index != NSNotFound)
 	{
 		IMBObject* object = [objects objectAtIndex:index];
-		if (object.isSelectable && object.accessibility == kIMBResourceIsAccessible) [indexes addIndex:index];
+		if (object.isSelectable && (object.accessibility == kIMBResourceIsAccessible ||
+                                    object.accessibility == kIMBResourceIsAccessibleSecurityScoped)) {
+            [indexes addIndex:index];
+        }
 		index = [inIndexes indexGreaterThanIndex:index];
 	}
 	
@@ -2129,7 +2132,10 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 	
 	for (IMBObject* object in objects)
 	{
-		if (object.accessibility == kIMBResourceIsAccessible) [filteredObjects addObject:object];
+		if (object.accessibility == kIMBResourceIsAccessible ||
+            object.accessibility == kIMBResourceIsAccessibleSecurityScoped) {
+            [filteredObjects addObject:object];
+        }
 	}
 	
 	return (NSArray*)filteredObjects;

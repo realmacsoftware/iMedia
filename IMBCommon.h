@@ -141,9 +141,23 @@ typedef NSUInteger IMBErrorCode;
 
 enum
 {
+    /**
+     Resource does not exist.
+     */
     kIMBResourceDoesNotExist = 1,
-    kIMBResourceNoPermission,   // Implies that the resource exists
-    kIMBResourceIsAccessible
+    /**
+     Resource exists but we don't have access.
+     */
+    kIMBResourceNoPermission,
+    /**
+     Resource exists and we have at least read access.
+     */
+    kIMBResourceIsAccessible,
+    /**
+     Resource exists and we have at least read access but we must wrap access to resource URL
+     with -startAccessingSecurityScopedResource / -stopAccessingSecurityScopedResource
+     */
+    kIMBResourceIsAccessibleSecurityScoped
 };
 typedef NSUInteger IMBResourceAccessibility;
 

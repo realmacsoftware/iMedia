@@ -136,6 +136,7 @@
 	
 	[IMBConfig setShowsGroupNodes:YES];
 	[IMBConfig setUseGlobalViewType:NO];
+    [IMBConfig setClientAppCanHandleSecurityScopedBookmarks:YES];
 	
 	self.usedObjects = [NSMutableDictionary dictionary];
 
@@ -349,14 +350,27 @@
 	{
 		return YES;
 	}
-	else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.UserPictures"])
-	{
-		return YES;
-	}
-	else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.iChatIcons"])
-	{
-		return NO;
-	}
+    else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.UserPictures"])
+    {
+        return YES;
+    }
+    else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.iChatIcons"])
+    {
+        return YES;
+    }
+    else if (NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) {
+        NSSet *unqualifiedParserMessengerIdentifiers = [NSSet setWithObjects:
+                                                        @"com.karelia.imedia.iTunes.audio",
+                                                        @"com.karelia.imedia.iTunes.movie",
+                                                        @"com.karelia.imedia.iPhoto.image",
+                                                        @"com.karelia.imedia.iPhoto.movie",
+                                                        @"com.karelia.imedia.Aperture.image",
+                                                        @"com.karelia.imedia.Aperture.movie",
+                                                        nil];
+        if ([unqualifiedParserMessengerIdentifiers containsObject:inIdentifier]) {
+            return NO;
+        }
+    }
 	
 	return YES;
 }
