@@ -14,6 +14,8 @@
 #import "IMBAppleMediaLibraryParser.h"
 #import "IMBAppleMediaLibraryPropertySynchronizer.h"
 
+#define USE_PARSER_ANNOTATED_LIBRARY_NAME 0
+
 #define CREATE_MEDIA_OBJECTS_CONCURRENTLY 1
 
 #define MEASURE_EXECUTION_TIME 0
@@ -498,13 +500,24 @@
     return [[NSWorkspace imb_threadSafeWorkspace] absolutePathForAppBundleWithIdentifier:[self.configuration sourceAppBundleIdentifier]];
 }
 
+/**
+ Returns the library name of the receiver or its qualified version.
+ @discussion
+ Usage of qualified library name is determined via preprocessor switch USE_QUALIFIED_LIBRARY_NAME.
+ */
 - (NSString *)libraryName
 {
+    NSString *libraryName = nil;
     if ([self.configuration respondsToSelector:@selector(libraryName)]) {
-        return [self.configuration libraryName];
+        libraryName = [self.configuration libraryName];
     } else {
-        return [[NSBundle bundleWithPath:[self appPath]] localizedInfoDictionary][@"CFBundleDisplayName"];
+        libraryName = [[NSBundle bundleWithPath:[self appPath]] localizedInfoDictionary][@"CFBundleDisplayName"];
     }
+#if USE_PARSER_ANNOTATED_LIBRARY_NAME
+    return [NSString stringWithFormat:@"%@ (Apple Media Library)", libraryName];
+#else
+    return libraryName;
+#endif
 }
 
 - (NSString *)identifierPrefix

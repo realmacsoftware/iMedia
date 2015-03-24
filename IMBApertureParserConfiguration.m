@@ -47,7 +47,7 @@ IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory =
  */
 - (NSString *)libraryName
 {
-    return @"Aperture (Apple Media Library)";
+    return @"Aperture";
 }
 
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup

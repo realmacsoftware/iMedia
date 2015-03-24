@@ -58,7 +58,7 @@ IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
  */
 - (NSString *)libraryName
 {
-    return @"iTunes (Apple Media Library)";
+    return @"iTunes";
 }
 
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup

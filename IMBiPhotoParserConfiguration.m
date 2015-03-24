@@ -64,7 +64,7 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
  */
 - (NSString *)libraryName
 {
-    return @"iPhoto (Apple Media Library)";
+    return @"iPhoto";
 }
 
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
