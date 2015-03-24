@@ -69,7 +69,6 @@ static NSString* sIMBDownloadFolderPathKey = @"downloadFolderPath";
 static NSString* sIMBViewerAppPathsKey = @"viewerAppPaths";
 static NSString* sIMBEditorAppPathsKey = @"editorAppPaths";
 static NSString* sIMBFlickrDownloadSizeKey = @"flickrDownloadSize";
-static NSString* sIMBClientAppCanHandleSSBsKey = @"clientAppCanHandleSSBs";
 
 static BOOL sUseGlobalViewType = NO;
 static BOOL sClientAppCanHandleSSBs = NO;
