@@ -102,6 +102,11 @@
 @property (strong) id<IMBAppleMediaLibraryParserDelegate> configuration;
 
 /**
+ Converts from IMB media type to Apple Media Library media type.
+ */
++ (MLMediaType)MLMediaTypeForIMBMediaType:(NSString *)mediaType;
+
+/**
  Returns whether the node given should be shown in the node hierarchy.
  
  @discussion

@@ -41,6 +41,18 @@
     return [self.configuration mediaSourceIdentifier];
 }
 
++ (MLMediaType)MLMediaTypeForIMBMediaType:(NSString *)mediaType
+{
+    if ([mediaType isEqualToString:kIMBMediaTypeImage]) {
+        return MLMediaTypeImage;
+    } else if ([mediaType isEqualToString:kIMBMediaTypeMovie]){
+        return MLMediaTypeMovie;
+    } else if ([mediaType isEqualToString:kIMBMediaTypeAudio]){
+        return MLMediaTypeAudio;
+    }
+    return 0;
+}
+
 - (NSString *)mediaType
 {
     switch ([self.configuration mediaType]) {
