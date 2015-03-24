@@ -39,11 +39,11 @@
 
 /**
  Returns whether a node is populated with node objects rather than media objects when node is not a leaf node.
- @discussion This default implementation returns YES.
+ @discussion This default implementation returns NO.
  */
 - (BOOL)shouldPopulateNodesWithNodeObjects
 {
-    return YES;
+    return NO;
 }
 
 
