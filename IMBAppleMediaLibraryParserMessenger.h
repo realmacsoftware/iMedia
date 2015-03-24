@@ -12,14 +12,36 @@
 
 @end
 
-@interface IMBAppleMediaLibraryImageParserMessenger : IMBAppleMediaLibraryParserMessenger
+#pragma mark - Media Type IMAGE
+
+@interface IMBMLPhotosImageParserMessenger : IMBAppleMediaLibraryParserMessenger
 
 @end
 
-@interface IMBAppleMediaLibraryMovieParserMessenger : IMBAppleMediaLibraryParserMessenger
+@interface IMBMLiPhotoImageParserMessenger : IMBAppleMediaLibraryParserMessenger
 
 @end
 
-@interface IMBAppleMediaLibraryAudioParserMessenger : IMBAppleMediaLibraryParserMessenger
+@interface IMBMLApertureImageParserMessenger : IMBAppleMediaLibraryParserMessenger
+
+@end
+
+#pragma mark - Media Type MOVIE
+
+@interface IMBMLPhotosMovieParserMessenger : IMBAppleMediaLibraryParserMessenger
+
+@end
+
+@interface IMBMLiPhotoMovieParserMessenger : IMBAppleMediaLibraryParserMessenger
+
+@end
+
+@interface IMBMLApertureMovieParserMessenger : IMBAppleMediaLibraryParserMessenger
+
+@end
+
+#pragma mark - Media Type AUDIO
+
+@interface IMBMLiTunesAudioParserMessenger : IMBAppleMediaLibraryParserMessenger
 
 @end

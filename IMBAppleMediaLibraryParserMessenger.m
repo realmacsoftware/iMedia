@@ -29,180 +29,17 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
 
 #pragma mark -
 
-@implementation IMBAppleMediaLibraryImageParserMessenger
-
-/**
- Registers the receiver with IMBParserController.
- */
-+ (void) load {
-    @autoreleasepool {
-        // Apple Media Library framework public since OS X 10.9
-        if (NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) {
-            [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeImage];
-        }
-    }
-}
-
-+ (NSString*) mediaType {
-    return kIMBMediaTypeImage;
-}
-
-+ (NSString*) identifier {
-    return @"com.karelia.imedia.AppleMediaLibrary.image";
-}
-
-/**
- Returns the cache of all parsers associated with Photos media objects of same media type.
- */
-+ (NSMutableArray *)parsers
+@interface IMBMLParserMessengerSubclassConfiguration : NSObject
 {
-    static NSMutableArray *parsers = nil;
-    
-    static dispatch_once_t onceToken = 0;
-    dispatch_once(&onceToken, ^{
-        parsers = [[NSMutableArray alloc] init];
-    });
-    return parsers;
-}
-
-- (NSArray *)parserInstancesWithError:(NSError **)outError
-{
-    Class myClass = [self class];
-    NSMutableArray *parsers = [myClass parsers];
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^
-    {
-        [@[IMBMLiPhotoParserConfigurationFactory,
-           IMBMLApertureParserConfigurationFactory,
-           IMBMLPhotosParserConfigurationFactory] enumerateObjectsUsingBlock:
-         ^(IMBMLParserConfigurationFactory parserConfigurationFactory, NSUInteger idx, BOOL *stop)
-         {
-             IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
-             parser.configuration = parserConfigurationFactory(MLMediaTypeImage);
-             [parsers addObject:parser];
-         }];
-    });
-    return parsers;
+    NSMutableArray *parsers;
+    dispatch_once_t parsersCreationToken;
+    NSString *mediaType;
+    NSString *identifier;
 }
 
 @end
 
-#pragma mark -
-
-@implementation IMBAppleMediaLibraryMovieParserMessenger
-
-/**
- Registers the receiver with IMBParserController.
- */
-+ (void) load {
-    @autoreleasepool {
-        // Apple Media Library framework public since OS X 10.9
-        if (NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) {
-            [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeMovie];
-        }
-    }
-}
-
-+ (NSString*) mediaType {
-    return kIMBMediaTypeMovie;
-}
-
-+ (NSString*) identifier {
-    return @"com.karelia.imedia.AppleMediaLibrary.movie";
-}
-
-/**
- Returns the cache of all parsers associated with Photos media objects of same media type.
- */
-+ (NSMutableArray *)parsers
-{
-    static NSMutableArray *parsers = nil;
-    
-    static dispatch_once_t onceToken = 0;
-    dispatch_once(&onceToken, ^{
-        parsers = [[NSMutableArray alloc] init];
-    });
-    return parsers;
-}
-
-- (NSArray *)parserInstancesWithError:(NSError **)outError
-{
-    Class myClass = [self class];
-    NSMutableArray *parsers = [myClass parsers];
-    static dispatch_once_t onceToken = 0;
-    dispatch_once(&onceToken, ^
-                  {
-                      [@[IMBMLiPhotoParserConfigurationFactory,
-                         IMBMLApertureParserConfigurationFactory,
-                         IMBMLPhotosParserConfigurationFactory,
-                         IMBMLiTunesParserConfigurationFactory] enumerateObjectsUsingBlock:
-                       ^(IMBMLParserConfigurationFactory parserConfigurationFactory, NSUInteger idx, BOOL *stop)
-                       {
-                           IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
-                           parser.configuration = parserConfigurationFactory(MLMediaTypeMovie);
-                           [parsers addObject:parser];
-                       }];
-                  });
-    return parsers;
-}
-
-@end
-
-#pragma mark -
-
-@implementation IMBAppleMediaLibraryAudioParserMessenger
-
-/**
- Registers the receiver with IMBParserController.
- */
-+ (void) load {
-    @autoreleasepool {
-        // Apple Media Library framework public since OS X 10.9
-        if (NSAppKitVersionNumber >= NSAppKitVersionNumber10_9) {
-            [IMBParserController registerParserMessengerClass:self forMediaType:kIMBMediaTypeAudio];
-        }
-    }
-}
-
-+ (NSString*) mediaType {
-    return kIMBMediaTypeAudio;
-}
-
-+ (NSString*) identifier {
-    return @"com.karelia.imedia.AppleMediaLibrary.audio";
-}
-
-/**
- Returns the cache of all parsers associated with Photos media objects of same media type.
- */
-+ (NSMutableArray *)parsers
-{
-    static NSMutableArray *parsers = nil;
-    
-    static dispatch_once_t onceToken = 0;
-    dispatch_once(&onceToken, ^{
-        parsers = [[NSMutableArray alloc] init];
-    });
-    return parsers;
-}
-
-- (NSArray *)parserInstancesWithError:(NSError **)outError
-{
-    Class myClass = [self class];
-    NSMutableArray *parsers = [myClass parsers];
-    static dispatch_once_t onceToken = 0;
-    dispatch_once(&onceToken, ^
-                  {
-                      [@[IMBMLiTunesParserConfigurationFactory] enumerateObjectsUsingBlock:
-                       ^(IMBMLParserConfigurationFactory parserConfigurationFactory, NSUInteger idx, BOOL *stop)
-                       {
-                           IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
-                           parser.configuration = parserConfigurationFactory(MLMediaTypeAudio);
-                           [parsers addObject:parser];
-                       }];
-                  });
-    return parsers;
-}
+@implementation IMBMLParserMessengerSubclassConfiguration
 
 @end
 
@@ -211,6 +48,15 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
 @implementation IMBAppleMediaLibraryParserMessenger
 
 #pragma mark Configuration
+
+/**
+ initializes all subclass configurations.
+ */
++ (void)load
+{
+    static NSMutableDictionary *subclassConfigurations;
+    subclassConfigurations = [NSMutableDictionary dictionary];
+}
 
 /**
  Controls whether parser runs in-process or in XPC service if corresponding XPC service is present.
@@ -253,7 +99,6 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
     // Add handling of class specific properties / ivars here
 }
 
-
 /**
  
  */
@@ -266,6 +111,30 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
     return copy;
 }
 
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
+    return 0;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
+    return nil;
+}
+
+- (NSArray *)parserInstancesWithError:(NSError **)outError
+{
+    Class myClass = [self class];
+    dispatch_once([myClass parserInstancesOnceTokenRef], ^
+                  {
+                      IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
+                      MLMediaType mediaType = [IMBAppleMediaLibraryParser MLMediaTypeForIMBMediaType:[myClass mediaType]];
+                      parser.configuration = [myClass parserConfigurationFactory](mediaType);
+                      [[myClass parsers] addObject:parser];
+                  });
+    return [myClass parsers];
+}
 
 
 #pragma mark - Object Description
@@ -276,3 +145,279 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
 }
 
 @end
+
+#pragma mark - Subclasses For Media Type IMAGE
+
+@implementation IMBMLPhotosImageParserMessenger
+
++ (void) load {
+    @autoreleasepool {
+        if (IMBRunningOnYosemite10103OrNewer()) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:[[self class] mediaType]];
+        }
+    }
+}
+
++ (NSString*) mediaType {
+    return kIMBMediaTypeImage;
+}
+
++ (NSString*) identifier {
+    return @"com.apple.medialibrary.Photos.image";
+}
+
++ (NSMutableArray *)parsers
+{
+    static NSMutableArray *parsers = nil;
+    if (!parsers) parsers = [[NSMutableArray alloc] init];
+    return parsers;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    return IMBMLPhotosParserConfigurationFactory;
+}
+
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    static dispatch_once_t onceToken = 0;
+    return &onceToken;
+}
+
+@end
+
+@implementation IMBMLiPhotoImageParserMessenger
+
++ (void) load {
+    @autoreleasepool {
+        if (IMBRunningOnMavericksOrNewer()) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:[[self class] mediaType]];
+        }
+    }
+}
+
++ (NSString*) mediaType {
+    return kIMBMediaTypeImage;
+}
+
++ (NSString*) identifier {
+    return @"com.apple.medialibrary.iPhoto.image";
+}
+
++ (NSMutableArray *)parsers
+{
+    static NSMutableArray *parsers = nil;
+    if (!parsers) parsers = [[NSMutableArray alloc] init];
+    return parsers;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    return IMBMLiPhotoParserConfigurationFactory;
+}
+
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    static dispatch_once_t onceToken = 0;
+    return &onceToken;
+}
+
+@end
+
+@implementation IMBMLApertureImageParserMessenger
+
++ (void) load {
+    @autoreleasepool {
+        if (IMBRunningOnMavericksOrNewer()) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:[[self class] mediaType]];
+        }
+    }
+}
+
++ (NSString*) mediaType {
+    return kIMBMediaTypeImage;
+}
+
++ (NSString*) identifier {
+    return @"com.apple.medialibrary.Aperture.image";
+}
+
++ (NSMutableArray *)parsers
+{
+    static NSMutableArray *parsers = nil;
+    if (!parsers) parsers = [[NSMutableArray alloc] init];
+    return parsers;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    return IMBMLApertureParserConfigurationFactory;
+}
+
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    static dispatch_once_t onceToken = 0;
+    return &onceToken;
+}
+
+@end
+
+#pragma mark - Subclasses For Media Type MOVIE
+
+@implementation IMBMLPhotosMovieParserMessenger
+
++ (void) load {
+    @autoreleasepool {
+        if (IMBRunningOnYosemite10103OrNewer()) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:[[self class] mediaType]];
+        }
+    }
+}
+
++ (NSString*) mediaType {
+    return kIMBMediaTypeMovie;
+}
+
++ (NSString*) identifier {
+    return @"com.apple.medialibrary.Photos.movie";
+}
+
++ (NSMutableArray *)parsers
+{
+    static NSMutableArray *parsers = nil;
+    if (!parsers) parsers = [[NSMutableArray alloc] init];
+    return parsers;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    return IMBMLPhotosParserConfigurationFactory;
+}
+
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    static dispatch_once_t onceToken = 0;
+    return &onceToken;
+}
+
+@end
+
+@implementation IMBMLiPhotoMovieParserMessenger
+
++ (void) load {
+    @autoreleasepool {
+        if (IMBRunningOnMavericksOrNewer()) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:[[self class] mediaType]];
+        }
+    }
+}
+
++ (NSString*) mediaType {
+    return kIMBMediaTypeMovie;
+}
+
++ (NSString*) identifier {
+    return @"com.apple.medialibrary.iPhoto.movie";
+}
+
++ (NSMutableArray *)parsers
+{
+    static NSMutableArray *parsers = nil;
+    if (!parsers) parsers = [[NSMutableArray alloc] init];
+    return parsers;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    return IMBMLiPhotoParserConfigurationFactory;
+}
+
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    static dispatch_once_t onceToken = 0;
+    return &onceToken;
+}
+
+@end
+
+@implementation IMBMLApertureMovieParserMessenger
+
++ (void) load {
+    @autoreleasepool {
+        if (IMBRunningOnMavericksOrNewer()) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:[[self class] mediaType]];
+        }
+    }
+}
+
++ (NSString*) mediaType {
+    return kIMBMediaTypeMovie;
+}
+
++ (NSString*) identifier {
+    return @"com.apple.medialibrary.Aperture.movie";
+}
+
++ (NSMutableArray *)parsers
+{
+    static NSMutableArray *parsers = nil;
+    if (!parsers) parsers = [[NSMutableArray alloc] init];
+    return parsers;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    return IMBMLApertureParserConfigurationFactory;
+}
+
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    static dispatch_once_t onceToken = 0;
+    return &onceToken;
+}
+
+@end
+
+#pragma mark - Subclasses For Media Type AUDIO
+
+@implementation IMBMLiTunesAudioParserMessenger
+
++ (void) load {
+    @autoreleasepool {
+        if (IMBRunningOnMavericksOrNewer()) {
+            [IMBParserController registerParserMessengerClass:self forMediaType:[[self class] mediaType]];
+        }
+    }
+}
+
++ (NSString*) mediaType {
+    return kIMBMediaTypeAudio;
+}
+
++ (NSString*) identifier {
+    return @"com.apple.medialibrary.iTunes.audio";
+}
+
++ (NSMutableArray *)parsers
+{
+    static NSMutableArray *parsers = nil;
+    if (!parsers) parsers = [[NSMutableArray alloc] init];
+    return parsers;
+}
+
++ (IMBMLParserConfigurationFactory)parserConfigurationFactory
+{
+    return IMBMLiTunesParserConfigurationFactory;
+}
+
++ (dispatch_once_t *)parserInstancesOnceTokenRef
+{
+    static dispatch_once_t onceToken = 0;
+    return &onceToken;
+}
+
+@end
+
+
+
+
