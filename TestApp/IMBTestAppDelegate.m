@@ -55,6 +55,7 @@
 #import <iMedia/iMedia.h>
 #import "IMBTestAppDelegate.h"
 #import "SBUtilities.h"
+#import "IMBParserController.h"
 #import "IMBImageObjectViewController.h"
 #import <iMedia/IMBiPhotoEventObjectViewController.h>
 #import <iMedia/IMBFaceObjectViewController.h>
@@ -749,6 +750,16 @@
 	} 
 	
 	return nil;
+}
+
+#pragma mark -
+#pragma mark Debug Menu Actions
+
+- (IBAction)showParserMessengerIdentifiers:(id)sender
+{
+    [ibDebugInfoView setString:[[IMBParserController sharedParserController] parserMessengerIdentifiersDescription]];
+    [ibDebugInfoWindow setTitle:@"Parser Messenger Identifiers For Registered Parser Messengers"];
+    [ibDebugInfoWindow makeKeyAndOrderFront:nil];
 }
 
 @end

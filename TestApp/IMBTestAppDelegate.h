@@ -65,7 +65,9 @@
 @interface IMBTestAppDelegate : NSObject <IMBParserControllerDelegate,IMBLibraryControllerDelegate,IMBNodeViewControllerDelegate,IMBObjectViewControllerDelegate>
 {
 	IBOutlet NSWindow* ibWindow;
-	IBOutlet NSWindow* ibDragDestinationWindow;
+    IBOutlet NSWindow* ibDragDestinationWindow;
+    IBOutlet NSWindow* ibDebugInfoWindow;
+    IBOutlet NSTextView* ibDebugInfoView;
 	IBOutlet IMBNodeViewController* _nodeViewController;
 //	IBOutlet IMBObjectViewController* _objectViewController;
 	

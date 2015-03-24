@@ -62,6 +62,7 @@
 #import "NSObject+iMedia.h"
 #import "NSFileManager+iMedia.h"
 #import "NSBundle+iMedia.h"
+#import "IMBConfig.h"
 #import "IMBAccessRightsController.h"
 #import "IMBAccessRightsViewController.h"
 
@@ -693,6 +694,34 @@
 #pragma mark
 #pragma mark Helpers
 
+/**
+ */
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@: %@>",
+            [self className],
+            [self class].identifier
+//            [self parserIdentifiersDescription]
+            ];
+}
+
+/**
+ */
+- (NSString *)parserIdentifiersDescription
+{
+    NSString *description = @"";
+    
+    NSArray *parsers = [self parserInstancesWithError:nil];
+    
+    if ([parsers count] > 0) {
+        for (IMBParser *parser in parsers) {
+            description = [NSString stringWithFormat:@"%@    %@\n", description, parser.identifier];
+        }
+    } else {
+        description = @"    <none>\n";
+    }
+    return description;
+}
 
 //- (IMBNode*) nodeWithIdentifier:(NSString*)inIdentifier
 //{
