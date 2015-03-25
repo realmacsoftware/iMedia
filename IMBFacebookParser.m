@@ -124,13 +124,13 @@ static NSUInteger sFacebookElementLimit = 5000;
 	
 	NSMutableArray* objects = [NSMutableArray array];
     
-    // For nodes below top-level node do not ask for friends
+    // For nodes below top-level node do not ask for friends and for leaf nodes do not ask for any subnodes
     
     NSUInteger parentNestingLevel = [[inParentNode.attributes objectForKey:@"nestingLevel"] unsignedIntegerValue];
     NSArray *connectionTypes = nil;
     if (parentNestingLevel == 0) {
         connectionTypes = [NSArray arrayWithObjects:@"albums", @"friends", nil];
-    } else {
+    } else if(![inParentNode isLeafNode]){
         connectionTypes = [NSArray arrayWithObjects:@"albums", nil];
     }
     
