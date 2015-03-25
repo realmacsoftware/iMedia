@@ -77,6 +77,9 @@
 	
     for (IMBObject *object in objects)
     {
+        NSImage *resource = nil;
+        NSError *error = nil;
+        
         if (object.accessibility == kIMBResourceIsAccessibleSecurityScoped)
         {
             // As an alternative, you can use the asynchronous variant of this method if you anticipate the user dragging thousands of resources at once (requesting a bookmark does add some overhead) and if your completion block code is thread-safe:
@@ -85,7 +88,6 @@
             //                                 // Your dragging code here
             //                             }];
             
-            NSError *error = nil;
             if ([object requestBookmarkWithError:&error])
             {
                 NSURL *URL = [object URLByResolvingBookmark];
@@ -93,26 +95,34 @@
                 [URL startAccessingSecurityScopedResource];
                 
                 // This only works if URL denotes an NSImage-compatible location (hey, it's only a test app after all)
-                NSImage *image = [[NSImage alloc] initWithContentsOfURL:URL];
+                resource = [[NSImage alloc] initWithContentsOfURL:URL];
                 
                 [URL stopAccessingSecurityScopedResource];
                 
-                // Insert image into view
-                
-                NSTextAttachmentCell *attachmentCell = [[NSTextAttachmentCell alloc] initImageCell:image];
-                NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-                [attachment setAttachmentCell: attachmentCell ];
-                NSAttributedString *attributedString = [NSAttributedString  attributedStringWithAttachment: attachment];
-                [[self textStorage] insertAttributedString:attributedString atIndex:self.selectedRange.location];
-                
-                [self setNeedsDisplay:YES];
             } else {
                 lastError = error;
             }
+        } else if ((![object.imageLocation isFileURL]) &&
+                   [object.imageRepresentationType isEqualToString:IKImageBrowserNSDataRepresentationType])
+        {
+            // Load image presumably from the internet (this is for Facebook and the like)
+            
+            // This only works if URL denotes an NSImage-compatible location (hey, it's only a test app after all)
+            resource = [[NSImage alloc] initWithContentsOfURL:[object location]];
         }
+        // Insert image into view
+        
+        NSTextAttachmentCell *attachmentCell = [[NSTextAttachmentCell alloc] initImageCell:resource];
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+        [attachment setAttachmentCell: attachmentCell ];
+        NSAttributedString *attributedString = [NSAttributedString  attributedStringWithAttachment: attachment];
+        [[self textStorage] insertAttributedString:attributedString atIndex:self.selectedRange.location];
+        
+        [self setNeedsDisplay:YES];
         isPerformDragHandled = YES;
     }
-    if (isPerformDragHandled) {
+    if (isPerformDragHandled)
+    {
         if (lastError) [NSApp presentError:lastError];
         return YES;
     } else {
