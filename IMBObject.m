@@ -560,7 +560,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 {
 	// If we want a URL, we need to request the bookmark and resolve it, or the sandbox will interfere...
 	
-	if ([inType isEqualToString:(NSString*)kUTTypeFileURL])
+	if ((self.accessibility == kIMBResourceIsAccessible) && [inType isEqualToString:(NSString*)kUTTypeFileURL])
 	{
         NSURL* url = [self _URLByRequestingAndResolvingBookmark];
         if (url) [inItem setString:[url absoluteString] forType:(NSString*)kUTTypeFileURL];
