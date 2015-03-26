@@ -71,6 +71,7 @@ static NSString* sIMBEditorAppPathsKey = @"editorAppPaths";
 static NSString* sIMBFlickrDownloadSizeKey = @"flickrDownloadSize";
 
 static BOOL sUseGlobalViewType = NO;
+static BOOL sClientAppCanHandleSSBs = NO;
 
 @interface IMBConfig ()
 
@@ -272,6 +273,20 @@ static BOOL sUseGlobalViewType = NO;
 	return [editorAppPaths objectForKey:inMediaType];
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
++ (void) setClientAppCanHandleSecurityScopedBookmarks:(BOOL)canHandle
+{
+    sClientAppCanHandleSSBs = canHandle;
+}
+
+
++ (BOOL) clientAppCanHandleSecurityScopedBookmarks
+{
+    return sClientAppCanHandleSSBs;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

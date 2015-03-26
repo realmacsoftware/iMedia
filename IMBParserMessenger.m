@@ -62,6 +62,7 @@
 #import "NSObject+iMedia.h"
 #import "NSFileManager+iMedia.h"
 #import "NSBundle+iMedia.h"
+#import "IMBConfig.h"
 #import "IMBAccessRightsController.h"
 #import "IMBAccessRightsViewController.h"
 
@@ -177,6 +178,7 @@
 
 + (NSString*) parserClassName
 {
+    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
 	return nil;
 }
 
@@ -336,29 +338,43 @@
 - (NSArray*) unpopulatedTopLevelNodes:(NSError**)outError
 {
 	NSError* error = nil;
-	NSMutableArray* topLevelNodes = nil;
+    NSMutableArray* topLevelNodes = nil;
+    NSMutableArray* errors = [NSMutableArray array];
 	NSArray* parsers = [self parserInstancesWithError:&error];
 	
+    dispatch_group_t dispatchGroup = dispatch_group_create();
 	if (error == nil)
 	{
 		topLevelNodes = [NSMutableArray arrayWithCapacity:parsers.count];
-	
+
 		for (IMBParser* parser in parsers)
 		{
 			if (error == nil)
 			{
-				IMBNode* node = [parser unpopulatedTopLevelNode:&error];
-				
-				if (node) 
-				{
-					[self _setParserIdentifierWithParser:parser onNodeTree:node];
-					[topLevelNodes addObject:node];
-				}
+                dispatch_group_async(dispatchGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSError *nodeCreationError = nil;
+                    IMBNode* node = [parser unpopulatedTopLevelNode:&nodeCreationError];
+                    
+                    if (node)
+                    {
+                        [self _setParserIdentifierWithParser:parser onNodeTree:node];
+                        @synchronized(topLevelNodes){
+                            [topLevelNodes addObject:node];
+                        }
+                    }
+                    if (nodeCreationError) {
+                        @synchronized(errors) {
+                            [errors addObject:error];
+                        }
+                    }
+                });
 			}
 		}
 	}
+    dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER);
+    dispatch_release(dispatchGroup);
 	
-	if (outError) *outError = error;
+	if (outError && [errors count] > 0) *outError = errors[0];
 	return (NSArray*)topLevelNodes;
 }
 
@@ -460,7 +476,7 @@
 	{
 		for (IMBObject* object in inNode.objects)
 		{
-			object.identifier = [inParser identifierForObject:object];
+			if (!object.identifier) object.identifier = [inParser identifierForObject:object];
 			object.persistentResourceIdentifier = [inParser persistentResourceIdentifierForObject:object];
 		}
 		
@@ -678,6 +694,34 @@
 #pragma mark
 #pragma mark Helpers
 
+/**
+ */
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@: %@>",
+            [self className],
+            [self class].identifier
+//            [self parserIdentifiersDescription]
+            ];
+}
+
+/**
+ */
+- (NSString *)parserIdentifiersDescription
+{
+    NSString *description = @"";
+    
+    NSArray *parsers = [self parserInstancesWithError:nil];
+    
+    if ([parsers count] > 0) {
+        for (IMBParser *parser in parsers) {
+            description = [NSString stringWithFormat:@"%@    %@\n", description, parser.identifier];
+        }
+    } else {
+        description = @"    <none>\n";
+    }
+    return description;
+}
 
 //- (IMBNode*) nodeWithIdentifier:(NSString*)inIdentifier
 //{

@@ -141,9 +141,23 @@ typedef NSUInteger IMBErrorCode;
 
 enum
 {
-    kIMBResourceDoesNotExist,
-    kIMBResourceNoPermission,   // Implies that the resource exists
-    kIMBResourceIsAccessible
+    /**
+     Resource does not exist.
+     */
+    kIMBResourceDoesNotExist = 1,
+    /**
+     Resource exists but we don't have access.
+     */
+    kIMBResourceNoPermission,
+    /**
+     Resource exists and we have at least read access.
+     */
+    kIMBResourceIsAccessible,
+    /**
+     Resource exists and we have at least read access but we must wrap access to resource URL
+     with -startAccessingSecurityScopedResource / -stopAccessingSecurityScopedResource
+     */
+    kIMBResourceIsAccessibleSecurityScoped
 };
 typedef NSUInteger IMBResourceAccessibility;
 
@@ -201,9 +215,15 @@ typedef void (^IMBCompletionBlock)(id inResult,NSError* inError);
 #define NSAppKitVersionNumber10_7_2 1138.23
 #endif
 
+#ifndef NSAppKitVersionNumber10_9
+#define NSAppKitVersionNumber10_9 1265
+#endif
+
 #define IMBRunningOnSnowLeopardOrNewer()	(NSAppKitVersionNumber >= NSAppKitVersionNumber10_6)
 #define IMBRunningOnLionOrNewer()			(NSAppKitVersionNumber >= NSAppKitVersionNumber10_7)
 #define IMBRunningOnLion1073OrNewer()		(NSAppKitVersionNumber > NSAppKitVersionNumber10_7_2)
+#define IMBRunningOnMavericksOrNewer()		(NSAppKitVersionNumber >= NSAppKitVersionNumber10_9)
+#define IMBRunningOnYosemite10103OrNewer()  ([[NSProcessInfo processInfo] respondsToSelector:@selector(isOperatingSystemAtLeastVersion:)] && [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){10,10,3}])
 
 #define IMB_COMPILING_WITH_LION_OR_NEWER_SDK  defined(MAC_OS_X_VERSION_10_7)
 #define IMB_COMPILING_WITH_SNOW_LEOPARD_OR_NEWER_SDK  defined(MAC_OS_X_VERSION_10_6)

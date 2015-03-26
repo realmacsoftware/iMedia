@@ -472,6 +472,8 @@ static NSMutableDictionary* sLibraryControllers = nil;
 			
 			if (inNewNode)
 			{
+                inNewNode.isLoading = NO;
+                inNewNode.badgeTypeNormal = [inNode badgeTypeNormalNonLoading];
 				inNewNode.error = inError;
 				[self _setParserMessenger:messenger nodeTree:inNewNode];
 				[self _replaceNode:inNode withNode:inNewNode parentNodeIdentifier:parentNodeIdentifier];

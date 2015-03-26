@@ -87,7 +87,7 @@ extern NSString* kIMBObjectPasteboardType;
 @interface IMBObject : NSObject <NSCopying,NSCoding,IMBImageItem,QLPreviewItem,NSPasteboardItemDataProvider>
 {
 	NSURL *_location;												
-	NSData* _bookmark;
+	NSData* _locationBookmark;
     IMBResourceAccessibility _accessibility;
 	NSString* _name;
 	NSString* _identifier;
@@ -114,6 +114,16 @@ extern NSString* kIMBObjectPasteboardType;
 }
 
 @property (copy) NSURL *location;
+/**
+ A non-security-scoped bookmark matching the location URL. Should be set by a parser when populating a node.
+ 
+ @discussion
+ The parser should usually be able to set the bookmark immediately after IMBObject instance creation which should pretty much obviate the need for clients of this class to send -requestBookmarkWithCompletionBlock: which is still kept for backward compatibility reasons.
+ 
+ @see requestBookmarkWithCompletionBlock
+ */
+@property (retain) NSData *locationBookmark;
+
 @property (assign) IMBResourceAccessibility accessibility;	// What access do we have to the object's resource?
 @property (retain) NSString* name;							// Display name for user interface
 @property (readonly) NSImage* icon;							// Small icon to be displayed in list view
@@ -246,9 +256,14 @@ extern NSString* kIMBObjectPasteboardType;
  */
 - (void) requestBookmarkWithCompletionBlock:(void(^)(NSError*))inCompletionBlock;
 
-- (NSURL*) URLByResolvingBookmark;
+/**
+ Synchronous version of -requestBookmarkWithQueue:completionBlock:.
+ 
+ @see requestBookmarkWithQueue:completionBlock:
+ */
+- (BOOL) requestBookmarkWithError:(NSError **)error;
 
-@property (retain,readonly) NSData* bookmark;
+- (NSURL*) URLByResolvingBookmark;
 
 @end
 

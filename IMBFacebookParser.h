@@ -10,8 +10,6 @@
 #import <PhFacebook/PhFacebook.h>
 #import "IMBParser.h"
 
-@class ACAccountStore;
-
 @interface IMBFacebookParser : IMBParser
 {
     PhFacebook *_facebook;

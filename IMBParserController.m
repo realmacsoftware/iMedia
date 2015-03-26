@@ -486,6 +486,23 @@ static NSMutableDictionary* sRegisteredParserMessengerClasses = nil;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+#pragma mark - Utility
+
+/**
+ */
+- (NSString *)parserMessengerIdentifiersDescription
+{
+    NSString *description = @"";
+    
+    NSArray *sortedKeys = [[_loadedParserMessengers allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    for (NSString *key in sortedKeys) {
+        description = [NSString stringWithFormat:@"%@\nMedia Type %@:\n\n", description, [key capitalizedString]];
+        for (IMBParserMessenger *messenger in _loadedParserMessengers[key]) {
+            description = [NSString stringWithFormat:@"%@%@\n", description, [messenger description]];
+        }
+    }
+    return description;
+}
 
 @end
 

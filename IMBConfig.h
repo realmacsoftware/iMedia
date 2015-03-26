@@ -97,6 +97,19 @@
 + (void) setEditorApp:(NSString*)inAppPath forMediaType:(NSString*)inMediaType;
 + (NSString*) editorAppForMediaType:(NSString*)inMediaType;
 
+/**
+ Determines whether client app can handle security-scoped bookmarks.
+ @discussion
+ When set to YES iMedia framework will never bother user to grant access to local file locations for supported parsers (currently supported: all Apple Media Library based parsers). Instead iMedia will hand on (usually via dragging pasteboard) security-scoped bookmarks to the client app which the app should handle appropriately (e.g. see -[IMBTestTextView performDragOperation:])
+ */
++ (void) setClientAppCanHandleSecurityScopedBookmarks:(BOOL)canHandle;
+
+/**
+ Returns whether clent app can handle security-scoped bookmarks.
+ @see setClientAppCanHandleSecurityScopedBookmarks:
+ */
++ (BOOL) clientAppCanHandleSecurityScopedBookmarks;
+
 // Library Paths
 
 + (void)registerLibraryPath:(NSString *)aPath;

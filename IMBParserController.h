@@ -102,6 +102,10 @@
 - (BOOL) addUserAddedParserMessenger:(IMBParserMessenger*)inParserMessenger;
 - (BOOL) removeUserAddedParserMessenger:(IMBParserMessenger*)inParserMessenger;
 
+/**
+ */
+- (NSString *)parserMessengerIdentifiersDescription;
+
 @end
 
 

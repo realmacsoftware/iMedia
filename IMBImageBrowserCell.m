@@ -507,6 +507,7 @@ extern NSString *const IKImageBrowserCellPlaceHolderLayer __attribute__((weak_im
             badge = [NSImage imb_imageNamed:@"warning.tiff"];
             break;
         case kIMBResourceIsAccessible:
+        case kIMBResourceIsAccessibleSecurityScoped:
         {
             IMBObjectViewController* objectViewController = (IMBObjectViewController*) [[self imageBrowserView] delegate];
             id <IMBObjectViewControllerDelegate> delegate = [objectViewController delegate];

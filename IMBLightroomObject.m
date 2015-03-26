@@ -141,7 +141,7 @@
  */
 - (NSURL*) previewItemURL
 {
-	if (self.bookmark == nil && !_isLoadingQuicklookPreview)
+	if (self.locationBookmark == nil && !_isLoadingQuicklookPreview)
 	{
         _isLoadingQuicklookPreview = YES;
          

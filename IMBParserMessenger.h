@@ -204,6 +204,9 @@
 
 - (void)didWriteObjects:(NSArray *)objects toPasteboard:(NSPasteboard *)pasteboard;
 
+/**
+ */
+- (NSString *)parserIdentifiersDescription;
 @end
 
 

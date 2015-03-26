@@ -55,6 +55,7 @@
 #import <iMedia/iMedia.h>
 #import "IMBTestAppDelegate.h"
 #import "SBUtilities.h"
+#import "IMBParserController.h"
 #import "IMBImageObjectViewController.h"
 #import <iMedia/IMBiPhotoEventObjectViewController.h>
 #import <iMedia/IMBFaceObjectViewController.h>
@@ -136,6 +137,7 @@
 	
 	[IMBConfig setShowsGroupNodes:YES];
 	[IMBConfig setUseGlobalViewType:NO];
+    [IMBConfig setClientAppCanHandleSecurityScopedBookmarks:YES];
 	
 	self.usedObjects = [NSMutableDictionary dictionary];
 
@@ -349,14 +351,33 @@
 	{
 		return YES;
 	}
-	else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.UserPictures"])
-	{
-		return YES;
-	}
-	else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.iChatIcons"])
-	{
-		return NO;
-	}
+    else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.UserPictures"])
+    {
+        return YES;
+    }
+    else if ([inIdentifier isEqualToString:@"com.karelia.imedia.folder.iChatIcons"])
+    {
+        return YES;
+    }
+    else if (IMBRunningOnSnowLeopardOrNewer()) {
+        NSSet *unqualifiedParserMessengerIdentifiers =
+        [NSSet setWithObjects:
+//         @"com.apple.medialibrary.Photos.image",               /* Apple Photos (Apple Media Library) */
+         @"com.apple.medialibrary.iPhoto.image",               /* iPhoto (Apple Media Library) */
+         @"com.apple.medialibrary.iPhoto.movie",               /* iPhoto (Apple Media Library) */
+         @"com.apple.medialibrary.Aperture.image",             /* Aperture (Apple Media Library) */
+         @"com.apple.medialibrary.Aperture.movie",             /* Aperture (Apple Media Library) */
+         @"com.karelia.imedia.iTunes.audio",
+         @"com.karelia.imedia.iTunes.movie",
+//         @"com.karelia.imedia.iPhoto.image",
+//         @"com.karelia.imedia.iPhoto.movie",
+//         @"com.karelia.imedia.Aperture.image",
+//         @"com.karelia.imedia.Aperture.movie",
+         nil];
+        if ([unqualifiedParserMessengerIdentifiers containsObject:inIdentifier]) {
+            return NO;
+        }
+    }
 	
 	return YES;
 }
@@ -735,6 +756,16 @@
 	} 
 	
 	return nil;
+}
+
+#pragma mark -
+#pragma mark Debug Menu Actions
+
+- (IBAction)showParserMessengerIdentifiers:(id)sender
+{
+    [ibDebugInfoView setString:[[IMBParserController sharedParserController] parserMessengerIdentifiersDescription]];
+    [ibDebugInfoWindow setTitle:@"Parser Messenger Identifiers For Registered Parser Messengers"];
+    [ibDebugInfoWindow makeKeyAndOrderFront:nil];
 }
 
 @end

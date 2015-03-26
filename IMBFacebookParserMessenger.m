@@ -132,7 +132,7 @@
 }
 
 
-#pragma mark - IMBRequestAccessDelegate Delegate
+#pragma mark - IMBNodeAccessDelegate Delegate
 
 //----------------------------------------------------------------------------------------------------------------------
 // Returns an access requesting controller that will take care of requesting access to Facebook
