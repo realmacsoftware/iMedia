@@ -13,6 +13,8 @@ Developers are welcome to work on enhancements and fixes!  Please use the [GitHu
 There are plenty of things that need to be done, and your help would be appreciated!
 
 ## Release Notes
+### 3.2
+Add support for Apple media library types such as Apple Photos libraries through Apple Media Library framework.
 ### 3.1.0
 - Add Facebook parser and the necessary architectual additions that go with it (specifically regarding access control). See section "Host App Configuration" in
 [How To Install](https://github.com/iMediaSandboxing/iMedia/wiki/How-To-Install) on how to integrate into your host app.
