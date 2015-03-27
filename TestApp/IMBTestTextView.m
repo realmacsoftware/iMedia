@@ -72,13 +72,24 @@
 	NSPasteboard* pasteboard = [inSender draggingPasteboard];
 	NSArray* objects = [pasteboard imb_IMBObjects];
     
-    BOOL isPerformDragHandled = NO;
+    __block BOOL isPerformDragHandled = NO;
     NSError *lastError = nil;
 	
     for (IMBObject *object in objects)
     {
-        NSImage *resource = nil;
         NSError *error = nil;
+        void (^insertResourceIntoTextView)(NSImage *) = ^void(NSImage *resource) {
+            // Insert image into view
+            
+            NSTextAttachmentCell *attachmentCell = [[NSTextAttachmentCell alloc] initImageCell:resource];
+            NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+            [attachment setAttachmentCell: attachmentCell ];
+            NSAttributedString *attributedString = [NSAttributedString  attributedStringWithAttachment: attachment];
+            [[self textStorage] insertAttributedString:attributedString atIndex:self.selectedRange.location];
+            
+            [self setNeedsDisplay:YES];
+            isPerformDragHandled = YES;
+        };
         
         if (object.accessibility == kIMBResourceIsAccessibleSecurityScoped)
         {
@@ -95,31 +106,20 @@
                 [URL startAccessingSecurityScopedResource];
                 
                 // This only works if URL denotes an NSImage-compatible location (hey, it's only a test app after all)
-                resource = [[NSImage alloc] initWithContentsOfURL:URL];
+                insertResourceIntoTextView([[NSImage alloc] initWithContentsOfURL:URL]);
                 
                 [URL stopAccessingSecurityScopedResource];
                 
             } else {
                 lastError = error;
             }
-        } else if ((![object.imageLocation isFileURL]) &&
-                   [object.imageRepresentationType isEqualToString:IKImageBrowserNSDataRepresentationType])
+        } else if (object.location)
         {
             // Load image presumably from the internet (this is for Facebook and the like)
             
-            // This only works if URL denotes an NSImage-compatible location (hey, it's only a test app after all)
-            resource = [[NSImage alloc] initWithContentsOfURL:[object location]];
+            // This only works if localtion URL denotes an NSImage-compatible location (hey, it's only a test app after all)
+            insertResourceIntoTextView([[NSImage alloc] initWithContentsOfURL:object.location]);
         }
-        // Insert image into view
-        
-        NSTextAttachmentCell *attachmentCell = [[NSTextAttachmentCell alloc] initImageCell:resource];
-        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-        [attachment setAttachmentCell: attachmentCell ];
-        NSAttributedString *attributedString = [NSAttributedString  attributedStringWithAttachment: attachment];
-        [[self textStorage] insertAttributedString:attributedString atIndex:self.selectedRange.location];
-        
-        [self setNeedsDisplay:YES];
-        isPerformDragHandled = YES;
     }
     if (isPerformDragHandled)
     {
