@@ -858,12 +858,13 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	
 	if (self.locationBookmark)
 	{
-		url = [NSURL 
-			URLByResolvingBookmarkData:self.locationBookmark
-			options:NSURLBookmarkResolutionWithSecurityScope
-			relativeToURL:nil
-			bookmarkDataIsStale:&isStale 
-			error:&error];
+        NSURLBookmarkResolutionOptions options = self.accessibility == kIMBResourceIsAccessibleSecurityScoped ? NSURLBookmarkResolutionWithSecurityScope : 0;
+        url = [NSURL
+               URLByResolvingBookmarkData:self.locationBookmark
+               options:options
+               relativeToURL:nil
+               bookmarkDataIsStale:&isStale
+               error:&error];
 	}
 	
 	return url;
