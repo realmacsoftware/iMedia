@@ -29,6 +29,7 @@ NSString *kIMBPhotosMediaGroupIdentifierFavorites = @"favoritesAlbum";
 NSString *kIMBPhotosMediaGroupIdentifierPanoramas = @"panoramaAlbum";
 NSString *kIMBPhotosMediaGroupIdentifierVideos = @"videoAlbum";
 NSString *kIMBPhotosMediaGroupIdentifierSloMos = @"videoSloMoAlbum";
+NSString *kIMBPhotosMediaGroupIdentifierTimelapse = @"videoTimelapseAlbum";
 NSString *kIMBPhotosMediaGroupIdentifierBursts = @"burstAlbum";
 
 /**
@@ -52,6 +53,7 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
                                                 kIMBPhotosMediaGroupIdentifierPanoramas,
                                                 kIMBPhotosMediaGroupIdentifierVideos,
                                                 kIMBPhotosMediaGroupIdentifierSloMos,
+                                                kIMBPhotosMediaGroupIdentifierTimelapse,
                                                 kIMBPhotosMediaGroupIdentifierBursts,
                                                 nil];
     
@@ -112,6 +114,7 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
             unqualifiedGroupIdentifiers = [unqualifiedGroupIdentifiers
                                            setByAddingObjectsFromSet:[NSSet setWithObjects:
                                                                       kIMBPhotosMediaGroupIdentifierSloMos,
+                                                                      kIMBPhotosMediaGroupIdentifierTimelapse,
                                                                       kIMBPhotosMediaGroupIdentifierVideos,
                                                                       nil]];
             break;
