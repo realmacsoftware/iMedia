@@ -566,10 +566,11 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
         if (url) [inItem setString:[url absoluteString] forType:(NSString*)kUTTypeFileURL];
 	}
 	
-    else if ([inType isEqualToString:(NSString*)kUTTypeBookmark])
+	// using 'public.bookmark' instead kUTTypeBookmark, which is not available before 10.10
+    else if ([inType isEqualToString:@"public.bookmark"])
     {
         [self _URLByRequestingAndResolvingBookmark];
-        [inItem setData:self.locationBookmark forType:(NSString*)kUTTypeBookmark];
+        [inItem setData:self.locationBookmark forType:@"public.bookmark"];
     }
     
 	// For IMBObjects simply use self...
