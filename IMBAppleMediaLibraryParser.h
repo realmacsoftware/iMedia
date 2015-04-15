@@ -102,6 +102,13 @@
 @property (strong) id<IMBAppleMediaLibraryParserDelegate> configuration;
 
 /**
+ Initializes Apple media library and media source for the receiver.
+ @discussion
+ Must be called in the initialization process of the receiver but must not be called before configuration of receiver is set.
+ */
+- (instancetype)initializeMediaLibrary;
+
+/**
  Converts from IMB media type to Apple Media Library media type.
  */
 + (MLMediaType)MLMediaTypeForIMBMediaType:(NSString *)mediaType;

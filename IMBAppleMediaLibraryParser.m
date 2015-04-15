@@ -76,6 +76,9 @@
 }
 
 /**
+ Initializes Apple media library and media source for the receiver.
+ @discussion
+ Must be called in the initialization process of the receiver but must not be called before configuration of receiver is set.
  */
 - (instancetype)initializeMediaLibrary
 {
@@ -95,9 +98,6 @@
 {
     START_MEASURE(1);
     NSError *error = nil;
-    
-    // (Re-)instantiate media library and media source (in Apple speak), because content might have changed on disk. Note though that this yet doesn't seem to have an effect when media library changes (Apple doesn't seem to update its object cache).
-    [self initializeMediaLibrary];
     
     MLMediaGroup *rootMediaGroup = [IMBAppleMediaLibraryPropertySynchronizer rootMediaGroupForMediaSource:self.AppleMediaSource];
     

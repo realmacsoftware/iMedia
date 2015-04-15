@@ -131,6 +131,7 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
                       IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
                       MLMediaType mediaType = [IMBAppleMediaLibraryParser MLMediaTypeForIMBMediaType:[myClass mediaType]];
                       parser.configuration = [myClass parserConfigurationFactory](mediaType);
+                      [parser initializeMediaLibrary];
                       [[myClass parsers] addObject:parser];
                   });
     return [myClass parsers];
