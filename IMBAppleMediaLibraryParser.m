@@ -387,14 +387,15 @@
 }
 
 /**
- Despite its claims that a media group's name property returns a localized name for non-user created groups it always returns an english name for Photos and iPhoto libraries (as of 2015-03-06). So, we localize ourselves.
- */
+ Although a media group's name property returns a localized name for non-user created groups we keep this level of indirection for now for fear of regression since this did not use to work for Apple Photos libraries */
 - (NSString *)localizedNameForMediaGroup:(MLMediaGroup *)mediaGroup
 {
-    if ([self nonUserCreatedGroup:mediaGroup]) {
-        NSString *localizationKey = [NSString stringWithFormat:@"%@.%@", [self.configuration mediaSourceIdentifier], mediaGroup.identifier];
-        return NSLocalizedStringWithDefaultValue(localizationKey, nil, IMBBundle(), nil, @"Localized string key must match media source identifier concatenated via dot with media group identifier");
-    } else {
+//    if ([self nonUserCreatedGroup:mediaGroup]) {
+//        NSString *localizationKey = [NSString stringWithFormat:@"%@.%@", [self.configuration mediaSourceIdentifier], mediaGroup.identifier];
+//        return NSLocalizedStringWithDefaultValue(localizationKey, nil, IMBBundle(), nil, @"Localized string key must match media source identifier concatenated via dot with media group identifier");
+//    }
+//    else
+    {
         return mediaGroup.name;
     }
 }
