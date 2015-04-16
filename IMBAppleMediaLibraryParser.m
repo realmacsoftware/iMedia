@@ -308,13 +308,28 @@
     IMBNode* node = [[IMBNode alloc] initWithParser:self topLevel:NO];
     
     node.isLeafNode = [[mediaGroup childGroups] count] == 0;
-    node.icon = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:mediaGroup];
-// albumNode.highlightIcon = ...;
+    
+    NSImage *icon = nil, *highlightIcon = nil;
+    if ([self.configuration respondsToSelector:@selector(groupIconForTypeIdentifier:highlight:)]) {
+        icon = [self.configuration groupIconForTypeIdentifier:mediaGroup.typeIdentifier highlight:NO];
+        highlightIcon = [self.configuration groupIconForTypeIdentifier:mediaGroup.typeIdentifier highlight:YES];
+        
+        if (icon == nil) {
+            NSLog(@"Could not custom-load icon image for type identifier: %@ of group: %@. Loading group.icon instead.", mediaGroup.typeIdentifier, mediaGroup.name);
+        }
+    }
+    if (icon == nil) {
+        icon = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:mediaGroup];
+    }
+    node.icon = icon;
+    node.highlightIcon = highlightIcon;
     node.name = [self localizedNameForMediaGroup:mediaGroup];
     node.watchedPath = parentNode.watchedPath;	// These two lines are important to make file watching work for nested
     node.watcherType = kIMBWatcherTypeNone;     // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
     
     node.identifier = [self globalIdentifierForMediaGroup:mediaGroup];
+    
+//    NSLog(@"Group with name: %@ has type identifier: %@ and identifier: %@", mediaGroup.name, mediaGroup.typeIdentifier, mediaGroup.identifier);
     
     return node;
 }

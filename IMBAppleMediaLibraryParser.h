@@ -77,6 +77,14 @@
 /**
  */
 - (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup fromMediaSource:(MLMediaSource *)mediaSource;
+
+/**
+ Returns customized group icon for group type specified by typeIdentifier.
+ @discussion
+ If you don't implement this method or it returns nil then -[MLMediaGroup icon] will be utilized instead.
+ */
+- (NSImage *)groupIconForTypeIdentifier:(NSString *)typeIdentifier highlight:(BOOL)highlight;
+
 @end
 
 /**

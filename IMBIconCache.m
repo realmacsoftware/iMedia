@@ -226,6 +226,13 @@ static IMBIconCache* sSharedIconCache;
 
 - (NSImage*) iconForType:(NSString*)inType fromBundleID:(NSString*)inBundleID withMappingTable:(const IMBIconTypeMapping*)inMappingTable highlight:(BOOL)inHighlight
 {
+    return [self iconForType:inType fromBundleID:inBundleID withMappingTable:inMappingTable highlight:inHighlight considerGenericFallbackImage:YES];
+}
+
+/**
+ */
+- (NSImage*) iconForType:(NSString*)inType fromBundleID:(NSString*)inBundleID withMappingTable:(const IMBIconTypeMapping*)inMappingTable highlight:(BOOL)inHighlight considerGenericFallbackImage:(BOOL)considerFallbackImage
+{
 	NSImage* image = nil;
 
 	if (inType != nil)
@@ -256,7 +263,7 @@ static IMBIconCache* sSharedIconCache;
                                       highlight:inHighlight];
                 
 				if (image) [bundleCache setObject:image forKey:typeKey];
-				else if(!inHighlight) image = [NSImage imb_sharedGenericFolderIcon];
+				else if(!inHighlight && considerFallbackImage) image = [NSImage imb_sharedGenericFolderIcon];
 			}
 		}
 	}
