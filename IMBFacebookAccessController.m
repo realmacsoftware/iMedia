@@ -125,7 +125,7 @@
                 rectParentView = outlineView;
             }
             
-            [facebook getAccessTokenForPermissions: [NSArray arrayWithObjects: @"user_photos", @"user_friends", @"friends_photos", nil]
+            [facebook getAccessTokenForPermissions: [NSArray arrayWithObjects: @"user_photos", /*@"user_friends", @"friends_photos",*/ nil]
                                             cached: NO
                                     relativeToRect:rect
                                             ofView:rectParentView
