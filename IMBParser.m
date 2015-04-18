@@ -420,7 +420,7 @@
 		
 		if (source == nil)
 		{
-			NSString* description = [NSString stringWithFormat:@"Could find image file at %@",url];
+			NSString* description = [NSString stringWithFormat:@"Could not find image file at %@",url];
 			NSDictionary* info = [NSDictionary dictionaryWithObjectsAndKeys:description,NSLocalizedDescriptionKey,nil];
 			error = [NSError errorWithDomain:kIMBErrorDomain code:fnfErr userInfo:info];
 		}
