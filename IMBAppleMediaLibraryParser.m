@@ -30,6 +30,7 @@
     #define LOG_MEASURED_TIME(id, ...)
 #endif
 
+NSString *kIMBMLMediaGroupAttributeKeyKeyPhotoKey = @"KeyPhotoKey";
 NSString *kIMBMLMediaGroupTypeAlbum = @"Album";
 NSString *kIMBMLMediaGroupTypeFolder = @"Folder";
 NSString *kIMBMLMediaGroupTypeEventsFolder = @"EventsFolder";
@@ -237,8 +238,13 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
                 // Preemptively load media objects so that we might get a key photo (crazy stuff)
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0), ^
                                {
-                                   mediaGroup.mediaObjects;     // May cause wanted side-effect of enriching media group's attributes dict
-//                                   NSLog(@"Preemptively fetched media objects for media Group: %@", mediaGroup.name);
+                                   if (!mediaGroup.attributes[kIMBMLMediaGroupAttributeKeyKeyPhotoKey]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-getter-return-value"
+                                       mediaGroup.mediaObjects;     // May cause wanted side-effect of enriching media group's attributes dict
+#pragma clang diagnostic pop
+                                       NSLog(@"Preemptively fetched media objects for media Group: %@", mediaGroup.name);
+                                   }
                                });
             }
 //            NSLog(@"Initializing subgroup: %@ (%@)", [mediaGroup name], [mediaGroup identifier]);

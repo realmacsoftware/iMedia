@@ -33,7 +33,7 @@ NSString *kIMBApertureMediaGroupIdentifierFaces = @"peopleAlbum";
  Parser configuration factory for Apple iPhoto app.
  */
 IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory =
-^IMBAppleMediaLibraryParserConfiguration *(MLMediaType mediaType)
+^id<IMBAppleMediaLibraryParserDelegate>(MLMediaType mediaType)
 {
     NSSet *identifiersOfNonUserCreatedGroups = [NSSet setWithObjects:
                                                 nil];

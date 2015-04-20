@@ -11,7 +11,7 @@
 
 @class IMBAppleMediaLibraryParserConfiguration;
 
-typedef IMBAppleMediaLibraryParserConfiguration *(^IMBMLParserConfigurationFactory)(MLMediaType);
+typedef id<IMBAppleMediaLibraryParserDelegate> (^IMBMLParserConfigurationFactory)(MLMediaType);
 
 /**
  Parser configuration factory for Apple iPhoto app.

@@ -46,7 +46,7 @@ NSString *kIMBPhotosMediaGroupIdentifierBursts = @"burstAlbum";
  Parser configuration factory for Apple Photos app.
  */
 IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
-^IMBAppleMediaLibraryParserConfiguration *(MLMediaType mediaType)
+^id<IMBAppleMediaLibraryParserDelegate>(MLMediaType mediaType)
 {
     NSSet *identifiersOfNonUserCreatedGroups = [NSSet setWithObjects:
                                                 kIMBPhotosMediaGroupIdentifierMoments,

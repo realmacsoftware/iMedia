@@ -38,7 +38,7 @@ NSString *kIMBiPhotoMediaGroupIdentifierEventFilterBar = @"eventFilterBarAlbum";
  Parser configuration factory for Apple iPhoto app.
  */
 IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
-^IMBAppleMediaLibraryParserConfiguration *(MLMediaType mediaType)
+^id<IMBAppleMediaLibraryParserDelegate>(MLMediaType mediaType)
 {
     NSSet *identifiersOfNonUserCreatedGroups = [NSSet setWithObjects:
                                                 kIMBiPhotoMediaGroupIdentifierEvents,

@@ -12,7 +12,7 @@
  Parser configuration factory for Apple iTunes app.
  */
 IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
-^IMBAppleMediaLibraryParserConfiguration *(MLMediaType mediaType)
+^id<IMBAppleMediaLibraryParserDelegate>(MLMediaType mediaType)
 {
     NSSet *identifiersOfNonUserCreatedGroups = [NSSet setWithObjects:nil];
     
@@ -82,7 +82,7 @@ IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
 
 - (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup
 {
-    
+    return nil;
 }
 
 @end
