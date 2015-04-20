@@ -2055,7 +2055,8 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 	
 	for (IMBObject* object in inObjects)
 	{
-		if (object.accessibility == kIMBResourceIsAccessible)
+		if (object.accessibility == kIMBResourceIsAccessible ||
+            object.accessibility == kIMBResourceIsAccessibleSecurityScoped)
 		{
 			[object requestBookmarkWithCompletionBlock:^(NSError* inError)
 			{
