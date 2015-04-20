@@ -175,6 +175,17 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
         _currentNode = [currentNode retain];
         
         [self resetSearchFilter];
+        
+        if (currentNode.objectCountFormatSingular != nil) {
+            self.objectCountFormatSingular = currentNode.objectCountFormatSingular;
+        } else {
+            self.objectCountFormatSingular = [[self class] objectCountFormatSingular];
+        }
+        if (currentNode.objectCountFormatPlural != nil) {
+            self.objectCountFormatPlural = currentNode.objectCountFormatPlural;
+        } else {
+            self.objectCountFormatPlural = [[self class] objectCountFormatPlural];
+        }
     }
 }
 
