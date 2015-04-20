@@ -363,12 +363,12 @@
         NSSet *unqualifiedParserMessengerIdentifiers =
         [NSSet setWithObjects:
 //         @"com.apple.medialibrary.Photos.image",               /* Apple Photos (Apple Media Library) */
-         @"com.apple.medialibrary.iPhoto.image",               /* iPhoto (Apple Media Library) */
-         @"com.apple.medialibrary.iPhoto.movie",               /* iPhoto (Apple Media Library) */
-         @"com.apple.medialibrary.Aperture.image",             /* Aperture (Apple Media Library) */
-         @"com.apple.medialibrary.Aperture.movie",             /* Aperture (Apple Media Library) */
-         @"com.karelia.imedia.iTunes.audio",
-         @"com.karelia.imedia.iTunes.movie",
+//         @"com.apple.medialibrary.iPhoto.image",               /* iPhoto (Apple Media Library) */
+//         @"com.apple.medialibrary.iPhoto.movie",               /* iPhoto (Apple Media Library) */
+//         @"com.apple.medialibrary.Aperture.image",             /* Aperture (Apple Media Library) */
+//         @"com.apple.medialibrary.Aperture.movie",             /* Aperture (Apple Media Library) */
+//         @"com.karelia.imedia.iTunes.audio",
+//         @"com.karelia.imedia.iTunes.movie",
 //         @"com.karelia.imedia.iPhoto.image",
 //         @"com.karelia.imedia.iPhoto.movie",
 //         @"com.karelia.imedia.Aperture.image",

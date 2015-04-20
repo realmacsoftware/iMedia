@@ -150,18 +150,17 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     
     NSMutableArray* objects = [NSMutableArray array];
     
-    NSArray *mediaObjectRepresentations = parentGroup.attributes[@"keyList"];
-    if (YES /*mediaObjectRepresentations == nil*/) {
-        START_MEASURE(1);
-        mediaObjectRepresentations = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
-        STOP_MEASURE(1);
-        LOG_MEASURED_TIME(1, @"fetch of media Objects for group %@", parentGroup.name);
-    }
     BOOL shouldUseChildGroupsAsMediaObjects = [self.configuration shouldUseChildGroupsAsMediaObjectsForMediaGroup:parentGroup];
     
     if (!inParentNode.objects && ([childGroups count] == 0 || !shouldUseChildGroupsAsMediaObjects))
     {
-        
+        NSArray *mediaObjectRepresentations = parentGroup.attributes[@"keyList"];
+        if (YES /*mediaObjectRepresentations == nil*/) {
+            START_MEASURE(1);
+            mediaObjectRepresentations = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
+            STOP_MEASURE(1);
+            LOG_MEASURED_TIME(1, @"fetch of media Objects for group %@", parentGroup.name);
+        }
 #if CREATE_MEDIA_OBJECTS_CONCURRENTLY
         dispatch_group_t dispatchGroup = dispatch_group_create();
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(8);
