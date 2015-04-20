@@ -171,10 +171,10 @@
 
 // Override to show a folder icon ALWAYS instead of a generic file icon...
 
-- (NSString*) imageRepresentationType
-{
-	return IKImageBrowserNSImageRepresentationType;
-}
+//- (NSString*) imageRepresentationType
+//{
+//	return IKImageBrowserNSImageRepresentationType;
+//}
 
 
 - (NSImage *) sharedImageRepresentation
