@@ -242,7 +242,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 #pragma clang diagnostic ignored "-Wunused-getter-return-value"
                                        mediaGroup.mediaObjects;     // May cause wanted side-effect of enriching media group's attributes dict
 #pragma clang diagnostic pop
-                                       NSLog(@"Preemptively fetched media objects for media Group: %@", mediaGroup.name);
+//                                       NSLog(@"Preemptively fetched media objects for media Group: %@", mediaGroup.name);
                                    }
                                });
             }
