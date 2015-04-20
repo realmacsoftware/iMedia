@@ -116,7 +116,7 @@
     
     NSInteger rowCount = 3;
     CGFloat marginFactor = 0.1 / 3;
-    CGFloat spacingFactor = 0.013;
+    CGFloat spacingFactor = 0.0145;
     CGFloat margin = bounds.size.width * marginFactor;
     CGFloat spacing = bounds.size.width * spacingFactor;
     CGFloat imageSizeFactor = 1 - (2*marginFactor + (rowCount-1)*spacingFactor);
