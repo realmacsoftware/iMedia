@@ -96,6 +96,8 @@
 @synthesize mediaSource = _mediaSource;
 @synthesize attributes = _attributes;
 @synthesize groupType = _groupType;
+@synthesize objectCountFormatSingular = _objectCountFormatSingular;
+@synthesize objectCountFormatPlural = _objectCountFormatPlural;
 
 // Subnodes & Objects...
 
@@ -217,7 +219,9 @@
 	IMBRelease(_parserIdentifier);
 	IMBRelease(_error);
 	IMBRelease(_watchedPath);
-	IMBRelease(_badgeTarget);
+    IMBRelease(_badgeTarget);
+    IMBRelease(_objectCountFormatSingular);
+    IMBRelease(_objectCountFormatPlural);
 	
 	[super dealloc];
 }
@@ -241,6 +245,8 @@
 	copy.parserMessenger = self.parserMessenger;
 	copy.parserIdentifier = self.parserIdentifier;
 	copy.error = self.error;
+    copy.objectCountFormatSingular = self.objectCountFormatSingular;
+    copy.objectCountFormatPlural = self.objectCountFormatPlural;
 	
 	copy.displayPriority = self.displayPriority;
 	copy.displayedObjectCount = self.displayedObjectCount;
@@ -314,6 +320,8 @@
 		self.groupType = [inCoder decodeIntegerForKey:@"groupType"];
 		self.parserIdentifier = [inCoder decodeObjectForKey:@"parserIdentifier"];
 		self.error = [inCoder decodeObjectForKey:@"error"];
+        self.objectCountFormatSingular = [inCoder decodeObjectForKey:@"objectCountFormatSingular"];
+        self.objectCountFormatPlural = [inCoder decodeObjectForKey:@"objectCountFormatPlural"];
 
 		self.displayPriority = [inCoder decodeIntegerForKey:@"displayPriority"];
 		self.displayedObjectCount = [inCoder decodeIntegerForKey:@"displayedObjectCount"];
@@ -373,6 +381,8 @@
 	[inCoder encodeInteger:self.groupType forKey:@"groupType"];
 	[inCoder encodeObject:self.parserIdentifier forKey:@"parserIdentifier"];
 	[inCoder encodeObject:self.error forKey:@"error"];
+    [inCoder encodeObject:self.objectCountFormatSingular forKey:@"objectCountFormatSingular"];
+    [inCoder encodeObject:self.objectCountFormatPlural forKey:@"objectCountFormatPlural"];
 	
 	[inCoder encodeInteger:self.displayPriority forKey:@"displayPriority"];
 	[inCoder encodeInteger:self.displayedObjectCount forKey:@"displayedObjectCount"];

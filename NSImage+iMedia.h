@@ -75,4 +75,8 @@
 
 - (NSAttributedString*) attributedString;
 
+/**
+ @return A CGImage representation of the receiver.
+ */
+- (CGImageRef)imb_CGImage;
 @end

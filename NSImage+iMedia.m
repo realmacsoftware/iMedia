@@ -478,6 +478,15 @@
     return string;
 }
 
+/**
+ @return A CGImage representation of the receiver.
+ */
+- (CGImageRef)imb_CGImage
+{
+    NSRect imageRect = NSMakeRect(0, 0, self.size.width, self.size.height);
+    
+    return [self CGImageForProposedRect:&imageRect context:NULL hints:nil];
+}
 
 @end
 

@@ -85,6 +85,8 @@
 	NSURL* _mediaSource;
 	NSDictionary* _attributes;
 	NSUInteger _groupType;
+    NSString *_objectCountFormatSingular;
+    NSString *_objectCountFormatPlural;
 	
 	// Subnodes & Objects...
 	
@@ -141,6 +143,8 @@
 @property (retain) NSURL* mediaSource;				// Only toplevel nodes need this property
 @property (retain) NSDictionary* attributes;		// Optional metadata about a node
 @property (assign) NSUInteger groupType;			// Used for grouping toplevel nodes
+@property (copy) NSString* objectCountFormatSingular;// Display count format for user interface
+@property (copy) NSString* objectCountFormatPlural; // Display count format for user interface
 
 // Info about our parser...
 
