@@ -91,7 +91,13 @@
             isPerformDragHandled = YES;
         };
         
-        if (object.accessibility == kIMBResourceIsAccessibleSecurityScoped)
+        // You won't have direct access to a file URL that does not point to the standard asset locations. Better unconditionally resolve corresponding bookmark!
+        
+        // Also note that object.location and object.locationBookmark point to different locations for an IMBLightroomObject:
+        // - object.location: file URL denoting original master file
+        // - object.locationBookmark: file URL denoting a temporary file generated on the fly to reflect the current user changes to the image
+        //   (this file will also most likely have a lower resolution than the master file if the user made changes to the image)
+        if (!object.location || [object.location isFileURL])
         {
             // As an alternative, you can use the asynchronous variant of this method if you anticipate the user dragging thousands of resources at once (requesting a bookmark does add some overhead) and if your completion block code is thread-safe:
             //            [object requestBookmarkWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0)
@@ -103,19 +109,19 @@
             {
                 NSURL *URL = [object URLByResolvingBookmark];
                 
-                [URL startAccessingSecurityScopedResource];
+                if (object.accessibility == kIMBResourceIsAccessibleSecurityScoped) [URL startAccessingSecurityScopedResource];
                 
                 // This only works if URL denotes an NSImage-compatible location (hey, it's only a test app after all)
                 insertResourceIntoTextView([[NSImage alloc] initWithContentsOfURL:URL]);
                 
-                [URL stopAccessingSecurityScopedResource];
+                if (object.accessibility == kIMBResourceIsAccessibleSecurityScoped) [URL stopAccessingSecurityScopedResource];
                 
             } else {
                 lastError = error;
             }
         } else if (object.location)
         {
-            // Load image presumably from the internet (this is for Facebook and the like)
+            // Coming here you will presumably load a resource from the internet (Facebook, Flickr and the like)
             
             // This only works if localtion URL denotes an NSImage-compatible location (hey, it's only a test app after all)
             insertResourceIntoTextView([[NSImage alloc] initWithContentsOfURL:object.location]);
