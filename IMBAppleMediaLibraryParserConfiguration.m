@@ -7,6 +7,7 @@
 //
 
 #import "IMBAppleMediaLibraryParserConfiguration.h"
+#import "IMBAppleMediaLibraryPropertySynchronizer.h"
 
 @implementation IMBAppleMediaLibraryParserConfiguration
 
@@ -26,6 +27,7 @@
 }
 
 @synthesize mediaSourceIdentifier = _mediaSourceIdentifier;
+@synthesize mediaSource = _mediaSource;
 @synthesize mediaType = _mediaType;
 @synthesize identifiersOfNonUserCreatedGroups = _identifiersOfNonUserCreatedGroups;
 
@@ -38,13 +40,46 @@
 }
 
 /**
- Returns whether a node is populated with node objects rather than media objects when node is not a leaf node.
+ Returns whether group (aka node) is populated with child group objects rather than real media objects.
  @discussion This default implementation returns NO.
  */
-- (BOOL)shouldPopulateNodesWithNodeObjects
+- (BOOL)shouldUseChildGroupsAsMediaObjectsForMediaGroup:(MLMediaGroup *)mediaGroup
 {
     return NO;
 }
 
+/**
+ @return Type of media group provided unified across all possible media sources.
+ @discussion Default return value is kIMBMLMediaGroupTypeAlbum.
+ */
+- (IMBMLMediaGroupType *)typeForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return kIMBMLMediaGroupTypeAlbum;
+}
+
+/**
+ */
+- (NSImage *)thumbnailForMediaObject:(MLMediaObject *)mediaObject
+{
+    NSURL *url = mediaObject.thumbnailURL;
+    
+    [url startAccessingSecurityScopedResource];
+    
+    NSImage *thumbnail = [[NSImage alloc] initWithContentsOfURL:url];
+    
+    [url stopAccessingSecurityScopedResource];
+    
+    return thumbnail;
+}
+
+/**
+ @return Last object in media object list of the receiver.
+ */
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+        NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
+        MLMediaObject *mediaObject = [mediaObjects lastObject];
+    return mediaObject;
+}
 
 @end

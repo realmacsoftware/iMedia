@@ -8,6 +8,6 @@
 
 #import "IMBAppleMediaLibraryParserConfiguration.h"
 
-@interface IMBApplePhotosParserConfiguration : IMBAppleMediaLibraryParserConfiguration
+@interface IMBApplePhotosParserConfiguration : IMBAppleMediaLibraryParserConfiguration <IMBAppleMediaLibraryParserDelegate>
 
 @end

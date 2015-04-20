@@ -14,6 +14,10 @@
 #import "IMBAppleMediaLibraryParserMessenger.h"
 #import "IMBAppleMediaLibraryParser.h"
 #import "IMBAppleMediaLibraryParserConfiguration.h"
+#import "IMBAppleMediaLibraryEventObjectViewController.h"
+#import "IMBFaceObjectViewController.h"
+
+NSString *kIMBMediaGroupAttributeObjectMediaCount = @"ObjectMediaCount";
 
 /**
  Reverse-engineered keys of the Photos app media source's attributes.
@@ -128,10 +132,12 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
     Class myClass = [self class];
     dispatch_once([myClass parserInstancesOnceTokenRef], ^
                   {
+#warning Better encapsulate parser initialization in designated initializer of parser 
                       IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
                       MLMediaType mediaType = [IMBAppleMediaLibraryParser MLMediaTypeForIMBMediaType:[myClass mediaType]];
                       parser.configuration = [myClass parserConfigurationFactory](mediaType);
                       [parser initializeMediaLibrary];
+                      [parser.configuration setMediaSource:parser.AppleMediaSource];
                       [[myClass parsers] addObject:parser];
                   });
     return [myClass parsers];
@@ -140,10 +146,69 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
 
 #pragma mark - Object Description
 
-- (NSString *) metadataDescriptionForMetadata:(NSDictionary*)inMetadata
+/**
+ */
+- (NSString*) metadataDescriptionForMetadata:(NSDictionary*)inMetadata
 {
+//    // Events and Faces have other metadata than images
+//    
+//    if ([inMetadata objectForKey:kIMBMediaGroupAttributeObjectMediaCount])		// Event, face, ...
+//    {
+//        return [self _countableMetadataDescriptionForMetadata:inMetadata];
+//    }
+    
+    // Image
     return [NSImage imb_imageMetadataDescriptionForMetadata:inMetadata];
 }
+
+///**
+// */
+//- (NSString*) _countableMetadataDescriptionForMetadata:(NSDictionary*)inMetadata
+//{
+//    NSMutableString* metaDesc = [NSMutableString string];
+//    
+//    NSNumber* count = [inMetadata objectForKey:kIMBMediaGroupAttributeObjectMediaCount];
+//    if (count)
+//    {
+//        NSString* formatString = [count intValue] > 1 ?
+//        [[self class] objectCountFormatPlural] :
+//        [[self class] objectCountFormatSingular];
+//        
+//        [metaDesc appendFormat:formatString, [count intValue]];
+//    }
+//    
+////    NSNumber* dateAsTimerInterval = [inMetadata objectForKey:@"RollDateAsTimerInterval"];
+////    if (dateAsTimerInterval)
+////    {
+////        [metaDesc imb_appendNewline];
+////        NSDate* eventDate = [NSDate dateWithTimeIntervalSinceReferenceDate:[dateAsTimerInterval doubleValue]];
+////        
+////        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+////        [formatter setFormatterBehavior:NSDateFormatterBehavior10_4];
+////        [formatter setDateStyle:NSDateFormatterMediumStyle];	// medium date
+////        
+////        [metaDesc appendFormat:@"%@", [formatter stringFromDate:eventDate]];
+////        
+////        [formatter release];
+////    }
+//    return metaDesc;
+//}
+
+#pragma mark - Custom View Controller Support
+
+//- (NSViewController*) customObjectViewControllerForNode:(IMBNode*)inNode
+//{
+//    IMBMLMediaGroupType *nodeType = inNode.attributes[@"type"];
+//    
+//    // Use custom view for events / faces
+//    
+//    if ([nodeType isEqualToString:kIMBMLMediaGroupTypeEventsFolder]) {
+//        return[[IMBAppleMediaLibraryEventObjectViewController alloc] initForNode:inNode];
+//    } else if ([nodeType isEqualToString:kIMBMLMediaGroupTypeFacesFolder]) {
+//        return[[IMBFaceObjectViewController alloc] initForNode:inNode];
+//    }
+//    return [super customObjectViewControllerForNode:inNode];
+//}
 
 @end
 

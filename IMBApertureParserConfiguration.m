@@ -9,6 +9,15 @@
 #import "IMBApertureParserConfiguration.h"
 #import "NSImage+iMedia.h"
 #import "IMBIconCache.h"
+#import "IMBImageProcessor.h"
+#import "IMBNodeObject.h"
+
+/**
+ Reverse-engineered values of the iPhoto app media group type identifiers.
+ 
+ Apple doesn't seem to yet publicly define these constants anywhere.
+ */
+NSString *kIMBApertureMediaGroupTypeIdentifierFaces =  @"com.apple.Aperture.FacesAlbum";
 
 /**
  Reverse-engineered keys of the Photos app media source's attributes.
@@ -18,6 +27,7 @@
 /* Top Level Groups*/
 NSString *kIMBApertureMediaGroupIdentifierAllProjects = @"AllProjectsItem";
 NSString *kIMBApertureMediaGroupIdentifierLastViewedEvent = @"eventFilterBarAlbum";
+NSString *kIMBApertureMediaGroupIdentifierFaces = @"peopleAlbum";
 
 /**
  Parser configuration factory for Apple iPhoto app.
@@ -37,17 +47,17 @@ IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory =
 
 /**
  */
-- (NSDictionary*) metadataForObject:(IMBObject*)inObject error:(NSError**)outError
+- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject
 {
-    if (outError) *outError = nil;
+    // Map metadata information from iPhoto library representation to iMedia representation
     
-    // Map metadata information from Aperture library representation (MLMediaObject.attributes) to iMedia representation
+    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionaryWithDictionary:mediaObject.attributes];
     
-    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionaryWithDictionary:inObject.preliminaryMetadata];
-    
-    [externalMetadata addEntriesFromDictionary:[NSImage imb_metadataFromImageAtURL:inObject.URL checkSpotlightComments:NO]];
-    
-    // Add Aperture-specific entries to external dictionary here
+    if (mediaObject.URL) {
+        [mediaObject.URL startAccessingSecurityScopedResource];
+        [externalMetadata addEntriesFromDictionary:[NSImage imb_metadataFromImageAtURL:mediaObject.URL checkSpotlightComments:NO]];
+        [mediaObject.URL stopAccessingSecurityScopedResource];
+    }
     
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
 }
@@ -77,10 +87,49 @@ IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory =
     return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
 }
 
-//- (NSImage *)groupIconForTypeIdentifier:(NSString *)typeIdentifier highlight:(BOOL)highlight
-//{
-//    return nil;
-//}
+/**
+ Returns whether group (aka node) is populated with child group objects rather than real media objects.
+ @discussion This default implementation returns NO.
+ */
+- (BOOL)shouldUseChildGroupsAsMediaObjectsForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                        kIMBApertureMediaGroupIdentifierFaces,
+                                        nil];
+    
+    return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
+}
+
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSString *keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
+    
+    if (keyPhotoKey) {
+        return [self.mediaSource mediaObjectForIdentifier:keyPhotoKey];
+    } else {
+        return [super keyMediaObjectForMediaGroup:mediaGroup];
+    }
+    return nil;
+}
+
+- (NSString *)countFormatForGroup:(MLMediaGroup *)mediaGroup plural:(BOOL)plural
+{
+    NSDictionary *typeIdentifierToLocalizationKey =
+    @{
+      @"com.apple.Aperture.FacesAlbum" : @"IMBFaceObjectViewController.countFormat"
+      };
+    
+    NSString *localizationKey = typeIdentifierToLocalizationKey[mediaGroup.typeIdentifier];
+    NSString *localizationKeyPostfix = plural ? @"Plural" : @"Singular";
+    
+    if (localizationKey) {
+        localizationKey = [localizationKey stringByAppendingString:localizationKeyPostfix];
+        return NSLocalizedStringWithDefaultValue(localizationKey,
+                                                 nil, IMBBundle(), nil,
+                                                 @"Format string for object count");
+    }
+    return nil;
+}
 
 - (NSImage *)groupIconForTypeIdentifier:(NSString *)typeIdentifier highlight:(BOOL)highlight
 {
@@ -132,6 +181,43 @@ IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory =
                                       withMappingTable:&kIconTypeMapping
                                              highlight:highlight
                           considerGenericFallbackImage:NO];
+}
+
+- (NSImage *)thumbnailForObject:(IMBObject *)object baseThumbnail:(NSImage *)thumbnail
+{
+    if ([object isKindOfClass:[IMBNodeObject class]]) {
+        NSString *parentGroupIdentifier = object.preliminaryMetadata[@"Parent"];
+        if ([parentGroupIdentifier isEqualToString:kIMBApertureMediaGroupIdentifierFaces]) {
+            return [[IMBImageProcessor sharedInstance] imageSquaredWithCornerRadius:255 fromImage:thumbnail];
+        }
+    }
+    return thumbnail;
+}
+
+/**
+ */
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup baseThumbnail:(NSImage *)thumbnail
+{
+    NSString *groupTypeIdentifier = mediaGroup.typeIdentifier;
+    CGFloat cornerRadius = 0;
+    if ([groupTypeIdentifier isEqualToString:kIMBApertureMediaGroupTypeIdentifierFaces]) {
+        cornerRadius = 255.0;
+    }
+    thumbnail = [[IMBImageProcessor sharedInstance] imageSquaredWithCornerRadius:cornerRadius fromImage:thumbnail];
+    return thumbnail;
+}
+
+/**
+ */
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    MLMediaObject *keyMediaObject = [self keyMediaObjectForMediaGroup:mediaGroup];
+    
+    if (keyMediaObject) {
+        NSImage *baseThumbnail = [self thumbnailForMediaObject:keyMediaObject];
+        return [self thumbnailForMediaGroup:mediaGroup baseThumbnail:baseThumbnail];
+    }
+    return nil;
 }
 
 @end

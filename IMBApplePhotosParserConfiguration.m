@@ -7,6 +7,11 @@
 //
 
 #import "IMBApplePhotosParserConfiguration.h"
+#import "IMBNodeObject.h"
+#import "IMBImageProcessor.h"
+#import "NSImage+iMedia.h"
+#import "MLMediaGroup+iMedia.h"
+#import "IMBAppleMediaLibraryPropertySynchronizer.h"
 
 /**
  Reverse-engineered keys of the Photos app media source's attributes.
@@ -14,6 +19,11 @@
  Apple doesn't seem to yet publicly define these constants anywhere.
  */
 /* Top Level Groups*/
+NSString *kIMBPhotosMediaGroupTypeIdentifierRoot =   @"com.apple.Photos.RootGroup";
+NSString *kIMBPhotosMediaGroupTypeIdentifierFolder = @"com.apple.Photos.Folder";
+NSString *kIMBPhotosMediaGroupTypeIdentifierAlbum =  @"com.apple.Photos.Album";
+NSString *kIMBPhotosMediaGroupTypeIdentifierFaces =  @"com.apple.Photos.FacesAlbum";    // Used for Faces and single face
+
 NSString *kIMBPhotosMediaGroupIdentifierMoments = @"AllMomentsGroup";
 NSString *kIMBPhotosMediaGroupIdentifierCollections = @"AllCollectionsGroup";
 NSString *kIMBPhotosMediaGroupIdentifierYears = @"AllYearsGroup";
@@ -67,13 +77,11 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 
 /**
  */
-- (NSDictionary*) metadataForObject:(IMBObject*)inObject error:(NSError**)outError
+- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject
 {
-    if (outError) *outError = nil;
-    
     // Map metadata information from Photos library representation (MLMediaObject.attributes) to iMedia representation
     
-    NSDictionary *internalMetadata = inObject.preliminaryMetadata;
+    NSDictionary *internalMetadata = mediaObject.attributes;
     NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionary];
     
     // Width, height
@@ -144,6 +152,166 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
                                         nil];
     
     return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
+}
+
+/**
+ Returns whether group (aka node) is populated with child group objects rather than real media objects.
+ */
+- (BOOL)shouldUseChildGroupsAsMediaObjectsForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                        kIMBPhotosMediaGroupIdentifierAlbums,
+                                        kIMBPhotosMediaGroupIdentifierPeople,
+                                        kIMBPhotosMediaGroupIdentifierYears,
+                                        nil];
+    
+    BOOL whiteListed =  [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
+    
+    NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                          kIMBPhotosMediaGroupTypeIdentifierRoot,
+                                          nil];
+    
+    BOOL blackListed =  [unqualifiedGroupIdentifiers containsObject:mediaGroup.typeIdentifier];
+    
+    return (([[mediaGroup childGroups] count] > 0 && !blackListed) || whiteListed);
+}
+
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSString *keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
+    
+    // Gee, was hard to find out that this does the trick to enrich contents of attributes dictionary
+    if (!keyPhotoKey) {
+        [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
+        mediaGroup = [self.mediaSource mediaGroupForIdentifier:mediaGroup.identifier];
+        keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
+    }
+    if (keyPhotoKey) {
+        return [self.mediaSource mediaObjectForIdentifier:keyPhotoKey];
+    } else {
+//        NSLog(@"No key photo in media group %@", mediaGroup.attributes);
+        
+        return [super keyMediaObjectForMediaGroup:mediaGroup];
+    }
+}
+
+/**
+ */
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return [self _thumbnailForMediaGroup:mediaGroup mosaic:YES];
+}
+/**
+ */
+- (NSImage *)_thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup mosaic:(BOOL)mosaic
+{
+    if ([self isEmptyFolderMediaGroup:mediaGroup])
+    {
+        return [NSImage imb_imageForResource:@"empty_folder" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+    }
+    else if ([self isFolderMediaGroup:mediaGroup])
+    {
+        NSArray *childGroups = [mediaGroup imb_childGroupsUptoMaxCount:9];  // Square of 3x3
+        if (mosaic) {
+            NSMutableArray *mosaicThumbnails = [NSMutableArray array];
+            for (MLMediaGroup *childGroup in childGroups) {
+                [mosaicThumbnails addObject:[self _thumbnailForMediaGroup:childGroup mosaic:NO]];
+            }
+            NSImage *folderBackground = [NSImage imb_imageForResource:@"folder_background" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+            
+            return [[IMBImageProcessor sharedInstance] imageMosaicFromImages:mosaicThumbnails withBackgroundImage:folderBackground withCornerRadius:0.0];
+        } else {
+            return [self thumbnailForMediaGroup:(MLMediaGroup *)[childGroups firstObject]];
+        }
+    } else {
+        // Media group is not a folder
+        
+        MLMediaObject *keyMediaObject = [self keyMediaObjectForMediaGroup:mediaGroup];
+        
+        if (keyMediaObject) {
+            NSImage *baseThumbnail = [self thumbnailForMediaObject:keyMediaObject];
+            return [self thumbnailForMediaGroup:mediaGroup baseThumbnail:baseThumbnail];
+        } else {
+            return [NSImage imb_imageForResource:@"empty_album" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+        }
+    }
+}
+
+- (NSImage *)thumbnailForObject:(IMBObject *)object baseThumbnail:(NSImage *)thumbnail
+{
+    if ([object isKindOfClass:[IMBNodeObject class]]) {
+        if (thumbnail == nil) {
+            NSDictionary *mediaGroupTypeToResourceName =
+            @{
+              @"com.apple.Photos.Folder" : @"empty_folder",
+              @"com.apple.Photos.Album"  : @"empty_album",
+              };
+            
+            NSString *resourceName = mediaGroupTypeToResourceName[object.preliminaryMetadata[@"typeIdentifier"]];
+            if (!resourceName) resourceName = @"empty_album";
+            
+            thumbnail = [NSImage imb_imageForResource:resourceName fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+        }
+        NSString *groupTypeIdentifier = object.preliminaryMetadata[@"typeIdentifier"];
+        CGFloat cornerRadius = 0;
+        if ([groupTypeIdentifier isEqualToString:@"com.apple.Photos.FacesAlbum"]) {
+            cornerRadius = 255.0;
+        }
+        thumbnail = [[IMBImageProcessor sharedInstance] imageSquaredWithCornerRadius:cornerRadius fromImage:thumbnail];
+    }
+    return thumbnail;
+}
+
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup baseThumbnail:(NSImage *)thumbnail
+{
+    NSString *groupTypeIdentifier = mediaGroup.typeIdentifier;
+    CGFloat cornerRadius = 0;
+    if ([groupTypeIdentifier isEqualToString:@"com.apple.Photos.FacesAlbum"]) {
+        cornerRadius = 255.0;
+    }
+    thumbnail = [[IMBImageProcessor sharedInstance] imageSquaredWithCornerRadius:cornerRadius fromImage:thumbnail];
+    return thumbnail;
+}
+
+- (NSString *)countFormatForGroup: (MLMediaGroup *)mediaGroup plural:(BOOL)plural
+{
+    NSDictionary *typeIdentifierToLocalizationKey =
+    @{
+      @"com.apple.Photos.FacesAlbum" : @"IMBFaceObjectViewController.countFormat"
+      };
+    
+    NSString *localizationKey = typeIdentifierToLocalizationKey[mediaGroup.typeIdentifier];
+    
+    if (localizationKey == nil && [self shouldUseChildGroupsAsMediaObjectsForMediaGroup:mediaGroup]) {
+        localizationKey = @"IMBSkimmableObjectViewController.countFormat";
+    }
+    
+    NSString *localizationKeyPostfix = plural ? @"Plural" : @"Singular";
+    
+    if (localizationKey) {
+        localizationKey = [localizationKey stringByAppendingString:localizationKeyPostfix];
+        return NSLocalizedStringWithDefaultValue(localizationKey,
+                                                 nil, IMBBundle(), nil,
+                                                 @"Format string for object count");
+    }
+    return nil;
+}
+
+#pragma mark - Utility
+
+- (BOOL)isFolderMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return ([mediaGroup.typeIdentifier isEqualToString:kIMBPhotosMediaGroupTypeIdentifierFolder]);
+}
+
+- (BOOL)isEmptyFolderMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return ([self isFolderMediaGroup:mediaGroup] && [[mediaGroup childGroups] count] == 0 );
+}
+
+- (BOOL)isEmptyButNotFolderMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return (![self isFolderMediaGroup:mediaGroup] && [[mediaGroup childGroups] count] == 0 );
 }
 
 @end

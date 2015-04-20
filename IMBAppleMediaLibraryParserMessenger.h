@@ -8,6 +8,8 @@
 
 #import <iMedia/iMedia.h>
 
+extern NSString *kIMBMediaGroupAttributeObjectMediaCount;
+
 @interface IMBAppleMediaLibraryParserMessenger : IMBParserMessenger
 
 @end

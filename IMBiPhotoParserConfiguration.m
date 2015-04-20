@@ -7,8 +7,20 @@
 //
 
 #import "IMBiPhotoParserConfiguration.h"
+#import "IMBAppleMediaLibraryParserMessenger.h"
 #import "NSImage+iMedia.h"
 #import "IMBIconCache.h"
+#import "IMBNodeObject.h"
+#import "IMBImageProcessor.h"
+#import "MLMediaGroup+iMedia.h"
+
+/**
+ Reverse-engineered values of the iPhoto app media group type identifiers.
+ 
+ Apple doesn't seem to yet publicly define these constants anywhere.
+ */
+NSString *kIMBiPhotoMediaGroupTypeIdentifierEvents =  @"com.apple.iPhoto.RollAlbum";
+NSString *kIMBiPhotoMediaGroupTypeIdentifierFaces =  @"com.apple.iPhoto.FacesAlbum";
 
 /**
  Attribute keys supported by iPhoto media source (as of OS X 10.10.3)
@@ -47,17 +59,25 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
 
 /**
  */
-- (NSDictionary*) metadataForObject:(IMBObject*)inObject error:(NSError**)outError
+- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject
 {
-    if (outError) *outError = nil;
+    // Map metadata information from iPhoto library representation to iMedia representation
     
-    // Map metadata information from iPhoto library representation (MLMediaObject.attributes) to iMedia representation
+    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionaryWithDictionary:mediaObject.attributes];
     
-    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionaryWithDictionary:inObject.preliminaryMetadata];
-    
-    [externalMetadata addEntriesFromDictionary:[NSImage imb_metadataFromImageAtURL:inObject.URL checkSpotlightComments:NO]];
+    if (mediaObject.URL) {
+        [mediaObject.URL startAccessingSecurityScopedResource];
+        [externalMetadata addEntriesFromDictionary:[NSImage imb_metadataFromImageAtURL:mediaObject.URL checkSpotlightComments:NO]];
+        [mediaObject.URL stopAccessingSecurityScopedResource];
+    }
     
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
+}
+
+- (NSDictionary *)metadataForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    
+    return @{ kIMBMediaGroupAttributeObjectMediaCount : [mediaGroup imb_mediaObjectCount]};
 }
 
 /**
@@ -86,12 +106,62 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
     return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
 }
 
-- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup fromMediaSource:(MLMediaSource *)mediaSource
+/**
+ Returns whether group (aka node) is populated with child group objects rather than real media objects.
+ */
+- (BOOL)shouldUseChildGroupsAsMediaObjectsForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
+                                        kIMBiPhotoMediaGroupIdentifierEvents,
+                                        kIMBiPhotoMediaGroupIdentifierFaces,
+                                        nil];
+    
+    return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
+}
+
+/**
+ @return Type of media group given unified across all supported media sources.
+ */
+- (IMBMLMediaGroupType *)typeForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    NSString *mediaGroupTypeIdentifier = mediaGroup.typeIdentifier;
+    
+    if ([mediaGroupTypeIdentifier isEqualToString:@"com.apple.iPhoto.EventsFolder"]) {
+        return kIMBMLMediaGroupTypeEventsFolder;
+    } else if ([mediaGroupTypeIdentifier isEqualToString:@"com.apple.iPhoto.FacesAlbum"]) {
+        return kIMBMLMediaGroupTypeFacesFolder;
+    }
+    return [super typeForMediaGroup:mediaGroup];
+}
+
+- (NSString *)countFormatForGroup:(MLMediaGroup *)mediaGroup plural:(BOOL)plural
+{
+    NSDictionary *typeIdentifierToLocalizationKey =
+    @{
+      @"com.apple.iPhoto.EventsFolder" : @"IMBiPhotoEventObjectViewController.countFormat"
+      ,@"com.apple.iPhoto.FacesAlbum" : @"IMBFaceObjectViewController.countFormat"
+      };
+    
+    NSString *localizationKey = typeIdentifierToLocalizationKey[mediaGroup.typeIdentifier];
+    NSString *localizationKeyPostfix = plural ? @"Plural" : @"Singular";
+    
+    if (localizationKey) {
+        localizationKey = [localizationKey stringByAppendingString:localizationKeyPostfix];
+        return NSLocalizedStringWithDefaultValue(localizationKey,
+                                                 nil, IMBBundle(), nil,
+                                                 @"Format string for object count");
+    }
+    return nil;
+}
+
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
 {
     NSString *keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
     
     if (keyPhotoKey) {
-        return [mediaSource mediaObjectForIdentifier:keyPhotoKey];
+        return [self.mediaSource mediaObjectForIdentifier:keyPhotoKey];
+    } else {
+        return [super keyMediaObjectForMediaGroup:mediaGroup];
     }
     return nil;
 }
@@ -141,6 +211,51 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
                                       withMappingTable:&kIconTypeMapping
                                              highlight:highlight
                           considerGenericFallbackImage:NO];
+}
+
+- (NSImage *)thumbnailForObject:(IMBObject *)object baseThumbnail:(NSImage *)thumbnail
+{
+    if ([object isKindOfClass:[IMBNodeObject class]]) {
+        if (thumbnail != nil) {
+            NSString *parentGroupIdentifier = object.preliminaryMetadata[@"Parent"];
+            if ([parentGroupIdentifier isEqualToString:kIMBiPhotoMediaGroupIdentifierEvents]) {
+                return [[IMBImageProcessor sharedInstance] imageSquaredWithCornerRadius:25 fromImage:thumbnail];
+            } else if ([parentGroupIdentifier isEqualToString:kIMBiPhotoMediaGroupIdentifierFaces]) {
+                return [[IMBImageProcessor sharedInstance] imageSquaredWithCornerRadius:255 fromImage:thumbnail];
+            }
+        } else {
+            NSLog(@"No thumbnail for %@", object);
+        }
+    }
+    return thumbnail;
+}
+
+/**
+ */
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup baseThumbnail:(NSImage *)thumbnail
+{
+    NSString *groupTypeIdentifier = mediaGroup.typeIdentifier;
+    CGFloat cornerRadius = 0;
+    if ([groupTypeIdentifier isEqualToString:kIMBiPhotoMediaGroupTypeIdentifierFaces]) {
+        cornerRadius = 255.0;
+    } else if ([groupTypeIdentifier isEqualToString:kIMBiPhotoMediaGroupTypeIdentifierEvents]) {
+        cornerRadius = 25.0;
+    }
+    thumbnail = [[IMBImageProcessor sharedInstance] imageSquaredWithCornerRadius:cornerRadius fromImage:thumbnail];
+    return thumbnail;
+}
+
+/**
+ */
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    MLMediaObject *keyMediaObject = [self keyMediaObjectForMediaGroup:mediaGroup];
+    
+    if (keyMediaObject) {
+        NSImage *baseThumbnail = [self thumbnailForMediaObject:keyMediaObject];
+        return [self thumbnailForMediaGroup:mediaGroup baseThumbnail:baseThumbnail];
+    }
+    return nil;
 }
 
 @end

@@ -25,13 +25,11 @@ IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
 
 /**
  */
-- (NSDictionary*) metadataForObject:(IMBObject*)inObject error:(NSError**)outError
+- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject
 {
-    if (outError) *outError = nil;
+    // Map metadata information from iTunes library representation to iMedia representation
     
-    // Map metadata information from iTunes library representation (MLMediaObject.attributes) to iMedia representation
-    
-    NSDictionary *internalMetadata = inObject.preliminaryMetadata;
+    NSDictionary *internalMetadata = mediaObject.attributes;
     NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionary];
     
     double duration = [[internalMetadata objectForKey:@"Total Time"] doubleValue] / 1000.0;
@@ -76,4 +74,15 @@ IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
     //    NSLog(@"Identifier for media group %@: %@", mediaGroup.name, mediaGroup.identifier);
     return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];
 }
+
+- (BOOL)shouldUseChildGroupsAsMediaObjectsForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return NO;
+}
+
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    
+}
+
 @end

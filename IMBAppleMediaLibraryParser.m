@@ -30,6 +30,11 @@
     #define LOG_MEASURED_TIME(id, ...)
 #endif
 
+NSString *kIMBMLMediaGroupTypeAlbum = @"Album";
+NSString *kIMBMLMediaGroupTypeFolder = @"Folder";
+NSString *kIMBMLMediaGroupTypeEventsFolder = @"EventsFolder";
+NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
+
 @implementation IMBAppleMediaLibraryParser
 
 @synthesize AppleMediaLibrary = _AppleMediaLibrary;
@@ -144,12 +149,17 @@
     
     NSMutableArray* objects = [NSMutableArray array];
     
-    if (!inParentNode.objects && ([childGroups count] == 0 || ![self.configuration shouldPopulateNodesWithNodeObjects]))
-    {
+    NSArray *mediaObjectRepresentations = parentGroup.attributes[@"keyList"];
+    if (YES /*mediaObjectRepresentations == nil*/) {
         START_MEASURE(1);
-        NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
+        mediaObjectRepresentations = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
         STOP_MEASURE(1);
         LOG_MEASURED_TIME(1, @"fetch of media Objects for group %@", parentGroup.name);
+    }
+    BOOL shouldUseChildGroupsAsMediaObjects = [self.configuration shouldUseChildGroupsAsMediaObjectsForMediaGroup:parentGroup];
+    
+    if (!inParentNode.objects && ([childGroups count] == 0 || !shouldUseChildGroupsAsMediaObjects))
+    {
         
 #if CREATE_MEDIA_OBJECTS_CONCURRENTLY
         dispatch_group_t dispatchGroup = dispatch_group_create();
@@ -158,8 +168,18 @@
         
         START_MEASURE(2);
         
-        for (MLMediaObject *mediaObject in mediaObjects)
+        MLMediaObject *mediaObject = nil;
+        for (id mediaObjectRepresentation in mediaObjectRepresentations)
         {
+            if ([mediaObjectRepresentation isKindOfClass:[MLMediaObject class]]) {
+                mediaObject = (MLMediaObject *)mediaObjectRepresentation;
+            } else {
+                // Media object representation must be media object identifier string
+                mediaObject = [self.AppleMediaSource mediaObjectForIdentifier:mediaObjectRepresentation];
+            }
+            
+            if (!mediaObject) continue;
+
 #if CREATE_MEDIA_OBJECTS_CONCURRENTLY
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
             dispatch_group_async(dispatchGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -189,7 +209,7 @@
     
     NSMutableArray* subnodes = [inParentNode mutableArrayForPopulatingSubnodes];
     
-    NSLog(@"Group %@ has %zd child groups", parentGroup.name, [childGroups count]);
+//    NSLog(@"Group %@ has %zd child groups", parentGroup.name, [childGroups count]);
     
     START_MEASURE(3);
     
@@ -211,12 +231,17 @@
             
             [subnodes addObject:childNode];
             
-            if ([childGroups count] > 0 && [self.configuration shouldPopulateNodesWithNodeObjects]) {
-                [objects addObject:[self nodeObjectForNode:childNode]];
+            if (shouldUseChildGroupsAsMediaObjects) {
+                [objects addObject:[self nodeObjectForMediaGroup:mediaGroup]];
+                
+                // Preemptively load media objects so that we might get a key photo (crazy stuff)
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0), ^
+                               {
+                                   mediaGroup.mediaObjects;     // May cause wanted side-effect of enriching media group's attributes dict
+//                                   NSLog(@"Preemptively fetched media objects for media Group: %@", mediaGroup.name);
+                               });
             }
-            
 //            NSLog(@"Initializing subgroup: %@ (%@)", [mediaGroup name], [mediaGroup identifier]);
-            
         }
     }
     if (!inParentNode.objects) inParentNode.objects = objects;
@@ -228,60 +253,78 @@
     return YES;
 }
 
+///**
+// */
+//- (id)thumbnailForObject:(IMBObject *)inObject error:(NSError **)outError
+//{
+//    NSError *error = nil;
+//    NSURL *url = nil;
+//    
+//    MLMediaObject *mediaObject = [self mediaObjectForObject:inObject];
+//    if (inObject.imageLocation)
+//    {
+//        if ([inObject.imageLocation isKindOfClass:[NSData class]]) {
+//            url = [self URLForBookmark:(NSData *)inObject.imageLocation error:&error];
+//        } else if ([inObject.imageLocation isKindOfClass:[NSURL class]]) {
+//            url = inObject.imageLocation;
+//        }
+//    } else {
+//        url = mediaObject.thumbnailURL;
+//        inObject.imageLocation = url;
+//    }
+//    
+//    NSImage *thumbnail = nil;
+//    
+//    if (url) {
+//        NSAssert([inObject.imageRepresentationType isEqualToString:IKImageBrowserNSImageRepresentationType],
+//                 @"Unsupported image representation type %@ found in %@. \
+//                 Expecting IKImageBrowserNSImageRepresentationType", inObject.imageRepresentationType, inObject);
+//        
+//        thumbnail = [self.configuration thumbnailForMediaObject:mediaObject];
+//     }
+//    // Configuration may provide Thumbnail even if base thumbnail is nil
+//    if ([self.configuration respondsToSelector:@selector(thumbnailForObject:baseThumbnail:)]) {
+//        thumbnail = [self.configuration thumbnailForObject:inObject baseThumbnail:thumbnail];
+//    }
+//    return thumbnail;
+//}
 
-//
-//
+/**
+ */
 - (id)thumbnailForObject:(IMBObject *)inObject error:(NSError **)outError
 {
     NSError *error = nil;
     
-    // IKImageBrowser can also deal with NSData type (IKImageBrowserNSDataRepresentationType)
+    if (*outError) *outError = error;
     
-    NSURL *url = nil;
-    if (inObject.imageLocation)
-    {
-        url = [self URLForBookmark:(NSData *)inObject.imageLocation error:&error];
+    if ([inObject isKindOfClass:[IMBNodeObject class]]) {
+        MLMediaGroup *mediaGroup = [self mediaGroupForNodeObject:(IMBNodeObject *)inObject];
+        return [self.configuration thumbnailForMediaGroup:mediaGroup];
     } else {
         MLMediaObject *mediaObject = [self mediaObjectForObject:inObject];
-        url = mediaObject.thumbnailURL;
+        return [self.configuration thumbnailForMediaObject:mediaObject];
     }
-    
-    if (url) {
-        id thumbnail = nil;
-        
-        [url startAccessingSecurityScopedResource];
-        
-        if ([inObject.imageRepresentationType isEqualToString:IKImageBrowserNSImageRepresentationType]) {
-            thumbnail = (id)[[NSImage alloc] initWithContentsOfURL:url];
-        }
-        else if ([inObject.imageRepresentationType isEqualToString:IKImageBrowserCGImageRepresentationType])
-        {
-            thumbnail = (id)[self thumbnailFromLocalImageFileForObject:inObject error:outError];
-        }
-        else
-        {
-            inObject.imageRepresentationType = IKImageBrowserNSDataRepresentationType;
-            thumbnail = (id)[NSData dataWithContentsOfURL:url];
-        }
-        [url stopAccessingSecurityScopedResource];
-        
-        return thumbnail;
-    } else {
-        inObject.imageRepresentationType = IKImageBrowserCGImageRepresentationType;
-        return (id)[self thumbnailFromLocalImageFileForObject:inObject error:outError];
-    }
-    return nil;
 }
 
+/**
+ */
 - (NSDictionary *)metadataForObject:(IMBObject *)inObject error:(NSError *__autoreleasing *)outError
 {
     NSError *error = nil;
-    NSDictionary *metadata = nil;
-    if ([self.configuration respondsToSelector:@selector(metadataForObject:error:)])
-    {
-        metadata = [self.configuration metadataForObject:inObject error:&error];
+    NSDictionary *metadata = @{};
+    
+    if ([inObject isKindOfClass:[IMBNodeObject class]]) {
+        if ([self.configuration respondsToSelector:@selector(metadataForMediaGroup:)])
+        {
+            MLMediaGroup *mediaGroup = [self mediaGroupForNodeObject:(IMBNodeObject *)inObject];
+            metadata = [self.configuration metadataForMediaGroup:mediaGroup];
+        }
     } else {
-        metadata = @{};
+        if ([self.configuration respondsToSelector:@selector(metadataForMediaObject:)])
+        {
+            MLMediaObject *mediaObject = [self mediaObjectForObject:inObject];
+            metadata = [self.configuration metadataForMediaObject:mediaObject];
+        }
     }
     if (outError) *outError = error;
 
@@ -328,6 +371,12 @@
     node.watcherType = kIMBWatcherTypeNone;     // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
     
     node.identifier = [self globalIdentifierForMediaGroup:mediaGroup];
+    node.attributes = @{ @"type" : [self.configuration typeForMediaGroup:mediaGroup] };
+    
+    if ([self.configuration respondsToSelector:@selector(countFormatForGroup:plural:)]) {
+        node.objectCountFormatSingular = [self.configuration countFormatForGroup:mediaGroup plural:NO];
+        node.objectCountFormatPlural = [self.configuration countFormatForGroup:mediaGroup plural:YES];
+    }
     
 //    NSLog(@"Group with name: %@ has type identifier: %@ and identifier: %@", mediaGroup.name, mediaGroup.typeIdentifier, mediaGroup.identifier);
     
@@ -344,19 +393,30 @@
 
 /**
  */
-- (IMBNodeObject *)nodeObjectForNode:(IMBNode *)node
+- (IMBNodeObject *)nodeObjectForMediaGroup:(MLMediaGroup *)mediaGroup
 {
     IMBNodeObject* object = [[IMBNodeObject alloc] init];
-    object.identifier = node.identifier;
-    object.representedNodeIdentifier = node.identifier;
+    object.identifier = [self globalIdentifierForMediaGroup:mediaGroup];
+    object.representedNodeIdentifier = object.identifier;
 //    object.location = url;
-    object.imageRepresentation = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:[self mediaGroupForNode:node]];
+//    object.imageRepresentation = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:[self mediaGroupForNode:node]];
 //    object.needsImageRepresentation = NO;
-    object.name = node.name;
+    object.name = [self localizedNameForMediaGroup:mediaGroup];
     object.metadata = nil;
     object.parserIdentifier = self.identifier;
+    object.imageRepresentationType = IKImageBrowserNSImageRepresentationType;
+    object.preliminaryMetadata = mediaGroup.attributes;
     
     return object;
+}
+
+/**
+ Fetches the media group from Apple's media library that corresponds to iMedia's "native" IMBNodeObject.
+ */
+- (MLMediaGroup *)mediaGroupForNodeObject:(IMBNodeObject *)nodeObject
+{
+    NSString *mediaGroupIdentifier = [nodeObject.representedNodeIdentifier substringFromIndex:[[self identifierPrefix] length]];
+    return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
 }
 
 /**
@@ -456,7 +516,7 @@
         IMBNodeObject *nodeObject = (IMBNodeObject *)object;
         NSString *mediaGroupIdentifier = [nodeObject.representedNodeIdentifier substringFromIndex:[[self identifierPrefix] length]];
         MLMediaGroup *mediaGroup = (MLMediaGroup *)[self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
-        return [self keyMediaObjectForMediaGroup:mediaGroup];
+        return [self.configuration keyMediaObjectForMediaGroup:mediaGroup];
     } else {
         return [self.AppleMediaSource mediaObjectForIdentifier:object.identifier];
     }
@@ -478,22 +538,6 @@
     } else {
         return [[mediaObject.URL lastPathComponent] stringByDeletingPathExtension];
     }
-}
-
-/**
- */
-- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
-{
-    MLMediaObject *mediaObject = nil;
-    
-    if ([self.configuration respondsToSelector:@selector(keyMediaObjectForMediaGroup:fromMediaSource:)]) {
-        mediaObject = [self.configuration keyMediaObjectForMediaGroup:mediaGroup fromMediaSource:self.AppleMediaSource];
-    }
-    if (mediaObject == nil) {
-        NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
-        mediaObject = [mediaObjects lastObject];
-    }
-    return mediaObject;
 }
 
 /**

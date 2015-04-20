@@ -11,7 +11,23 @@
 
 #import "IMBParser.h"
 
+typedef NSString IMBMLMediaGroupType;
+
+// Eligible IMBMLMediaGroupType values
+extern NSString *kIMBMLMediaGroupTypeAlbum;
+extern NSString *kIMBMLMediaGroupTypeFolder;
+extern NSString *kIMBMLMediaGroupTypeEventsFolder;
+extern NSString *kIMBMLMediaGroupTypeFacesFolder;
+
+#pragma mark -
+
 @protocol IMBAppleMediaLibraryParserDelegate <NSObject>
+
+#pragma mark Mandatory
+
+/**
+ */
+- (void) setMediaSource:(MLMediaSource *)mediaSource;
 
 /**
  Returns the identifier for the app that is associated with sources handled by the parser. Must be subclassed.
@@ -36,11 +52,37 @@
 - (NSSet *)identifiersOfNonUserCreatedGroups;
 
 /**
- Returns whether a node is populated with node objects rather than media objects when node is not a leaf node.
+ @return Type of media group provided unified across all possible media sources.
+ @discussion Default return value is kIMBMLMediaGroupTypeAlbum.
  */
-- (BOOL)shouldPopulateNodesWithNodeObjects;
+- (IMBMLMediaGroupType *)typeForMediaGroup:(MLMediaGroup *)mediaGroup;
+
+/**
+ Returns whether group (aka node) is populated with child group objects rather than real media objects.
+ */
+- (BOOL)shouldUseChildGroupsAsMediaObjectsForMediaGroup:(MLMediaGroup *)mediaGroup;
+
+/**
+ */
+- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup;
+
+/**
+ */
+- (NSImage *)thumbnailForMediaObject:(MLMediaObject *)mediaObject;
+
+/**
+ */
+- (NSImage *)thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup;
+
+#pragma mark Optional
 
 @optional
+
+/**
+ @return A thumbnail to be used as the image representation of object.
+ @parameter thumbnail The original thumbnail of the media object used by default
+ */
+- (NSImage *)thumbnailForObject:(IMBObject *)object baseThumbnail:(NSImage *)thumbnail;
 
 /**
  The name of the library used for display.
@@ -58,10 +100,16 @@
 - (NSURL *)mediaSourceURLForGroup:(MLMediaGroup *)mediaGroup;
 
 /**
- Returns a dictionary of metadata for inObject.
+ Returns a dictionary of metadata for mediaObject.
  @discussion Keys must conform to what's used in -...
  */
-- (NSDictionary *)metadataForObject:(IMBObject *)inObject error:(NSError *__autoreleasing *)outError;
+- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject;
+
+/**
+ Returns a dictionary of metadata for mediaGroup.
+ @discussion Keys must conform to what's used in -...
+ */
+- (NSDictionary *)metadataForMediaGroup:(MLMediaGroup *)mediaGroup;
 
 /**
  Returns whether a media group should be displayed or not. Default is YES.
@@ -75,17 +123,19 @@
 - (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup;
 
 /**
- */
-- (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup fromMediaSource:(MLMediaSource *)mediaSource;
-
-/**
  Returns customized group icon for group type specified by typeIdentifier.
  @discussion
  If you don't implement this method or it returns nil then -[MLMediaGroup icon] will be utilized instead.
  */
 - (NSImage *)groupIconForTypeIdentifier:(NSString *)typeIdentifier highlight:(BOOL)highlight;
 
+/**
+ */
+- (NSString *)countFormatForGroup: (MLMediaGroup *)mediaGroup plural:(BOOL)plural;
+
 @end
+
+#pragma mark -
 
 /**
  Base class for parser classes that access their libraries through Apple's MediaLibrary framework. May be used as is. Must be configured through delegate.
