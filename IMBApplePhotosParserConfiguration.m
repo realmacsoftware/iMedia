@@ -227,7 +227,11 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
             if (![self isFacesMediaGroup:mediaGroup]) {
                 folderBackground = [NSImage imb_imageForResource:@"folder_background" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
             }
-            return [[IMBImageProcessor sharedInstance] imageMosaicFromImages:mosaicThumbnails withBackgroundImage:folderBackground withCornerRadius:0.0];
+            NSImage *thumbnail = [[IMBImageProcessor sharedInstance] imageMosaicFromImages:mosaicThumbnails withBackgroundImage:folderBackground withCornerRadius:0.0];
+            if (!thumbnail) {
+                thumbnail = [NSImage imb_imageForResource:@"empty_folder" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+            }
+            return thumbnail;
         } else {
             return [self _thumbnailForMediaGroup:(MLMediaGroup *)[childGroups firstObject] mosaic:mosaic];
         }
