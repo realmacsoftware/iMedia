@@ -16,7 +16,8 @@
 
 #define USE_PARSER_ANNOTATED_LIBRARY_NAME 0
 
-#define CREATE_MEDIA_OBJECTS_CONCURRENTLY 1
+// Keep in mind that concurrently creating media objects would require their sorting to date afterwards (niy)
+#define CREATE_MEDIA_OBJECTS_CONCURRENTLY 0
 
 #define MEASURE_EXECUTION_TIME 0
 
