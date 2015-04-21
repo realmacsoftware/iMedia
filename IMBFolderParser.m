@@ -124,7 +124,7 @@
     
 	// Create an empty root node (unpopulated and without subnodes)...
 	
-	NSString* name = [fileManager displayNameAtPath:[path stringByDeletingPathExtension]];
+	NSString* name = [fileManager displayNameAtPath:path];
     name = [name stringByReplacingOccurrencesOfString:@"_" withString:@" "];
 	
 	IMBNode* node = [[[IMBNode alloc] initWithParser: self topLevel:YES] autorelease];
