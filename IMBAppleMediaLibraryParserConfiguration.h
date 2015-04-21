@@ -88,5 +88,8 @@ extern IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory;
  */
 - (NSImage *)thumbnailForMediaObject:(MLMediaObject *)mediaObject;
 
+/**
+ */
+- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject;
 @end
 

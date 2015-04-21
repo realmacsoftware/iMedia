@@ -46,23 +46,6 @@ IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory =
 @implementation IMBApertureParserConfiguration
 
 /**
- */
-- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject
-{
-    // Map metadata information from iPhoto library representation to iMedia representation
-    
-    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionaryWithDictionary:mediaObject.attributes];
-    
-    if (mediaObject.URL) {
-        [mediaObject.URL startAccessingSecurityScopedResource];
-        [externalMetadata addEntriesFromDictionary:[NSImage imb_metadataFromImageAtURL:mediaObject.URL checkSpotlightComments:NO]];
-        [mediaObject.URL stopAccessingSecurityScopedResource];
-    }
-    
-    return [NSDictionary dictionaryWithDictionary:externalMetadata];
-}
-
-/**
  Hardcoded library name.
  */
 - (NSString *)libraryName

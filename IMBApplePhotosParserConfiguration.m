@@ -77,40 +77,6 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 
 /**
  */
-- (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject
-{
-    // Map metadata information from Photos library representation (MLMediaObject.attributes) to iMedia representation
-    
-    NSDictionary *internalMetadata = mediaObject.attributes;
-    NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionary];
-    
-    // Width, height
-    
-    NSString *resolutionString = internalMetadata[@"resolutionString"];
-    if ([resolutionString isKindOfClass:[NSString class]]) {
-        NSSize size = NSSizeFromString(resolutionString);
-        externalMetadata[@"width"] = [NSString stringWithFormat:@"%d", (int)size.width];
-        externalMetadata[@"height"] = [NSString stringWithFormat:@"%d", (int)size.height];
-    }
-    
-    // Creation date and time
-    
-    id timeInterval = internalMetadata[@"DateAsTimerInterval"];
-    NSString *timeIntervalString = nil;
-    if ([timeInterval isKindOfClass:[NSNumber class]]) {
-        timeIntervalString = [((NSNumber *)timeInterval) stringValue];
-    } else if ([timeInterval isKindOfClass:[NSString class]]) {
-        timeIntervalString = timeInterval;
-    }
-    if (timeIntervalString) {
-        externalMetadata[@"dateTime"] = timeIntervalString;
-    }
-    
-    return [NSDictionary dictionaryWithDictionary:externalMetadata];
-}
-
-/**
- */
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
     NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
