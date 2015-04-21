@@ -414,7 +414,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     object.metadata = nil;
     object.parserIdentifier = self.identifier;
     object.imageRepresentationType = IKImageBrowserNSImageRepresentationType;
-    object.preliminaryMetadata = mediaGroup.attributes;
+//    object.preliminaryMetadata = mediaGroup.attributes;       // We should not need this on the non-XPC side
     
     return object;
 }
