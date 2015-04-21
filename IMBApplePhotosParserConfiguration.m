@@ -178,6 +178,8 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 
 - (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
 {
+    NSAssert(mediaGroup.identifier != nil, @"Identifier of media group %@ must not be nil",mediaGroup.name);
+    
     NSString *keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
     
     // Gee, was hard to find out that this does the trick to enrich contents of attributes dictionary
@@ -205,25 +207,31 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
  */
 - (NSImage *)_thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup mosaic:(BOOL)mosaic
 {
+    if (mediaGroup == nil) {
+        NSLog(@"OMG! media group is nil");
+    }
     if ([self isEmptyFolderMediaGroup:mediaGroup])
     {
         return [NSImage imb_imageForResource:@"empty_folder" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
     }
-    else if ([self isFolderMediaGroup:mediaGroup])
+    else if ([self isFolderMediaGroup:mediaGroup] || [self isFacesMediaGroup:mediaGroup])
     {
         NSArray *childGroups = [mediaGroup imb_childGroupsUptoMaxCount:9];  // Square of 3x3
         if (mosaic) {
             NSMutableArray *mosaicThumbnails = [NSMutableArray array];
             for (MLMediaGroup *childGroup in childGroups) {
-                [mosaicThumbnails addObject:[self _thumbnailForMediaGroup:childGroup mosaic:NO]];
+                NSImage *thumbnail = [self _thumbnailForMediaGroup:childGroup mosaic:NO];
+                if (thumbnail) [mosaicThumbnails addObject:thumbnail];
             }
-            NSImage *folderBackground = [NSImage imb_imageForResource:@"folder_background" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
-            
+            NSImage *folderBackground = nil;
+            if (![self isFacesMediaGroup:mediaGroup]) {
+                folderBackground = [NSImage imb_imageForResource:@"folder_background" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+            }
             return [[IMBImageProcessor sharedInstance] imageMosaicFromImages:mosaicThumbnails withBackgroundImage:folderBackground withCornerRadius:0.0];
         } else {
-            return [self thumbnailForMediaGroup:(MLMediaGroup *)[childGroups firstObject]];
+            return [self _thumbnailForMediaGroup:(MLMediaGroup *)[childGroups firstObject] mosaic:mosaic];
         }
-    } else {
+    } else if (mediaGroup != nil) {
         // Media group is not a folder
         
         MLMediaObject *keyMediaObject = [self keyMediaObjectForMediaGroup:mediaGroup];
@@ -235,6 +243,7 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
             return [NSImage imb_imageForResource:@"empty_album" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
         }
     }
+    return nil;
 }
 
 - (NSImage *)thumbnailForObject:(IMBObject *)object baseThumbnail:(NSImage *)thumbnail
@@ -302,6 +311,13 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 - (BOOL)isFolderMediaGroup:(MLMediaGroup *)mediaGroup
 {
     return ([mediaGroup.typeIdentifier isEqualToString:kIMBPhotosMediaGroupTypeIdentifierFolder]);
+}
+
+- (BOOL)isFacesMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    // Rule out all "face" media groups that have the same type as the "faces" media group
+    return ([mediaGroup.typeIdentifier isEqualToString:kIMBPhotosMediaGroupTypeIdentifierFaces] &&
+            [mediaGroup.childGroups count] > 0);
 }
 
 - (BOOL)isEmptyFolderMediaGroup:(MLMediaGroup *)mediaGroup
