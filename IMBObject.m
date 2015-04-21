@@ -673,8 +673,12 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 					NSLog(@"%s Error trying to load thumbnail of IMBObject %@ (%@)",__FUNCTION__,self.name,inError);
                     
                     self.accessibility = kIMBResourceDoesNotExist;
+					self.error = inError;
 				}
-                self.error = inError;
+				else {
+					self.error = inPopulatedObject.error;
+				}
+				
                 self.accessibility = inPopulatedObject.accessibility;
                 self.imageRepresentationType = inPopulatedObject.imageRepresentationType;
                 [self storeReceivedImageRepresentation:inPopulatedObject.atomic_imageRepresentation];
