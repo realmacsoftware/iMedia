@@ -63,8 +63,6 @@
 		301C61FB1AAF45C200A0E15F /* IMBiTunesParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 301C61F91AAF45C200A0E15F /* IMBiTunesParserConfiguration.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		301D0B4A1AE009B100BF8F6E /* IMBImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 301D0B481AE009B100BF8F6E /* IMBImageProcessor.h */; };
 		301D0B4B1AE009B100BF8F6E /* IMBImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 301D0B491AE009B100BF8F6E /* IMBImageProcessor.m */; };
-		301D0B4E1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 301D0B4C1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.h */; };
-		301D0B4F1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 301D0B4D1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.m */; };
 		301D0B531AE2B22F00BF8F6E /* MLMediaGroup+iMedia.h in Headers */ = {isa = PBXBuildFile; fileRef = 301D0B511AE2B22F00BF8F6E /* MLMediaGroup+iMedia.h */; };
 		301D0B541AE2B23000BF8F6E /* MLMediaGroup+iMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 301D0B521AE2B22F00BF8F6E /* MLMediaGroup+iMedia.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		30231595176890F900A38B24 /* IMBFacebookObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 30231593176890F900A38B24 /* IMBFacebookObject.h */; };
@@ -173,6 +171,10 @@
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		8F47B39110C416050013ED25 /* IMBOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F47B38F10C416050013ED25 /* IMBOrderedDictionary.h */; };
 		8F47B39210C416050013ED25 /* IMBOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F47B39010C416050013ED25 /* IMBOrderedDictionary.m */; };
+		8F6164E91AE6C0BF00F1259D /* IMBLightroom6Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F6164E51AE6C0BF00F1259D /* IMBLightroom6Parser.h */; };
+		8F6164EA1AE6C0BF00F1259D /* IMBLightroom6Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F6164E61AE6C0BF00F1259D /* IMBLightroom6Parser.m */; };
+		8F6164EB1AE6C0BF00F1259D /* IMBLightroom6VideoParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F6164E71AE6C0BF00F1259D /* IMBLightroom6VideoParser.h */; };
+		8F6164EC1AE6C0BF00F1259D /* IMBLightroom6VideoParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F6164E81AE6C0BF00F1259D /* IMBLightroom6VideoParser.m */; };
 		8F76F8621770D259007B56FC /* IMBLightroom5VideoParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F76F8601770D259007B56FC /* IMBLightroom5VideoParser.h */; };
 		8F76F8631770D259007B56FC /* IMBLightroom5VideoParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F76F8611770D259007B56FC /* IMBLightroom5VideoParser.m */; };
 		8F93177E10A9FC53002CDB19 /* IMBPyramidObjectPromise.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F93177C10A9FC53002CDB19 /* IMBPyramidObjectPromise.h */; };
@@ -673,8 +675,6 @@
 		301C61F91AAF45C200A0E15F /* IMBiTunesParserConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBiTunesParserConfiguration.m; sourceTree = "<group>"; };
 		301D0B481AE009B100BF8F6E /* IMBImageProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBImageProcessor.h; sourceTree = "<group>"; };
 		301D0B491AE009B100BF8F6E /* IMBImageProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBImageProcessor.m; sourceTree = "<group>"; };
-		301D0B4C1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBAppleMediaLibraryEventObjectViewController.h; sourceTree = "<group>"; };
-		301D0B4D1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBAppleMediaLibraryEventObjectViewController.m; sourceTree = "<group>"; };
 		301D0B511AE2B22F00BF8F6E /* MLMediaGroup+iMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MLMediaGroup+iMedia.h"; sourceTree = "<group>"; };
 		301D0B521AE2B22F00BF8F6E /* MLMediaGroup+iMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MLMediaGroup+iMedia.m"; sourceTree = "<group>"; };
 		30231593176890F900A38B24 /* IMBFacebookObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBFacebookObject.h; sourceTree = "<group>"; };
@@ -780,6 +780,10 @@
 		8DC2EF5B0486A6940098B216 /* iMedia.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iMedia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F47B38F10C416050013ED25 /* IMBOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBOrderedDictionary.h; sourceTree = "<group>"; };
 		8F47B39010C416050013ED25 /* IMBOrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBOrderedDictionary.m; sourceTree = "<group>"; };
+		8F6164E51AE6C0BF00F1259D /* IMBLightroom6Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBLightroom6Parser.h; sourceTree = "<group>"; };
+		8F6164E61AE6C0BF00F1259D /* IMBLightroom6Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBLightroom6Parser.m; sourceTree = "<group>"; };
+		8F6164E71AE6C0BF00F1259D /* IMBLightroom6VideoParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBLightroom6VideoParser.h; sourceTree = "<group>"; };
+		8F6164E81AE6C0BF00F1259D /* IMBLightroom6VideoParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBLightroom6VideoParser.m; sourceTree = "<group>"; };
 		8F76F8601770D259007B56FC /* IMBLightroom5VideoParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBLightroom5VideoParser.h; sourceTree = "<group>"; };
 		8F76F8611770D259007B56FC /* IMBLightroom5VideoParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBLightroom5VideoParser.m; sourceTree = "<group>"; };
 		8F93177C10A9FC53002CDB19 /* IMBPyramidObjectPromise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBPyramidObjectPromise.h; sourceTree = "<group>"; };
@@ -1673,6 +1677,10 @@
 				8FC15E4B176A99EB007FF34F /* IMBLightroom5Parser.m */,
 				8F76F8601770D259007B56FC /* IMBLightroom5VideoParser.h */,
 				8F76F8611770D259007B56FC /* IMBLightroom5VideoParser.m */,
+				8F6164E51AE6C0BF00F1259D /* IMBLightroom6Parser.h */,
+				8F6164E61AE6C0BF00F1259D /* IMBLightroom6Parser.m */,
+				8F6164E71AE6C0BF00F1259D /* IMBLightroom6VideoParser.h */,
+				8F6164E81AE6C0BF00F1259D /* IMBLightroom6VideoParser.m */,
 				D006CFF61534084C00C53C23 /* IMBLightroomModernParser.h */,
 				D006CFF71534084C00C53C23 /* IMBLightroomModernParser.m */,
 				D0904E2F152DB58F003FDD08 /* IMBLightroomObject.h */,
@@ -1814,8 +1822,6 @@
 				3025E5621306877700706DB2 /* IMBiPhotoEventObjectViewController.m */,
 				30F90B311358501A00D13233 /* IMBFaceObjectViewController.h */,
 				30F90B321358501A00D13233 /* IMBFaceObjectViewController.m */,
-				301D0B4C1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.h */,
-				301D0B4D1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.m */,
 			);
 			name = "Object View";
 			sourceTree = "<group>";
@@ -2328,6 +2334,7 @@
 				CEF695E6106434FE005D7E72 /* IMBOmniWebParser.h in Headers */,
 				CEF6970810643D60005D7E72 /* IMBLinkObjectViewController.h in Headers */,
 				D010384C10714CB3007C88D7 /* IMBNodeObject.h in Headers */,
+				8F6164EB1AE6C0BF00F1259D /* IMBLightroom6VideoParser.h in Headers */,
 				D01038E41071E111007C88D7 /* IMBObjectFifoCache.h in Headers */,
 				D02D175A1081CF3B00142E8A /* IMBGarageBandParser.h in Headers */,
 				D0FC9518108213A800973FEE /* IMBiTunesMovieParser.h in Headers */,
@@ -2362,6 +2369,7 @@
 				CEAF1F3B125A80D4001C3EBB /* IMBHoverButton.h in Headers */,
 				CEA8A04B12D3EC70008CD7CB /* IMBSmartFolderObject.h in Headers */,
 				30DA32421A8E29680039B07C /* IMBAppleMediaLibraryPropertySynchronizer.h in Headers */,
+				8F6164E91AE6C0BF00F1259D /* IMBLightroom6Parser.h in Headers */,
 				30394AC812DC665000ACA531 /* IMBSkimmableObjectViewController.h in Headers */,
 				3025E5631306877700706DB2 /* IMBiPhotoEventObjectViewController.h in Headers */,
 				30E4D4FE130BCEAF00FDFBF2 /* IMBiPhotoEventNodeObject.h in Headers */,
@@ -2382,7 +2390,6 @@
 				D0C911ED1521965C006655C9 /* IMBAudioNodeViewController.h in Headers */,
 				3000AE011617288200EDC78E /* IMBComboTableViewAppearance.h in Headers */,
 				D0C911F1152196FE006655C9 /* IMBLinkNodeViewController.h in Headers */,
-				301D0B4E1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.h in Headers */,
 				D0F2DDB8152475C00059DF8D /* IMBiTunesParserMessenger.h in Headers */,
 				D054AFEA152984C300EBFA1C /* IMBGarageBandParserMessenger.h in Headers */,
 				D0904DA8152CA51F003FDD08 /* IMBFileSystemObserver.h in Headers */,
@@ -3104,6 +3111,7 @@
 				D02E53C910A5563500B205BD /* NSData+SKExtensions.m in Sources */,
 				8F47B39210C416050013ED25 /* IMBOrderedDictionary.m in Sources */,
 				CEAF1F2E125A7DE4001C3EBB /* NSWindow_Flipr.m in Sources */,
+				8F6164EA1AE6C0BF00F1259D /* IMBLightroom6Parser.m in Sources */,
 				CEAF1F3C125A80D4001C3EBB /* IMBHoverButton.m in Sources */,
 				D09653BD150A280700B6C83D /* IMBParserMessenger.m in Sources */,
 				D09653C0150A2DA300B6C83D /* IMBParser.m in Sources */,
@@ -3129,6 +3137,7 @@
 				D0E96CE215189FAC004F3EE7 /* IMBFolderParserMessenger.m in Sources */,
 				D0E96CE71518A297004F3EE7 /* IMBImageFolderParserMessenger.m in Sources */,
 				D081099E1519AF3B00201850 /* IMBAudioFolderParserMessenger.m in Sources */,
+				8F6164EC1AE6C0BF00F1259D /* IMBLightroom6VideoParser.m in Sources */,
 				D08109A4151A03E300201850 /* IMBMovieFolderParserMessenger.m in Sources */,
 				D0E69CD6151C5989002FE181 /* NSKeyedArchiver+iMedia.m in Sources */,
 				D0B31375151CA58A003CB231 /* IMBFolderParser.m in Sources */,
@@ -3162,7 +3171,6 @@
 				D08F7B75152309A800505395 /* IMBLinkObjectViewController.m in Sources */,
 				D08F7B7D15235DFE00505395 /* IMBDynamicTableView.m in Sources */,
 				D08F7B7E15235E0200505395 /* IMBComboTableView.m in Sources */,
-				301D0B4F1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.m in Sources */,
 				D08F7B7F15235E0200505395 /* IMBComboTextCell.m in Sources */,
 				301D0B4B1AE009B100BF8F6E /* IMBImageProcessor.m in Sources */,
 				301C61F31AAF0FAA00A0E15F /* IMBiPhotoParserConfiguration.m in Sources */,

@@ -233,7 +233,7 @@
 		@"IMB.IMBPyramidObjectPromise.PlaceholderMessage2",
 		nil,
 		IMBBundle(),
-		@"Please launch Lightroom and select the menu command Library > Previews > Render 1:1 Previews.",
+		@"Please launch Lightroom and select the menu command Library > Previews > Build 1:1 Previews.",
 		@"Message to export when Pyramid file is missing");
 
 	NSMutableParagraphStyle* style = [[[NSMutableParagraphStyle alloc] init] autorelease];

@@ -1,7 +1,7 @@
 /*
  iMedia Browser Framework <http://karelia.com/imedia/>
  
- Copyright (c) 2005-2012 by Karelia Software et al.
+ Copyright (c) 2005-2015 by Karelia Software et al.
  
  iMedia Browser is based on code originally developed by Jason Terhorst,
  further developed for Sandvox by Greg Hulands, Dan Wood, and Terrence Talbot.
@@ -57,14 +57,6 @@
 #import "FMDatabase.h"
 #import "FMResultSet.h"
 #import "IMBConfig.h"
-#import "IMBLightroom1Parser.h"
-#import "IMBLightroom2Parser.h"
-#import "IMBLightroom3Parser.h"
-#import "IMBLightroom4Parser.h"
-#import "IMBLightroom5Parser.h"
-#import "IMBLightroom3VideoParser.h"
-#import "IMBLightroom4VideoParser.h"
-#import "IMBLightroom5VideoParser.h"
 #import "IMBIconCache.h"
 #import "IMBNode.h"
 #import "IMBFolderObject.h"
@@ -531,7 +523,7 @@ static NSArray* sSupportedUTIs = nil;
 																   @"IMB.IMBLightroomParser.ThumbnailNotAvailableDescription",
 																   nil,
 																   IMBBundle(),
-																   @"Please launch Lightroom and select the menu command Library > Previews > Render 1:1 Previews.",
+																   @"Please launch Lightroom and select the menu command Library > Previews > Build 1:1 Previews.",
 																   @"Message to export when Pyramid file is missing");
 		
 		NSDictionary* userInfo = [NSDictionary dictionaryWithObjectsAndKeys:

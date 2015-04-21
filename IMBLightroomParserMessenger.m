@@ -1,7 +1,7 @@
 /*
  iMedia Browser Framework <http://karelia.com/imedia/>
  
- Copyright (c) 2005-2012 by Karelia Software et al.
+ Copyright (c) 2005-2015 by Karelia Software et al.
  
  iMedia Browser is based on code originally developed by Jason Terhorst,
  further developed for Sandvox by Greg Hulands, Dan Wood, and Terrence Talbot.
@@ -61,9 +61,11 @@
 #import "IMBLightroom3Parser.h"
 #import "IMBLightroom4Parser.h"
 #import "IMBLightroom5Parser.h"
+#import "IMBLightroom6Parser.h"
 #import "IMBLightroom3VideoParser.h"
 #import "IMBLightroom4VideoParser.h"
 #import "IMBLightroom5VideoParser.h"
+#import "IMBLightroom6VideoParser.h"
 #import "IMBParserController.h"
 #import "NSFileManager+iMedia.h"
 #import "NSDictionary+iMedia.h"
@@ -133,6 +135,7 @@ static dispatch_once_t sOnceToken = 0;
 {
 	NSString* path = nil;
 	
+	if (path == nil) path = [IMBLightroom6Parser lightroomPath];
 	if (path == nil) path = [IMBLightroom5Parser lightroomPath];
 	if (path == nil) path = [IMBLightroom4Parser lightroomPath];
 	if (path == nil) path = [IMBLightroom3Parser lightroomPath];
@@ -156,7 +159,11 @@ static dispatch_once_t sOnceToken = 0;
 
 + (NSString*) identifier
 {
-	if ([IMBLightroom5Parser lightroomPath])
+	if ([IMBLightroom6Parser lightroomPath])
+	{
+		return [IMBLightroom6Parser identifier];
+	}
+	else if ([IMBLightroom5Parser lightroomPath])
 	{
 		return [IMBLightroom5Parser identifier];
 	}
@@ -215,12 +222,14 @@ static dispatch_once_t sOnceToken = 0;
 				[parsers addObjectsFromArray:[IMBLightroom3Parser concreteParserInstancesForMediaType:mediaType]];
 				[parsers addObjectsFromArray:[IMBLightroom4Parser concreteParserInstancesForMediaType:mediaType]];
 				[parsers addObjectsFromArray:[IMBLightroom5Parser concreteParserInstancesForMediaType:mediaType]];
+				[parsers addObjectsFromArray:[IMBLightroom6Parser concreteParserInstancesForMediaType:mediaType]];
 			}
 			else if ([mediaType isEqualTo:kIMBMediaTypeMovie])
 			{
 				[parsers addObjectsFromArray:[IMBLightroom3VideoParser concreteParserInstancesForMediaType:mediaType]];
 				[parsers addObjectsFromArray:[IMBLightroom4VideoParser concreteParserInstancesForMediaType:mediaType]];
 				[parsers addObjectsFromArray:[IMBLightroom5VideoParser concreteParserInstancesForMediaType:mediaType]];
+				[parsers addObjectsFromArray:[IMBLightroom6VideoParser concreteParserInstancesForMediaType:mediaType]];
 			}
 		}
 	});
@@ -266,7 +275,11 @@ static dispatch_once_t sOnceToken = 0;
 
 + (NSString*) parserClassName
 {
-	if ([IMBLightroom5Parser lightroomPath])
+	if ([IMBLightroom6Parser lightroomPath])
+	{
+		return @"IMBLightroom6Parser";
+	}
+	else if ([IMBLightroom5Parser lightroomPath])
 	{
 		return @"IMBLightroom5Parser";
 	}
@@ -316,7 +329,11 @@ static dispatch_once_t sOnceToken = 0;
 
 + (NSString*) parserClassName
 {
-	if ([IMBLightroom4Parser lightroomPath])
+	if ([IMBLightroom6Parser lightroomPath])
+	{
+		return @"IMBLightroom6VideoParser";
+	}
+	else if ([IMBLightroom5Parser lightroomPath])
 	{
 		return @"IMBLightroom5VideoParser";
 	}
