@@ -125,7 +125,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     node.mediaSource = self.mediaSource;
     node.accessibility = self.mediaSource ? [self mediaSourceAccessibility] : kIMBResourceIsAccessible;
     node.isAccessRevocable = NO;
-    node.identifier = [self globalIdentifierForMediaGroup:rootMediaGroup];
+    node.identifier = [self nodeIdentifierFromMediaGroup:rootMediaGroup];
     
     if ([self mediaSourceAccessibility] == kIMBResourceIsAccessible) {
         node.watchedPath = [self.mediaSource path];
@@ -379,7 +379,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     node.watchedPath = parentNode.watchedPath;	// These two lines are important to make file watching work for nested
     node.watcherType = kIMBWatcherTypeNone;     // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
     
-    node.identifier = [self globalIdentifierForMediaGroup:mediaGroup];
+    node.identifier = [self nodeIdentifierFromMediaGroup:mediaGroup];
     node.attributes = @{ @"type" : [self.configuration typeForMediaGroup:mediaGroup] };
     
     if ([self.configuration respondsToSelector:@selector(countFormatForGroup:plural:)]) {
@@ -396,8 +396,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
  */
 - (MLMediaGroup *)mediaGroupForNode:(IMBNode *)node
 {
-    NSString *mediaGroupIdentifier = [node.identifier substringFromIndex:[[self identifierPrefix] length]];
-    return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
+    return [self mediaGroupFromNodeIdentifier:node.identifier];
 }
 
 /**
@@ -405,7 +404,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 - (IMBNodeObject *)nodeObjectForMediaGroup:(MLMediaGroup *)mediaGroup
 {
     IMBNodeObject* object = [[IMBNodeObject alloc] init];
-    object.identifier = [self globalIdentifierForMediaGroup:mediaGroup];
+    object.identifier = [self nodeIdentifierFromMediaGroup:mediaGroup];
     object.representedNodeIdentifier = object.identifier;
 //    object.location = url;
 //    object.imageRepresentation = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:[self mediaGroupForNode:node]];
@@ -424,8 +423,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
  */
 - (MLMediaGroup *)mediaGroupForNodeObject:(IMBNodeObject *)nodeObject
 {
-    NSString *mediaGroupIdentifier = [nodeObject.representedNodeIdentifier substringFromIndex:[[self identifierPrefix] length]];
-    return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
+    return [self mediaGroupFromNodeIdentifier:nodeObject.representedNodeIdentifier];
 }
 
 /**
@@ -450,18 +448,23 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     return NO;
 }
 
-- (NSString *)globalIdentifierForMediaGroup:(MLMediaGroup *)mediaGroup
+- (NSString *)nodeIdentifierFromMediaGroup:(MLMediaGroup *)mediaGroup
 {
     NSParameterAssert(mediaGroup.identifier != nil);
     
     if (mediaGroup.identifier) {
-        return [[self identifierPrefix] stringByAppendingString:mediaGroup.identifier];
+        return [NSString stringWithFormat:@"%@.%@", [self identifierPrefix], mediaGroup.identifier];
     } else {
         NSLog(@"%s: media group %@ has no identifier", __FUNCTION__, mediaGroup.name);
         return [self identifierPrefix];
     }
 }
 
+- (MLMediaGroup *)mediaGroupFromNodeIdentifier:(NSString *)nodeIdentifier
+{
+    NSString *mediaGroupIdentifier = [nodeIdentifier substringFromIndex:[[self identifierPrefix] length]+1];
+    return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
+}
 /**
  Returns whether a media group was created automatically by the app that owns the media library (and not by the user).
  */
@@ -523,8 +526,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 {
     if ([object isKindOfClass:[IMBNodeObject class]]) {
         IMBNodeObject *nodeObject = (IMBNodeObject *)object;
-        NSString *mediaGroupIdentifier = [nodeObject.representedNodeIdentifier substringFromIndex:[[self identifierPrefix] length]];
-        MLMediaGroup *mediaGroup = (MLMediaGroup *)[self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
+        MLMediaGroup *mediaGroup = [self mediaGroupFromNodeIdentifier:nodeObject.representedNodeIdentifier];
         return [self.configuration keyMediaObjectForMediaGroup:mediaGroup];
     } else {
         return [self.AppleMediaSource mediaObjectForIdentifier:object.identifier];
