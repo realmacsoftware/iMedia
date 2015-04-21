@@ -213,8 +213,9 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     
     START_MEASURE(3);
     
+    NSUInteger childGroupCount = 0;
     for (MLMediaGroup *mediaGroup in childGroups) {
-        
+        childGroupCount++;
         if ([self shouldUseMediaGroup:mediaGroup]) {
             // Create node for this album...
             
@@ -234,17 +235,20 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
             if (shouldUseChildGroupsAsMediaObjects) {
                 [objects addObject:[self nodeObjectForMediaGroup:mediaGroup]];
                 
-                // Preemptively load media objects so that we might get a key photo (crazy stuff)
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0), ^
-                               {
-                                   if (!mediaGroup.attributes[kIMBMLMediaGroupAttributeKeyKeyPhotoKey]) {
+                // Preemptively load media objects for the first 9 groups so that we might get a key photo for those (crazy stuff)
+                // (First 9 because these are the subgroup key images used in mosaic image)
+                if (childGroupCount <= 9) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0), ^
+                                   {
+                                       if (!mediaGroup.attributes[kIMBMLMediaGroupAttributeKeyKeyPhotoKey]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-getter-return-value"
-                                       mediaGroup.mediaObjects;     // May cause wanted side-effect of enriching media group's attributes dict
+                                           mediaGroup.mediaObjects;     // May cause wanted side-effect of enriching media group's attributes dict
 #pragma clang diagnostic pop
-//                                       NSLog(@"Preemptively fetched media objects for media Group: %@", mediaGroup.name);
-                                   }
-                               });
+//                                           NSLog(@"Preemptively fetched media objects for media Group: %@", mediaGroup.name);
+                                       }
+                                   });
+                }
             }
 //            NSLog(@"Initializing subgroup: %@ (%@)", [mediaGroup name], [mediaGroup identifier]);
         }
