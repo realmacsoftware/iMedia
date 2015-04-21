@@ -62,7 +62,7 @@
 		301C61FA1AAF45C200A0E15F /* IMBiTunesParserConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 301C61F81AAF45C200A0E15F /* IMBiTunesParserConfiguration.h */; };
 		301C61FB1AAF45C200A0E15F /* IMBiTunesParserConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 301C61F91AAF45C200A0E15F /* IMBiTunesParserConfiguration.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		301D0B4A1AE009B100BF8F6E /* IMBImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 301D0B481AE009B100BF8F6E /* IMBImageProcessor.h */; };
-		301D0B4B1AE009B100BF8F6E /* IMBImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 301D0B491AE009B100BF8F6E /* IMBImageProcessor.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		301D0B4B1AE009B100BF8F6E /* IMBImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 301D0B491AE009B100BF8F6E /* IMBImageProcessor.m */; };
 		301D0B4E1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 301D0B4C1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.h */; };
 		301D0B4F1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 301D0B4D1AE1416800BF8F6E /* IMBAppleMediaLibraryEventObjectViewController.m */; };
 		301D0B531AE2B22F00BF8F6E /* MLMediaGroup+iMedia.h in Headers */ = {isa = PBXBuildFile; fileRef = 301D0B511AE2B22F00BF8F6E /* MLMediaGroup+iMedia.h */; };

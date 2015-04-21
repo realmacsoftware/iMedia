@@ -56,11 +56,12 @@
     
     CGContextDrawImage(bitmapContext, imageBounds, imageRef);
     
-    CGImageRef image = CGBitmapContextCreateImage(bitmapContext);
+    CGImageRef outImageRef = CGBitmapContextCreateImage(bitmapContext);
+    [(id)outImageRef autorelease];
     
     CGContextRelease(bitmapContext);
     
-    return image;
+    return outImageRef;
 }
 
 /**
@@ -72,9 +73,7 @@
     CGImageRef imageSquaredRef = [self CGImageSquaredWithCornerRadius:cornerRadius fromImage:[image imb_CGImage]];
     
     NSSize imageSize = NSMakeSize(CGImageGetWidth(imageSquaredRef), CGImageGetHeight(imageSquaredRef));
-    NSImage *imageSquared = [[NSImage alloc] initWithCGImage: imageSquaredRef size:imageSize];
-    
-    CGImageRelease(imageSquaredRef);
+    NSImage *imageSquared = [[[NSImage alloc] initWithCGImage: imageSquaredRef size:imageSize] autorelease];
     
     return imageSquared;
 }
@@ -84,17 +83,34 @@
  */
 - (NSImage *)imageMosaicFromImages:(NSArray *)images withBackgroundImage:(NSImage *)backgroundImage withCornerRadius:(CGFloat)cornerRadius
 {
-    CGImageRef backgroundImageRef = [backgroundImage imb_CGImage];
-    size_t backgroundWidth = CGImageGetWidth(backgroundImageRef);
-    size_t backgroundHeight = CGImageGetHeight(backgroundImageRef);
-    size_t squareSize = MIN(backgroundWidth, backgroundHeight);
+    if ([images count] == 0) {
+        return nil;
+    }
+    
+    // Default values
+    CGImageRef backgroundImageRef = NULL;
+    size_t backgroundWidth = 500.0;
+    size_t backgroundHeight = 500.0;
+    size_t squareSize = 500.0;
+    CGColorSpaceRef colorSpaceRef = nil;
+    
+    if (backgroundImage) {
+        backgroundImageRef = [backgroundImage imb_CGImage];
+        colorSpaceRef = CGImageGetColorSpace(backgroundImageRef);
+        
+        backgroundWidth = CGImageGetWidth(backgroundImageRef);
+        backgroundHeight = CGImageGetHeight(backgroundImageRef);
+        squareSize = MIN(backgroundWidth, backgroundHeight);
+    } else {
+        colorSpaceRef = CGImageGetColorSpace([(NSImage *)[images firstObject] imb_CGImage]);
+    }
     
     CGContextRef bitmapContext = CGBitmapContextCreate(NULL,
                                                        squareSize,
                                                        squareSize,
                                                        8,
                                                        4 * squareSize,
-                                                       CGImageGetColorSpace(backgroundImageRef),
+                                                       colorSpaceRef,
                                                        // CGImageAlphaInfo type documented as being safe to pass in as CGBitmapInfo
                                                        (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
     // Fill everything with transparent pixels
@@ -111,7 +127,9 @@
                                     ((NSInteger)(squareSize - backgroundHeight)) / 2.0,  // Will be negative or zero
                                     backgroundWidth, backgroundHeight);
     
-    CGContextDrawImage(bitmapContext, imageBounds, backgroundImageRef);
+    if (backgroundImageRef) {
+        CGContextDrawImage(bitmapContext, imageBounds, backgroundImageRef);
+    }
     
     
     NSInteger rowCount = 3;
@@ -147,9 +165,7 @@
     CGContextRelease(bitmapContext);
     
     NSSize imageMosaicSize = NSMakeSize(CGImageGetWidth(imageMosaicRef), CGImageGetHeight(imageMosaicRef));
-    NSImage *imageMosaic = [[NSImage alloc] initWithCGImage:imageMosaicRef size:imageMosaicSize];
-    
-    CGImageRelease(imageMosaicRef);
+    NSImage *imageMosaic = [[[NSImage alloc] initWithCGImage:imageMosaicRef size:imageMosaicSize] autorelease];
     
     return imageMosaic;
 }
