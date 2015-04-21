@@ -1,7 +1,7 @@
 /*
  iMedia Browser Framework <http://karelia.com/imedia/>
  
- Copyright (c) 2005-2013 by Karelia Software et al.
+ Copyright (c) 2005-2015 by Karelia Software et al.
  
  iMedia Browser is based on code originally developed by Jason Terhorst,
  further developed for Sandvox by Greg Hulands, Dan Wood, and Terrence Talbot.
@@ -302,8 +302,13 @@
 + (NSData*) previewDataForLightroomObject:(IMBLightroomObject*)lightroomObject maximumSize:(NSNumber*)maximumSize
 {
 	NSString* absolutePyramidPath = [lightroomObject absolutePyramidPath];
+	NSData* data = nil;
 
 	if (absolutePyramidPath != nil) {
+		data = [NSData dataWithContentsOfMappedFile:absolutePyramidPath];
+	}
+
+	if (data != nil) {
 		NSData* data = [NSData dataWithContentsOfMappedFile:absolutePyramidPath];
 
 		//		'AgHg'					-- a magic marker
