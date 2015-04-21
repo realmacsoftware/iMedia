@@ -364,7 +364,7 @@
                     }
                     if (nodeCreationError) {
                         @synchronized(errors) {
-                            [errors addObject:error];
+                            [errors addObject:nodeCreationError];
                         }
                     }
                 });
