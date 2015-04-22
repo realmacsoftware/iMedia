@@ -32,22 +32,6 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
 
 #pragma mark -
 
-@interface IMBMLParserMessengerSubclassConfiguration : NSObject
-{
-    NSMutableArray *parsers;
-    dispatch_once_t parsersCreationToken;
-    NSString *mediaType;
-    NSString *identifier;
-}
-
-@end
-
-@implementation IMBMLParserMessengerSubclassConfiguration
-
-@end
-
-#pragma mark -
-
 @implementation IMBAppleMediaLibraryParserMessenger
 
 #pragma mark Configuration
