@@ -173,12 +173,14 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
  */
 - (NSImage *)_thumbnailForMediaGroup:(MLMediaGroup *)mediaGroup mosaic:(BOOL)mosaic
 {
-    if (mediaGroup == nil) {
-        NSLog(@"OMG! media group is nil");
-    }
+    // Convenience
+    NSImage *(^thumbnailForName)(NSString *) = ^NSImage *(NSString *fileBaseName) {
+        return [NSImage imb_imageForResource:fileBaseName fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:@"empty_album"];
+    };
+    
     if ([self isEmptyFolderMediaGroup:mediaGroup])
     {
-        return [NSImage imb_imageForResource:@"empty_folder" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+        return thumbnailForName(@"empty_folder");
     }
     else if ([self isFolderMediaGroup:mediaGroup] || [self isFacesMediaGroup:mediaGroup])
     {
@@ -191,11 +193,15 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
             }
             NSImage *folderBackground = nil;
             if (![self isFacesMediaGroup:mediaGroup]) {
-                folderBackground = [NSImage imb_imageForResource:@"folder_background" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+                folderBackground = thumbnailForName(@"folder_background");
             }
-            NSImage *thumbnail = [[IMBImageProcessor sharedInstance] imageMosaicFromImages:mosaicThumbnails withBackgroundImage:folderBackground withCornerRadius:0.0];
-            if (!thumbnail) {
-                thumbnail = [NSImage imb_imageForResource:@"empty_folder" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+            NSImage *thumbnail = [[IMBImageProcessor sharedInstance] imageMosaicFromImages:mosaicThumbnails
+                                                                       withBackgroundImage:folderBackground
+                                                                          withCornerRadius:0.0];
+            if (!thumbnail && [self isFacesMediaGroup:mediaGroup]) {
+                thumbnail = thumbnailForName(@"FacesAlbum");
+            } else if (!thumbnail) {
+                thumbnail = thumbnailForName(@"empty_folder");
             }
             return thumbnail;
         } else {
@@ -210,7 +216,7 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
             NSImage *baseThumbnail = [self thumbnailForMediaObject:keyMediaObject];
             return [self thumbnailForMediaGroup:mediaGroup baseThumbnail:baseThumbnail];
         } else {
-            return [NSImage imb_imageForResource:@"empty_album" fromAppWithBundleIdentifier:@"com.apple.Photos" fallbackName:nil];
+            return thumbnailForName(@"empty_album");
         }
     }
     return nil;
@@ -286,8 +292,7 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 - (BOOL)isFacesMediaGroup:(MLMediaGroup *)mediaGroup
 {
     // Rule out all "face" media groups that have the same type as the "faces" media group
-    return ([mediaGroup.typeIdentifier isEqualToString:kIMBPhotosMediaGroupTypeIdentifierFaces] &&
-            [mediaGroup.childGroups count] > 0);
+    return ([mediaGroup.identifier isEqualToString:kIMBPhotosMediaGroupIdentifierPeople]);
 }
 
 - (BOOL)isEmptyFolderMediaGroup:(MLMediaGroup *)mediaGroup
