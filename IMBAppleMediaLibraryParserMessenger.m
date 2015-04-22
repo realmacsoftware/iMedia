@@ -14,7 +14,6 @@
 #import "IMBAppleMediaLibraryParserMessenger.h"
 #import "IMBAppleMediaLibraryParser.h"
 #import "IMBAppleMediaLibraryParserConfiguration.h"
-#import "IMBAppleMediaLibraryEventObjectViewController.h"
 #import "IMBFaceObjectViewController.h"
 
 NSString *kIMBMediaGroupAttributeObjectMediaCount = @"ObjectMediaCount";
