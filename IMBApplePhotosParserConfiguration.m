@@ -279,7 +279,7 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
                                                  nil, IMBBundle(), nil,
                                                  @"Format string for object count");
     }
-    return nil;
+    return [super countFormatForGroup:mediaGroup plural:plural];
 }
 
 #pragma mark - Utility

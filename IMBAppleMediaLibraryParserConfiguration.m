@@ -9,6 +9,8 @@
 #import "IMBAppleMediaLibraryParserConfiguration.h"
 #import "IMBAppleMediaLibraryPropertySynchronizer.h"
 #import "NSImage+iMedia.h"
+#import "MLMediaGroup+iMedia.h"
+#import "IMBAppleMediaLibraryParserMessenger.h"
 
 @implementation IMBAppleMediaLibraryParserConfiguration
 
@@ -77,7 +79,7 @@
  */
 - (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject
 {
-    // Map metadata information from iPhoto library representation to iMedia representation
+    // Map metadata information from media library representation to iMedia representation
     
     NSMutableDictionary* externalMetadata = [NSMutableDictionary dictionaryWithDictionary:mediaObject.attributes];
     
@@ -88,6 +90,83 @@
     }
     
     return [NSDictionary dictionaryWithDictionary:externalMetadata];
+}
+
+/**
+ */
+- (NSString *)countFormatForGroup: (MLMediaGroup *)mediaGroup plural:(BOOL)plural
+{
+    NSString *localizationKey = nil;
+    
+    // Must deal with 3 dimensions:
+    // - media type:  image, film, songs
+    // - object type: non-leaf / leaf node
+    // - cardinality: singular / plural
+    
+    static NSString *nonLeaf = @"NonLeaf";
+    static NSString *leaf = @"Leaf";
+    static NSDictionary *countFormatMap;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        countFormatMap = @{
+                           [NSNumber numberWithInteger:MLMediaTypeImage] :
+                               @{
+                                   nonLeaf : @"IMBSkimmableObjectViewController.countFormat",
+                                   leaf    : @"IMBImageViewController.countFormat"
+                                   },
+                           [NSNumber numberWithInteger:MLMediaTypeMovie] :
+                               @{
+                                   nonLeaf : @"IMBSkimmableObjectViewController.countFormat",
+                                   leaf    : @"IMBMovieViewController.countFormat"
+                                   },
+                           [NSNumber numberWithInteger:MLMediaTypeAudio] :
+                               @{
+                                   nonLeaf : @"IMBSkimmableObjectViewController.countFormat",
+                                   leaf    : @"IMBAudioViewController.countFormat"
+                                   }
+                           };
+    });
+    NSNumber *mediaType = [NSNumber numberWithInteger:self.mediaType];
+    NSString *objectType = [self shouldUseChildGroupsAsMediaObjectsForMediaGroup:mediaGroup] ? nonLeaf : leaf;
+    NSString *cardinality = plural ? @"Plural" : @"Singular";
+    
+    localizationKey = countFormatMap[mediaType][objectType];
+    if (!localizationKey) {
+        localizationKey = @"IMBSkimmableObjectViewController.countFormat";      // n objects
+    }
+    localizationKey = [localizationKey stringByAppendingString:cardinality];
+    return NSLocalizedStringWithDefaultValue(localizationKey,
+                                             nil, IMBBundle(), nil,
+                                             @"Format string for object count");
+}
+
+/**
+ */
+- (NSDictionary *)metadataForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    // Map metadata information from media library representation to iMedia representation
+    
+    NSMutableDictionary* metadata = [NSMutableDictionary dictionary];
+    NSInteger objectCount = NSNotFound;
+    if ([self shouldUseChildGroupsAsMediaObjectsForMediaGroup:mediaGroup]) {
+        objectCount = [[mediaGroup childGroups] count];
+    } else {
+        // Objects displayed in group are leafs (images and the like)
+        
+        // At this point we cannot decide on how many objects we are dealing with
+        // since this would require actually populating the media group (node)
+        // where media type filters would be applied. This is too expensive.
+//        objectCount = [[mediaGroup imb_mediaObjectCount] integerValue];
+    }
+    
+    if (objectCount != NSNotFound) {
+        NSString *objectCountFormat = [self countFormatForGroup:mediaGroup plural:objectCount != 1];
+        
+        if (objectCountFormat) {
+            metadata[kIMBMetadataObjectCountDescriptionKey] = [NSString stringWithFormat:objectCountFormat, objectCount];
+        }
+    }
+    return [NSDictionary dictionaryWithDictionary:metadata];
 }
 
 /**

@@ -89,7 +89,14 @@ extern IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory;
 - (NSImage *)thumbnailForMediaObject:(MLMediaObject *)mediaObject;
 
 /**
+ @discussion
+ Must add return value of super implementation if overriden.
  */
 - (NSDictionary *)metadataForMediaObject:(MLMediaObject *)mediaObject;
+
+/**
+ */
+- (NSString *)countFormatForGroup: (MLMediaGroup *)mediaGroup plural:(BOOL)plural;
+
 @end
 

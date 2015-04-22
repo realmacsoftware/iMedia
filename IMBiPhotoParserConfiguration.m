@@ -57,12 +57,6 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
 
 @implementation IMBiPhotoParserConfiguration
 
-- (NSDictionary *)metadataForMediaGroup:(MLMediaGroup *)mediaGroup
-{
-    
-    return @{ kIMBMediaGroupAttributeObjectMediaCount : [mediaGroup imb_mediaObjectCount]};
-}
-
 /**
  Hardcoded library name.
  */
@@ -134,7 +128,7 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
                                                  nil, IMBBundle(), nil,
                                                  @"Format string for object count");
     }
-    return nil;
+    return [super countFormatForGroup:mediaGroup plural:plural];
 }
 
 - (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
