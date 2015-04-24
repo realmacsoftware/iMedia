@@ -465,7 +465,7 @@
         NSRange divider = [identifier rangeOfString:@"." options:NSBackwardsSearch];
         
         if (divider.location != NSNotFound) return [identifier substringToIndex:divider.location];
-        else return nil;
+        else return identifier;
     };
     static NSDictionary *topLevelNodeDisplayPriorityMap;
     static dispatch_once_t onceToken;
