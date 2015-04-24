@@ -1,3 +1,5 @@
+![Travis Status](https://travis-ci.org/iMediaSandboxing/iMedia.svg?branch=development)
+
 ## Overview
 This is the iMedia Browser framework that is used by a number of applications (and as the basis for a stand-alone utility).  Developers are encouraged to include this in their application as long as there is proper attribution.
 
