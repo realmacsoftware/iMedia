@@ -1,0 +1,2 @@
+language: objective-c
+script: xctool -workspace iMedia.xcworkspace -scheme iMedia CODE_SIGN_IDENTITY=""
