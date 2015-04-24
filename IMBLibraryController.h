@@ -175,6 +175,7 @@ extern NSString* kIMBDidCreateTopLevelNodeNotification;
 
 - (BOOL) libraryController:(IMBLibraryController*)inController shouldCreateNodeWithParserMessenger:(IMBParserMessenger*)inParserMessenger;
 - (void) libraryController:(IMBLibraryController*)inController willCreateNodeWithParserMessenger:(IMBParserMessenger*)inParserMessenger;
+- (void) libraryController:(IMBLibraryController*)inController willReplaceNode:(IMBNode*)inOldNode withNode:(IMBNode*)inNewNode;
 - (void) libraryController:(IMBLibraryController*)inController didCreateNode:(IMBNode*)inNode withParserMessenger:(IMBParserMessenger*)inParserMessenger;
 
 - (BOOL) libraryController:(IMBLibraryController*)inController shouldPopulateNode:(IMBNode*)inNode;

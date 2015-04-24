@@ -847,6 +847,10 @@ static NSMutableDictionary* sLibraryControllers = nil;
 	
 	@try      
     {
+        if ([self.delegate respondsToSelector:@selector(libraryController:willReplaceNode:withNode:)]) {
+            [self.delegate libraryController:self willReplaceNode:inOldNode withNode:inNewNode];
+        }
+        
 		// Update file system observing...
 		
 		NSString* oldWatchedPath = inOldNode.watchedPath;
