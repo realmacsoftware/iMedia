@@ -369,10 +369,10 @@
 //         @"com.apple.medialibrary.Aperture.movie",             /* Aperture (Apple Media Library) */
 //         @"com.karelia.imedia.iTunes.audio",
 //         @"com.karelia.imedia.iTunes.movie",
-//         @"com.karelia.imedia.iPhoto.image",
-//         @"com.karelia.imedia.iPhoto.movie",
-//         @"com.karelia.imedia.Aperture.image",
-//         @"com.karelia.imedia.Aperture.movie",
+         @"com.karelia.imedia.iPhoto.image",
+         @"com.karelia.imedia.iPhoto.movie",
+         @"com.karelia.imedia.Aperture.image",
+         @"com.karelia.imedia.Aperture.movie",
          nil];
         if ([unqualifiedParserMessengerIdentifiers containsObject:inIdentifier]) {
             return NO;
@@ -457,6 +457,9 @@
 
 }
 
+/**
+ How to change the standard (alphabetical) order of nodes to some other order.
+ */
 - (void)libraryController:(IMBLibraryController *)inController willReplaceNode:(IMBNode *)inOldNode withNode:(IMBNode *)inNewNode
 {
     // Helper to remove trailing part of identifier, e.g. "image", "audio, ... for some identifiers to keep map small
