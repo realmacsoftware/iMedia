@@ -129,7 +129,7 @@ static NSUInteger sFacebookElementLimit = 5000;
     NSUInteger parentNestingLevel = [[inParentNode.attributes objectForKey:@"nestingLevel"] unsignedIntegerValue];
     NSArray *connectionTypes = nil;
     if (parentNestingLevel == 0) {
-        connectionTypes = [NSArray arrayWithObjects:@"albums", @"friends", nil];
+        connectionTypes = [NSArray arrayWithObjects:@"albums", /*@"friends",*/ nil];
     } else if(![inParentNode isLeafNode]){
         connectionTypes = [NSArray arrayWithObjects:@"albums", nil];
     }
