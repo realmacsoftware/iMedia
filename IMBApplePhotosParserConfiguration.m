@@ -75,6 +75,11 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 
 @implementation IMBApplePhotosParserConfiguration
 
+- (NSURL *)sourceURLForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return self.mediaSource.attributes[@"libraryURL"];
+}
+
 /**
  */
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup

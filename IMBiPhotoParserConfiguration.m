@@ -65,6 +65,11 @@ IMBMLParserConfigurationFactory IMBMLiPhotoParserConfigurationFactory =
     return @"iPhoto";
 }
 
+- (NSURL *)sourceURLForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return mediaGroup.attributes[@"URL"];
+}
+
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
     NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:

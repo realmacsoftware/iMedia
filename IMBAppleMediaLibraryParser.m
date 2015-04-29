@@ -112,11 +112,17 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     
     if (!rootMediaGroup) return nil;
 
-    // Assign media source URL as late as possible since some media sources only provide it through attributes dictionary of root media group (e.g. iPhoto)
-//    self.mediaSource = [self mediaSourceURLForGroup:rootMediaGroup];
+    // Set media source URL if client does not handle SSBs since then we must calculate accessibility to its
+    // represented path correctly. Do not set it otherwise because it will have the side effect of the file system
+    // watcher repopulating the library if changes occur on file system level (which will not result in acquiring
+    // the changes anyway since Apple Media Library framework does not work that way).
+    if (![IMBConfig clientAppCanHandleSecurityScopedBookmarks] &&
+        [self.configuration respondsToSelector:@selector(sourceURLForMediaGroup:)])
+    {
+        self.mediaSource = [self.configuration sourceURLForMediaGroup:rootMediaGroup];
+    }
     
     //  create an empty root node (unpopulated and without subnodes)
-    
     IMBNode *node = [[IMBNode alloc] initWithParser:self topLevel:YES];
     node.name = [self libraryName];
     node.groupType = kIMBGroupTypeLibrary;

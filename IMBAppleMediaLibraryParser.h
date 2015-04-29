@@ -97,7 +97,7 @@ extern NSString *kIMBMLMediaGroupTypeFacesFolder;
  @discussion
  If the URL is not accessible to a concrete parser it may return nil but implications of doing so are not yet fully understood.
  */
-- (NSURL *)mediaSourceURLForGroup:(MLMediaGroup *)mediaGroup;
+- (NSURL *)sourceURLForMediaGroup:(MLMediaGroup *)mediaGroup;
 
 /**
  Returns a dictionary of metadata for mediaObject.

@@ -53,6 +53,11 @@ IMBMLParserConfigurationFactory IMBMLApertureParserConfigurationFactory =
     return @"Aperture";
 }
 
+- (NSURL *)sourceURLForMediaGroup:(MLMediaGroup *)mediaGroup
+{
+    return mediaGroup.attributes[@"URL"];
+}
+
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
     NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
