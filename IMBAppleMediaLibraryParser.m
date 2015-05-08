@@ -210,7 +210,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 #if !OS_OBJECT_USE_OBJC
         // Only required for 10.7 deployment targets and earlier
         dispatch_release(dispatchGroup);
-	    dispatch_release(semaphore);
+        dispatch_release(semaphore);
 #endif
 #endif
         STOP_MEASURE(2);
