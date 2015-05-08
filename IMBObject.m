@@ -569,7 +569,7 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	// using 'public.bookmark' instead kUTTypeBookmark, which is not available before 10.10
     else if ([inType isEqualToString:@"public.bookmark"])
     {
-        [self _URLByRequestingAndResolvingBookmark];
+        [self requestBookmarkWithError:nil];    // Ensures bookmark is set
         [inItem setData:self.locationBookmark forType:@"public.bookmark"];
     }
     
