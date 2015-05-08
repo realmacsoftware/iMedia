@@ -1092,6 +1092,7 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 		
 		if ([object isKindOfClass:[IMBNodeObject class]])
 		{
+            [IMBNodeViewController revealNodeWithIdentifier:((IMBNodeObject *)object).representedNodeIdentifier];
 			[self expandNodeObject:(IMBNodeObject*)object];
 		}
 		else if ([object isKindOfClass:[IMBButtonObject class]])
