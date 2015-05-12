@@ -53,6 +53,7 @@
 #pragma mark HEADERS
 
 #import <Quartz/Quartz.h>
+#import "IMBItemizableView.h"
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -66,7 +67,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
-@interface IMBImageBrowserView : IKImageBrowserView
+@interface IMBImageBrowserView : IKImageBrowserView <IMBItemizableView>
 {
 	Class _cellClass;
 	NSRect _lastVisibleRect;			// So we can "scroll" a background image when scrolling

@@ -357,6 +357,31 @@ enum IMBMouseOperation
 
 
 #pragma mark
+#pragma mark IMBItemizableView Protocol
+
+/**
+ Returns NSNotFound if receiver contains no items.
+ */
+- (NSInteger)firstVisibleItemIndex
+{
+    NSRange visibleIndexes = [self rowsInRect:[self visibleRect]];
+    
+    if (visibleIndexes.length == 0) {
+        return NSNotFound;
+    } else {
+        return visibleIndexes.location;
+    }
+}
+
+- (void)scrollIndexToVisible:(NSInteger)index
+{
+    [self scrollRowToVisible:index];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+#pragma mark
 #pragma mark Quicklook
 
 

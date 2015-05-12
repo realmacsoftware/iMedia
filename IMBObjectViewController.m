@@ -171,6 +171,7 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 {
     if (_currentNode != currentNode)
     {
+        // Save current scroll position for "back" navigation
         [_currentNode release];
         _currentNode = [currentNode retain];
         
@@ -638,6 +639,19 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 #pragma mark 
 #pragma mark User Interface
 
+/**
+ */
+- (NSView *)selectedObjectView
+{
+    if (_viewType == kIMBObjectViewTypeIcon)
+        return ibIconView;
+    else if (_viewType == kIMBObjectViewTypeList)
+        return ibListView;
+    else if (_viewType == kIMBObjectViewTypeCombo)
+        return ibComboView;
+    
+    return nil;
+}
 
 - (void) observeValueForKeyPath:(NSString*)inKeyPath ofObject:(id)inObject change:(NSDictionary*)inChange context:(void*)inContext
 {
@@ -2182,15 +2196,8 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 
 - (BOOL) previewPanel:(QLPreviewPanel*)inPanel handleEvent:(NSEvent *)inEvent
 {
-	NSView* view = nil;
+	NSView* view = [self selectedObjectView];
 	
-	if (_viewType == kIMBObjectViewTypeIcon)
-		view = ibIconView;
-	else if (_viewType == kIMBObjectViewTypeList)
-		view = ibListView;
-	else if (_viewType == kIMBObjectViewTypeCombo)
-		view = ibComboView;
-
 	if ([inEvent type] == NSKeyDown)
 	{
 		[view keyDown:inEvent];

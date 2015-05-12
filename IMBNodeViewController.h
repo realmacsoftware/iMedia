@@ -71,6 +71,7 @@
 #pragma mark HEADERS
 
 #import "IMBOutlineView.h"
+#import "IMBNavigationController.h"
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -97,16 +98,19 @@ extern NSString* kIMBExpandAndSelectNodeWithIdentifierNotification;
 
 #pragma mark 
 
-@interface IMBNodeViewController : NSViewController <NSOutlineViewDataSource,IMBOutlineViewDelegate,NSSplitViewDelegate>
+@interface IMBNodeViewController : NSViewController <NSOutlineViewDataSource,IMBOutlineViewDelegate,NSSplitViewDelegate,IMBNavigable>
 {
 	IBOutlet NSSplitView* ibSplitView;
 	IBOutlet IMBOutlineView* ibNodeOutlineView;
 	IBOutlet NSPopUpButton* ibNodePopupButton;
+    IBOutlet NSButton* ibBackButton;
+    IBOutlet NSButton* ibForwardButton;
 	IBOutlet NSView* ibHeaderContainerView;
 	IBOutlet NSView* ibObjectContainerView;
 	IBOutlet NSView* ibFooterContainerView;
 	
 	IMBLibraryController* _libraryController;
+    IMBNavigationController* _navigationController;
 	NSString* _selectedNodeIdentifier;
 	NSMutableArray* _expandedNodeIdentifiers;
 	BOOL _isRestoringState;

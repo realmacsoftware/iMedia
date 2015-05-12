@@ -450,9 +450,23 @@ enum IMBMouseOperation
 
 
 #pragma mark
-#pragma mark Drawing 
+#pragma mark IMBItemizableView Protocol
 
-// override draw rect and force the background layer to redraw if the view did resize or did scroll 
+/**
+ Returns NSNotFound if receiver contains no items.
+ */
+- (NSInteger)firstVisibleItemIndex
+{
+    return [[self visibleItemIndexes] firstIndex];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+#pragma mark
+#pragma mark Drawing
+
+// override draw rect and force the background layer to redraw if the view did resize or did scroll
 
 - (void) drawRect:(NSRect) rect
 {

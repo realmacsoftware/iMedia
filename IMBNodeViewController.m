@@ -66,6 +66,7 @@
 #import "IMBNode.h"
 #import "IMBNodeCell.h"
 #import "IMBFlickrNode.h"
+#import "IMBNodeObject.h"
 #import "NSView+iMedia.h"
 #import "NSImage+iMedia.h"
 #import "NSObject+iMedia.h"
@@ -96,14 +97,106 @@ NSString* kIMBExpandAndSelectNodeWithIdentifierNotification = @"IMBExpandAndSele
 static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 
 
+#pragma mark -
+
+@interface IMBNodeViewControllerState : NSObject <IMBNavigationLocation>
+{
+    NSString *_nodeIdentifier;
+    CGFloat _objectViewRelativeScrollPosition;
+}
+@property (nonatomic,strong) NSString *nodeIdentifier;
+@property (nonatomic) CGFloat objectViewRelativeScrollPosition;
+
+@end
+
+@implementation IMBNodeViewControllerState
+
+@synthesize nodeIdentifier = _nodeIdentifier;
+@synthesize objectViewRelativeScrollPosition = _objectViewRelativeScrollPosition;
+
+/** Designated initializer */
+- (instancetype)initWithController:(IMBNodeViewController *)controller
+{
+    self = [super init];
+    if (self) {
+        self.nodeIdentifier = controller.selectedNodeIdentifier;
+        if ([controller.objectViewController isKindOfClass:[IMBObjectViewController class]]) {
+            IMBObjectViewController *objectViewController = (IMBObjectViewController *)controller.objectViewController;
+            NSClipView *objectClipView = [[[objectViewController selectedObjectView] enclosingScrollView] contentView];
+            self.objectViewRelativeScrollPosition = objectClipView.bounds.origin.y / objectClipView.documentRect.size.height;
+        }
+    }
+    return self;
+}
+
+/** Convenience factory */
++ (instancetype)stateOfController:(IMBNodeViewController *)controller
+{
+    return [[[IMBNodeViewControllerState alloc] initWithController:controller] autorelease];
+}
+
+/**
+ Set state represented by receiver onto node view controller.
+ */
+- (void) setOnController:(IMBNodeViewController *)controller
+{
+    // Save current node (we might scroll to corresponding node object in object view after setting target node)
+    
+    IMBNode *currentNode = nil;
+    [controller.nodeOutlineView rowForNode:&currentNode withIdentifier:controller.selectedNodeIdentifier];
+    
+    // Select node identified by state in outline view and scroll it to visible
+    
+    IMBNode *targetNode = nil;
+    NSInteger row = [controller.nodeOutlineView rowForNode:&targetNode withIdentifier:self.nodeIdentifier];
+    
+    [controller.nodeOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [controller.nodeOutlineView scrollRowToVisible:row];
+    
+    if ([controller.objectViewController isKindOfClass:[IMBObjectViewController class]])
+    {
+        IMBObjectViewController *objectViewController = (IMBObjectViewController *)controller.objectViewController;
+        NSView *objectView = [objectViewController selectedObjectView];
+        NSScrollView *scrollView = [objectView enclosingScrollView];
+        NSClipView *objectClipView = [scrollView contentView];
+        
+        NSPoint objectViewOrigin = NSMakePoint(0, self.objectViewRelativeScrollPosition * objectClipView.documentRect.size.height);
+        
+        [objectClipView scrollToPoint:objectViewOrigin];
+        [scrollView reflectScrolledClipView:objectClipView];
+    }
+}
+
+#pragma mark IMBNavigationLocation Protocol
+
+- (BOOL)replaceOnPushBy:(id)otherLocation
+{
+    return [self.nodeIdentifier isEqualToString:((IMBNodeViewControllerState *)otherLocation).nodeIdentifier];
+}
+
+#pragma mark Description
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@ (Scroll pos. %.8f %%)", self.nodeIdentifier, self.objectViewRelativeScrollPosition * 100.0];
+}
+@end
+
+#pragma mark -
+
 //----------------------------------------------------------------------------------------------------------------------
 
+@interface IMBNodeViewController ()
 
+@property (nonatomic, strong) IBOutlet IMBNavigationController *navigationController;
+
+@end
 #pragma mark 
 
 @implementation IMBNodeViewController
 
 @synthesize libraryController = _libraryController;
+@synthesize navigationController = _navigationController;
 @synthesize delegate = _delegate;
 @synthesize selectedNodeIdentifier = _selectedNodeIdentifier;
 @synthesize expandedNodeIdentifiers = _expandedNodeIdentifiers;
@@ -228,7 +321,8 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self _stopObservingLibraryController];
 	
-	IMBRelease(_libraryController);
+    IMBRelease(_libraryController);
+    IMBRelease(_navigationController);
 	IMBRelease(_selectedNodeIdentifier);
 	IMBRelease(_expandedNodeIdentifiers);
 	IMBRelease(_standardHeaderViewController);
@@ -293,6 +387,15 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 	[self __updatePopupMenu];
 }
 
+- (void)viewDidLoad
+{
+    ibBackButton.image = [NSImage imageNamed:NSImageNameGoLeftTemplate];
+    ibBackButton.enabled = NO;
+    ibBackButton.hidden = YES;
+    ibForwardButton.image = [NSImage imageNamed:NSImageNameGoRightTemplate];
+    ibForwardButton.enabled = NO;
+    ibForwardButton.hidden = YES;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -763,6 +866,10 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 		NSInteger row = [ibNodeOutlineView selectedRow];
 		IMBNode* newNode = row>=0 ? [ibNodeOutlineView nodeAtRow:row] : nil;
 
+        if (!self.navigationController.goingBackOrForward) {
+            [self.navigationController pushLocation:[IMBNodeViewControllerState stateOfController:self]];
+        }
+        
 		if (newNode)
 		{
 			if (newNode.accessibility == kIMBResourceIsAccessible)
@@ -789,7 +896,11 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 		
 		[self installObjectViewForNode:newNode];
         [(IMBObjectViewController*)self.objectViewController setCurrentNode:newNode];
-		
+        
+        if (!self.navigationController.goingBackOrForward) {
+            [self.navigationController pushLocation:[IMBNodeViewControllerState stateOfController:self]];
+        }
+        
 //		// If a completely different parser was selected, then notify the previous parser, that it is most
 //		// likely no longer needed any can get rid of its cached data...
 //		
@@ -984,6 +1095,56 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
     {
         return [super respondsToSelector:aSelector];
     }
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+#pragma mark
+#pragma mark IMBNavigable Protocol
+
+/**
+ @return self.
+ @discussion
+ Location in terms of the receiver is an IMBNodeViewControllerState object.
+ */
+- (id<IMBNavigable>)gotoLocation:(id<IMBNavigationLocation>)location
+{
+    [(IMBNodeViewControllerState *)location setOnController:self];
+    
+    return self;
+}
+
+/**
+ */
+- (id<IMBNavigationLocation>)currentLocation
+{
+    return [IMBNodeViewControllerState stateOfController:self];
+}
+
+- (void)didGoForwardToLatestLocation
+{
+    ibBackButton.enabled = YES;
+    ibBackButton.hidden = NO;
+    ibForwardButton.enabled = NO;
+    ibForwardButton.hidden = YES;
+}
+
+- (void)didGoBackToOldestLocation
+{
+    ibBackButton.enabled = NO;
+    ibBackButton.hidden = YES;
+    ibForwardButton.enabled = YES;
+    ibForwardButton.hidden = NO;
+}
+
+- (void)didGotoIntermediateLocation
+{
+    ibBackButton.enabled = YES;
+    ibBackButton.hidden = NO;
+    ibForwardButton.enabled = YES;
+    ibForwardButton.hidden = NO;
 }
 
 

@@ -385,6 +385,23 @@
 }
 
 
+/**
+ */
+- (NSInteger)rowForNode:(IMBNode **)pNode withIdentifier:(NSString *)identifier
+{
+    NSInteger rows = [self numberOfRows];
+    IMBNode *node;
+    for (NSInteger row=0; row<rows; row++)
+    {
+        node = [self nodeAtRow:row];
+        if ([node.identifier isEqualToString:identifier]) {
+            if (pNode) *pNode = node;
+            return row;
+        }
+    }
+    return -1;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 

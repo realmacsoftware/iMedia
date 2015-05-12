@@ -74,6 +74,7 @@
 #import "IMBCommon.h"
 #import "IMBQLPreviewPanel.h"
 #import "IMBObjectArrayController.h"
+#import "IMBItemizableView.h"
 #import <Quartz/Quartz.h>
 
 
@@ -203,6 +204,11 @@ extern NSString* kIMBObjectBadgesDidChangeNotification;
 
 @property (retain) NSString* objectCountFormatSingular;
 @property (retain) NSString* objectCountFormatPlural;
+
+/**
+ @return The object view that is currently selected through the tab view.
+ */
+- (NSView *)selectedObjectView;
 
 - (void) willShowView;	// Called when an object view is shown
 - (void) didShowView;

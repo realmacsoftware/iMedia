@@ -50,6 +50,8 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
+#import "IMBItemizableView.h"
+
 #pragma mark CLASSES
 
 @class IMBObject;
@@ -59,7 +61,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
-@interface IMBTableView : NSTableView
+@interface IMBTableView : NSTableView <IMBItemizableView>
 {
 	NSInteger _mouseOperation;
 	NSInteger _clickedObjectIndex;

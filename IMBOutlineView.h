@@ -71,6 +71,12 @@ extern NSString* IMBIsDefaultAppearanceAttributeName;
 @property (readonly) IMBTableViewAppearance *imb_Appearance;
 
 - (IMBNode*) nodeAtRow:(NSInteger)inRow;
+
+/**
+ Returns row number of node and node with given identifier.
+ */
+- (NSInteger)rowForNode:(IMBNode **)pNode withIdentifier:(NSString *)identifier;
+
 - (NSRect) badgeRectForRow:(NSInteger)inRow;
 - (void) showProgressWheels;
 
