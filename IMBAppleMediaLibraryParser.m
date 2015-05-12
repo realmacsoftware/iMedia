@@ -161,13 +161,11 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     
     if (!inParentNode.objects && ([childGroups count] == 0 || !shouldUseChildGroupsAsMediaObjects))
     {
-        NSArray *mediaObjectRepresentations = parentGroup.attributes[@"keyList"];
-        if (YES /*mediaObjectRepresentations == nil*/) {
-            START_MEASURE(1);
-            mediaObjectRepresentations = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
-            STOP_MEASURE(1);
-            LOG_MEASURED_TIME(1, @"fetch of media Objects for group %@", parentGroup.name);
-        }
+        START_MEASURE(1);
+        NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
+        STOP_MEASURE(1);
+        LOG_MEASURED_TIME(1, @"fetch of media Objects for group %@", parentGroup.name);
+
 #if CREATE_MEDIA_OBJECTS_CONCURRENTLY
         dispatch_group_t dispatchGroup = dispatch_group_create();
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(8);
@@ -175,17 +173,8 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
         
         START_MEASURE(2);
         
-        MLMediaObject *mediaObject = nil;
-        for (id mediaObjectRepresentation in mediaObjectRepresentations)
+        for (MLMediaObject *mediaObject in mediaObjects)
         {
-            if ([mediaObjectRepresentation isKindOfClass:[MLMediaObject class]]) {
-                mediaObject = (MLMediaObject *)mediaObjectRepresentation;
-            } else {
-                // Media object representation must be media object identifier string
-                mediaObject = [self.AppleMediaSource mediaObjectForIdentifier:mediaObjectRepresentation];
-            }
-            
-            if (!mediaObject) continue;
 
 #if CREATE_MEDIA_OBJECTS_CONCURRENTLY
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
