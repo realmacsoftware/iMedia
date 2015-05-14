@@ -33,6 +33,7 @@ static void FSEventCallback(ConstFSEventStreamRef inStreamRef,
 							const FSEventStreamEventId inEventIds[])
 {
 	UKFSEventsWatcher* watcher = (UKFSEventsWatcher*)inClientCallBackInfo;
+	const FSEventStreamEventFlags kFolderMetadataMod = kFSEventStreamEventFlagItemInodeMetaMod|kFSEventStreamEventFlagItemIsDir;
 	
 	if (watcher != nil && [watcher delegate] != nil)
 	{
@@ -40,18 +41,24 @@ static void FSEventCallback(ConstFSEventStreamRef inStreamRef,
 		
 		if ([delegate respondsToSelector:@selector(watcher:receivedNotification:forPath:)])
 		{
-			NSEnumerator* paths = [(NSArray*)inEventPaths objectEnumerator];
-			NSString* path;
+			NSArray* paths = (NSArray*)inEventPaths;
+			NSUInteger i = 0;
 			
-			while (path = [paths nextObject])
+			for (NSString* path in paths)
 			{
-				[delegate watcher:watcher receivedNotification:UKFileWatcherWriteNotification forPath:path];
+				FSEventStreamEventFlags flags = inEventFlags[i];
+				i++;
 				
-				[[[NSWorkspace sharedWorkspace] notificationCenter] 
-					postNotificationName: UKFileWatcherWriteNotification
-					object:watcher
-					userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path,@"path",nil]];
-			}	
+				if (flags != kFolderMetadataMod) // PB 14.05.2015: Filter out creation of hardlinks
+				{
+					[delegate watcher:watcher receivedNotification:UKFileWatcherWriteNotification forPath:path];
+					
+					[[[NSWorkspace sharedWorkspace] notificationCenter] 
+						postNotificationName: UKFileWatcherWriteNotification
+						object:watcher
+						userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path,@"path",nil]];
+				}
+			}
 		}
 	}
 }
