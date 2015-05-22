@@ -97,14 +97,15 @@
         // - object.location: file URL denoting original master file
         // - object.locationBookmark: file URL denoting a temporary file generated on the fly to reflect the current user changes to the image
         //   (this file will also most likely have a lower resolution than the master file if the user made changes to the image)
-        if (!object.location || [object.location isFileURL])
+        if (!object.locationBookmark && (!object.location || [object.location isFileURL]))
         {
-            // As an alternative, you can use the asynchronous variant of this method if you anticipate the user dragging thousands of resources at once (requesting a bookmark does add some overhead) and if your completion block code is thread-safe:
+            // As an alternative, you can use the asynchronous variant of -requestBookmarkWithError method if you anticipate the user dragging thousands of resources at once (requesting a bookmark does add some overhead) and if your completion block code is thread-safe:
             //            [object requestBookmarkWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0)
             //                             completionBlock:^(NSError *error) {
             //                                 // Your dragging code here
             //                             }];
             
+            // Will have side-effect of setting bookmark on object
             if ([object requestBookmarkWithError:&error])
             {
                 NSURL *URL = [object URLByResolvingBookmark];
