@@ -1238,7 +1238,15 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 		inPosition = MAX(inPosition,minPos);
 		inPosition = MIN(inPosition,maxPos);
 	}
-	
+
+	// Further constrain the offset so that the split view divider's position is integral. The split
+	// view will, in response to user dragging, attempt to position the divider at extremely non-integral
+	// positions. I thought at first that we could just round to a pixel offset for the backing store
+	// (e.g. allow 0.5 offsets when running on @2x Retina), but in my tests that is not sufficient to
+	// address issues. This alleviates a "flickery" look that occurs when NSSplitView allows our
+	// subviews to be resized to non-integral sizes and e.g. subtly overlap the edges of the split view divider.
+	inPosition = floorf(inPosition);
+
 	NSMutableDictionary* stateDict = [self _preferences];
 	[stateDict setObject:[NSNumber numberWithFloat:inPosition] forKey:@"splitviewPosition"];
 	[self _setPreferences:stateDict];
