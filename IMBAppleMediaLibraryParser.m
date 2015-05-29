@@ -9,6 +9,7 @@
 #import "NSObject+iMedia.h"
 #import "NSWorkspace+iMedia.h"
 #import "NSURL+iMedia.h"
+#import "NSString+iMedia.h"
 #import "IMBConfig.h"
 #import "IMBNodeObject.h"
 #import "IMBAppleMediaLibraryParser.h"
@@ -89,11 +90,17 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
  */
 - (instancetype)initializeMediaLibrary
 {
+    START_MEASURE(4);
     NSDictionary *libraryOptions = @{MLMediaLoadIncludeSourcesKey : [NSArray arrayWithObject:[self.configuration mediaSourceIdentifier]]};
     self.AppleMediaLibrary = [[MLMediaLibrary alloc] initWithOptions:libraryOptions];
+    STOP_MEASURE(4);
+    LOG_MEASURED_TIME(4, @"Create library object for %@", [self.configuration mediaSourceIdentifier]);
+    
+    START_MEASURE(5);
     NSDictionary *mediaSources = [IMBAppleMediaLibraryPropertySynchronizer mediaSourcesForMediaLibrary:self.AppleMediaLibrary];
     self.AppleMediaSource = mediaSources[[self.configuration mediaSourceIdentifier]];
-    
+    STOP_MEASURE(5);
+    LOG_MEASURED_TIME(5, @"Create media source for %@", [self.configuration mediaSourceIdentifier]);
     return self;
 }
 
@@ -103,14 +110,11 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
  */
 - (IMBNode *)unpopulatedTopLevelNode:(NSError **)outError
 {
-    START_MEASURE(1);
     NSError *error = nil;
-    
-    MLMediaGroup *rootMediaGroup = [IMBAppleMediaLibraryPropertySynchronizer rootMediaGroupForMediaSource:self.AppleMediaSource];
     
     // Is there a matching media source?
     
-    if (!rootMediaGroup) return nil;
+    if (!self.AppleMediaSource) return nil;
 
     // Set media source URL if client does not handle SSBs since then we must calculate accessibility to its
     // represented path correctly. Do not set it otherwise because it will have the side effect of the file system
@@ -119,6 +123,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     if (![IMBConfig clientAppCanHandleSecurityScopedBookmarks] &&
         [self.configuration respondsToSelector:@selector(sourceURLForMediaGroup:)])
     {
+        MLMediaGroup *rootMediaGroup = [IMBAppleMediaLibraryPropertySynchronizer rootMediaGroupForMediaSource:self.AppleMediaSource];
         self.mediaSource = [self.configuration sourceURLForMediaGroup:rootMediaGroup];
     }
     
@@ -132,7 +137,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     node.mediaSource = self.mediaSource;
     node.accessibility = self.mediaSource ? [self mediaSourceAccessibility] : kIMBResourceIsAccessible;
     node.isAccessRevocable = NO;
-    node.identifier = [self nodeIdentifierFromMediaGroup:rootMediaGroup];
+    node.identifier = [self nodeIdentifierForMediaGroupIdentifier:@""]; // Root node solely lives on identifier prefix
     
     if ([self mediaSourceAccessibility] == kIMBResourceIsAccessible) {
         node.watchedPath = [self.mediaSource path];
@@ -140,8 +145,6 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     if (outError) {
         *outError = error;
     }
-    STOP_MEASURE(1);
-    LOG_MEASURED_TIME(1, @"Create unpopulated top-level node %@", [self.configuration mediaSourceIdentifier]);
     return node;
 }
 
@@ -378,7 +381,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     node.watchedPath = parentNode.watchedPath;	// These two lines are important to make file watching work for nested
     node.watcherType = kIMBWatcherTypeNone;     // subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
     
-    node.identifier = [self nodeIdentifierFromMediaGroup:mediaGroup];
+    node.identifier = [self nodeIdentifierForMediaGroupIdentifier:mediaGroup.identifier];
     node.attributes = @{ @"type" : [self.configuration typeForMediaGroup:mediaGroup] };
     
     if ([self.configuration respondsToSelector:@selector(countFormatForGroup:plural:)]) {
@@ -395,7 +398,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
  */
 - (MLMediaGroup *)mediaGroupForNode:(IMBNode *)node
 {
-    return [self mediaGroupFromNodeIdentifier:node.identifier];
+    return [self mediaGroupForNodeIdentifier:node.identifier];
 }
 
 /**
@@ -403,7 +406,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 - (IMBNodeObject *)nodeObjectForMediaGroup:(MLMediaGroup *)mediaGroup
 {
     IMBNodeObject* object = [[IMBNodeObject alloc] init];
-    object.identifier = [self nodeIdentifierFromMediaGroup:mediaGroup];
+    object.identifier = [self nodeIdentifierForMediaGroupIdentifier:mediaGroup.identifier];
     object.representedNodeIdentifier = object.identifier;
 //    object.location = url;
 //    object.imageRepresentation = [IMBAppleMediaLibraryPropertySynchronizer iconImageForMediaGroup:[self mediaGroupForNode:node]];
@@ -422,7 +425,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
  */
 - (MLMediaGroup *)mediaGroupForNodeObject:(IMBNodeObject *)nodeObject
 {
-    return [self mediaGroupFromNodeIdentifier:nodeObject.representedNodeIdentifier];
+    return [self mediaGroupForNodeIdentifier:nodeObject.representedNodeIdentifier];
 }
 
 /**
@@ -447,23 +450,41 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     return NO;
 }
 
-- (NSString *)nodeIdentifierFromMediaGroup:(MLMediaGroup *)mediaGroup
+/**
+ Node identifier is derived from media group identifier by prefixing it with a name space identifier to make it unique throughout all nodes inserted into the outline view.
+ */
+- (NSString *)nodeIdentifierForMediaGroupIdentifier:(NSString *)mediaGroupIdentifier
 {
-    NSParameterAssert(mediaGroup.identifier != nil);
+    NSParameterAssert(mediaGroupIdentifier != nil);
     
-    if (mediaGroup.identifier) {
-        return [NSString stringWithFormat:@"%@.%@", [self identifierPrefix], mediaGroup.identifier];
+    if (mediaGroupIdentifier) {
+        NSString *concatenationSeparator = [mediaGroupIdentifier length] > 0 ? @"." : @"";
+        return [NSString stringWithFormat:@"%@%@%@", [self identifierPrefix], concatenationSeparator, mediaGroupIdentifier];
     } else {
-        NSLog(@"%s: media group %@ has no identifier", __FUNCTION__, mediaGroup.name);
+        NSLog(@"%s: cannot derive node identifier from media group identifier: %@", __FUNCTION__, mediaGroupIdentifier);
         return [self identifierPrefix];
     }
 }
 
-- (MLMediaGroup *)mediaGroupFromNodeIdentifier:(NSString *)nodeIdentifier
+/**
+ Media group identifier is derived from node identifier by stripping off an identifier prefix that serves as a name space in the context of an outline view where node is inserted into.
+ */
+- (MLMediaGroup *)mediaGroupForNodeIdentifier:(NSString *)nodeIdentifier
 {
-    NSString *mediaGroupIdentifier = [nodeIdentifier substringFromIndex:[[self identifierPrefix] length]+1];
-    return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
+    NSInteger mediaGroupIdentifierStartIndex = [[self identifierPrefix] length]+1;  // +1 for concatenation separator
+    
+    NSString *mediaGroupIdentifier = @"";
+    if ([nodeIdentifier validIndex:mediaGroupIdentifierStartIndex])
+    {
+        mediaGroupIdentifier = [nodeIdentifier substringFromIndex:mediaGroupIdentifierStartIndex];
+        return [self.AppleMediaSource mediaGroupForIdentifier:mediaGroupIdentifier];
+    } else {
+        // Not a valid start index: Node identifier presumably consists only of identifier prefix plus a trailing ".".
+        // This must be root media group.
+        return [IMBAppleMediaLibraryPropertySynchronizer rootMediaGroupForMediaSource:self.AppleMediaSource];
+    }
 }
+
 /**
  Returns whether a media group was created automatically by the app that owns the media library (and not by the user).
  */
@@ -525,7 +546,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 {
     if ([object isKindOfClass:[IMBNodeObject class]]) {
         IMBNodeObject *nodeObject = (IMBNodeObject *)object;
-        MLMediaGroup *mediaGroup = [self mediaGroupFromNodeIdentifier:nodeObject.representedNodeIdentifier];
+        MLMediaGroup *mediaGroup = [self mediaGroupForNodeIdentifier:nodeObject.representedNodeIdentifier];
         return [self.configuration keyMediaObjectForMediaGroup:mediaGroup];
     } else {
         return [self.AppleMediaSource mediaObjectForIdentifier:object.identifier];
@@ -593,7 +614,8 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 - (NSString *)identifierPrefix
 {
     NSString *mediaSourcePath = [self.mediaSource path];
-    return mediaSourcePath ? mediaSourcePath : [self.configuration mediaSourceIdentifier];
+    return mediaSourcePath ? mediaSourcePath : [NSString stringWithFormat:@"%@://%@",
+                                                NSStringFromClass([self class]), [self.configuration mediaSourceIdentifier]];
 }
 
 /**

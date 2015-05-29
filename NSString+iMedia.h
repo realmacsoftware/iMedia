@@ -62,6 +62,11 @@
 
 @interface NSString ( iMedia )
 
+/**
+ @return Is index a valid index on the receiver?
+ */
+- (BOOL)validIndex:(NSInteger)index;
+
 // Returns the longest common sub path of self with inPath
 // Paths must be absolute paths.
 
