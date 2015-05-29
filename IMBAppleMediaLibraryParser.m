@@ -116,17 +116,6 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     
     if (!self.AppleMediaSource) return nil;
 
-    // Set media source URL if client does not handle SSBs since then we must calculate accessibility to its
-    // represented path correctly. Do not set it otherwise because it will have the side effect of the file system
-    // watcher repopulating the library if changes occur on file system level (which will not result in acquiring
-    // the changes anyway since Apple Media Library framework does not work that way).
-    if (![IMBConfig clientAppCanHandleSecurityScopedBookmarks] &&
-        [self.configuration respondsToSelector:@selector(sourceURLForMediaGroup:)])
-    {
-        MLMediaGroup *rootMediaGroup = [IMBAppleMediaLibraryPropertySynchronizer rootMediaGroupForMediaSource:self.AppleMediaSource];
-        self.mediaSource = [self.configuration sourceURLForMediaGroup:rootMediaGroup];
-    }
-    
     //  create an empty root node (unpopulated and without subnodes)
     IMBNode *node = [[IMBNode alloc] initWithParser:self topLevel:YES];
     node.name = [self libraryName];
