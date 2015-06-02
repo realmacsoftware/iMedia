@@ -34,6 +34,9 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 
+/**
+ An experimental switch to boost performance but definitly not ready for prime time
+ */
 #define ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC 1
 
 #pragma mark
