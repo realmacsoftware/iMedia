@@ -824,13 +824,7 @@ static NSMutableDictionary* sLibraryControllers = nil;
 	if (inOldNode == nil && inNewNode == nil) return;
 	
 	// Log an error if we are supposed to remove an old node, but it already removed from the tree...
-	
-	if (inOldNode != nil && inOldNode.parentNode == nil)
-	{
-		NSLog(@"%s inOldNode has already been removed. This was problably a race condition...",__FUNCTION__);
-		return;
-	}
-	
+		
 	if (inOldNode != nil && inOldNode.parentNode == nil)
 	{
 		NSLog(@"%s inOldNode has already been removed. This was problably a race condition...",__FUNCTION__);
