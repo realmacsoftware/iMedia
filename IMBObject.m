@@ -85,6 +85,7 @@
 #import "IMBObject.h"
 #import "IMBNode.h"
 #import "IMBParserMessenger.h"
+#import "IMBAppleMediaLibraryParserMessenger.h"
 #import "IMBCommon.h"
 #import "IMBOperationQueue.h"
 #import "IMBObjectThumbnailLoadOperation.h"
@@ -826,10 +827,17 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 /**
  Synchronous version of -requestBookmarkWithQueue:completionBlock:.
  
+ @discussion Will not request bookmark (and return NO) from Apple media library parser for any node object (IMBNodeObject) if request was posted synchronously on main thread (would block main thread indefinitely)
  @see requestBookmarkWithQueue:completionBlock:
  */
 - (BOOL)requestBookmarkWithError:(NSError **)outError
 {
+    // FIXME: No bookmark from Apple media library parser for node object if request was posted synchronously on main thread (would block main thread indefinitely)
+    if ([NSThread isMainThread] &&
+        [self isKindOfClass:[IMBNodeObject class]] &&
+        [self.parserMessenger isKindOfClass:[IMBAppleMediaLibraryParserMessenger class]]) {
+        return NO;
+    }
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     __block BOOL success = YES;
     

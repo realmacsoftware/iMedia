@@ -259,6 +259,7 @@ extern NSString* kIMBObjectPasteboardType;
 /**
  Synchronous version of -requestBookmarkWithQueue:completionBlock:.
  
+ @discussion No bookmark from Apple media library parser for node object if request was posted synchronously on main thread (would block main thread indefinitely)
  @see requestBookmarkWithQueue:completionBlock:
  */
 - (BOOL) requestBookmarkWithError:(NSError **)error;
