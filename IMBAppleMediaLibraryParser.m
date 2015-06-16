@@ -570,6 +570,11 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     return [((NSNumber *)mediaObject.attributes[@"Hidden"]) boolValue];
 }
 
+- (NSString *)persistentResourceIdentifierForObject:(IMBObject *)inObject
+{
+    return [[self mediaObjectForObject:inObject].URL absoluteString];
+}
+
 #pragma mark - Utility
 
 /**
