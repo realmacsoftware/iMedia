@@ -348,7 +348,7 @@
 
 			NSData* jpegData = nil;
 
-            if ((index + headerLengthValue + dataLengthValue) < [data length]) {
+            if ((index + headerLengthValue + dataLengthValue) <= [data length]) {
                 jpegData = [data subdataWithRange:NSMakeRange(index + headerLengthValue, dataLengthValue)];
             }
 			else {
