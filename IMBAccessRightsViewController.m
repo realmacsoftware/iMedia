@@ -321,7 +321,9 @@ typedef void (^IMBOpenPanelCompletionHandler)(NSURL* inURL);
                                
                                ^(NSURL* inReceivedURL,NSError* inError)
                                {
-                                   NSLog(@"%s  url=%@  error=%@",__FUNCTION__,inReceivedURL,inError);
+                                   if (inError) {
+                                       NSLog(@"%s  url=%@  error=%@",__FUNCTION__,inReceivedURL,inError);
+                                   }
                                    completionHandler();
                                    [completionHandler release];
                                });
