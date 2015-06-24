@@ -162,6 +162,13 @@ enum
 typedef NSUInteger IMBResourceAccessibility;
 
 
+// File Extended Attributes
+
+/**
+ Denotes the app bundle identifier a media file originates from (e.g. com.apple.photos)
+ */
+extern NSString *IMBFileXattrSourceAppBundleIdentifier;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 

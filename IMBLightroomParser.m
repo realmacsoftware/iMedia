@@ -643,6 +643,10 @@ static NSArray* sSupportedUTIs = nil;
 		}
 		
 		if (success) {
+            
+            // Store on JPEG file where data came from (might be helpful metadata to client app)
+            [jpegURL imb_setExtendedAttribute:[[self class] lightroomAppBundleIdentifier] forKey:IMBFileXattrSourceAppBundleIdentifier];
+            
 			NSError* error = nil;
 			NSData* bookmark = nil;
 			

@@ -69,5 +69,11 @@
 // Like -URLByResolvingSymlinksInPath, but handles any aliases in the path too. Returns nil upon resolution error
 - (NSURL *)imb_URLByResolvingSymlinksAndBookmarkFilesInPath;
 
+#pragma mark - File Extended Attributes
+
+/**
+ Only sets attribute value on key if URL is file URL.
+ */
+- (BOOL)imb_setExtendedAttribute:(NSString *)value forKey:(NSString *)key;
 
 @end

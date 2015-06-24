@@ -44,8 +44,9 @@
 */
 
 
-// Author: Dan Wood, Mike Abdullah
+// Author: Dan Wood, Mike Abdullah, Jörg Jacobsen
 
+#include <sys/xattr.h>
 
 #import "NSURL+iMedia.h"
 #import "NSWorkspace+iMedia.h"
@@ -329,5 +330,23 @@
     NSURL *result = [self imb_URLByResolvingBookmarkFilesInPath];
     return [result URLByResolvingSymlinksInPath];
 }
+
+
+#pragma mark File Extended Attributes
+
+- (BOOL)imb_setExtendedAttribute:(NSString *)value forKey:(NSString *)key
+{
+    if (![self isFileURL]) {
+        return NO;
+    }
+    
+    const char *path = [[self path] fileSystemRepresentation];
+    const char *keyCString = [key cStringUsingEncoding:NSUTF8StringEncoding];
+    const char *valueCString = [value cStringUsingEncoding:NSUTF8StringEncoding];
+    
+    int result = setxattr(path , keyCString, valueCString, strlen(valueCString) + 1, 0, 0);
+    return (result < 0) ? NO : YES;
+}
+
 
 @end

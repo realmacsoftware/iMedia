@@ -61,4 +61,12 @@ NSString* kIMBMediaTypeLink = @"link";
 NSString* kIMBMediaTypeContact = @"contact";
 
 
+// File Extended Attributes
+
+/**
+ Denotes the app bundle identifier a media file originates from (e.g. com.apple.photos)
+ */
+NSString *IMBFileXattrSourceAppBundleIdentifier = @"com.karelia.imedia.SourceAppBundleIdentifier";
+
+
 //----------------------------------------------------------------------------------------------------------------------
