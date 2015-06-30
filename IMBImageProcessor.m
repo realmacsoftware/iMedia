@@ -167,7 +167,7 @@
         NSSize imageMosaicSize = NSMakeSize(CGImageGetWidth(imageMosaicRef), CGImageGetHeight(imageMosaicRef));
         imageMosaic = [[[NSImage alloc] initWithCGImage:imageMosaicRef size:imageMosaicSize] autorelease];
         CFRelease(imageMosaicRef);
-	}
+    }
 
     CGContextRelease(bitmapContext);
 
