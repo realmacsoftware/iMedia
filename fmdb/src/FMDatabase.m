@@ -351,7 +351,7 @@
         statement = [[FMStatement alloc] init];
         [statement setStatement:pStmt];
         
-        if (shouldCacheStatements) {
+        if (shouldCacheStatements && sql) {
             [self setCachedStatement:statement forQuery:sql];
         }
     }
