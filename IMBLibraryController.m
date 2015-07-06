@@ -541,8 +541,8 @@ static NSMutableDictionary* sLibraryControllers = nil;
 			
 	inOldNode.isLoading = YES;
 	inOldNode.badgeTypeNormal = kIMBBadgeTypeLoading;
-	inOldNode.version++;
-
+	[self _incrementVersionOfNodeTree:inOldNode];
+	
 	SBPerformSelectorAsync(messenger.connection,
                            messenger,
                            @selector(reloadNodeTree:error:),
@@ -588,6 +588,20 @@ static NSMutableDictionary* sLibraryControllers = nil;
 				}
 			}
 		});
+}
+
+
+- (void) _incrementVersionOfNodeTree:(IMBNode*)inNode
+{
+	inNode.version++;
+
+	if (inNode.isPopulated)
+	{
+		for (IMBNode* subnode in inNode.subnodes)
+		{
+			[self _incrementVersionOfNodeTree:subnode];
+		}
+	}
 }
 
 
