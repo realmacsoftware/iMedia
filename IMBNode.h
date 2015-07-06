@@ -77,6 +77,7 @@
 {
 	// Primary properties...
 
+	NSUInteger _version;
 	NSImage* _icon;
 	NSImage* _highlightIcon;        // Optional. To be used when node is highlighted.
 	NSString* _name;
@@ -135,6 +136,7 @@
 
 // Primary properties for a node:
 
+@property (assign) NSUInteger version;				// Incremented with each request
 @property (retain) NSImage* icon;					// 16x16 icon for user interface
 @property (retain) NSImage* highlightIcon;			// Optional. To be used when node is highlighted.
 @property (copy) NSString* name;					// Display name for user interface

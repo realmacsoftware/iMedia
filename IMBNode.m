@@ -88,6 +88,7 @@
 
 // Primary properties...
 
+@synthesize version = _version;
 @synthesize icon = _icon;
 @synthesize highlightIcon = _highlightIcon;
 @synthesize name = _name;
@@ -149,6 +150,7 @@
 {
 	if (self = [super init])
 	{
+		self.version = 1;
         self.icon = nil;
         self.highlightIcon = nil;
 		self.subnodes = nil;
@@ -234,6 +236,7 @@
 {
 	IMBNode* copy = [[[self class] allocWithZone:inZone] init];
 
+	copy.version = self.version;
 	copy.icon = self.icon;
 	copy.highlightIcon = self.highlightIcon;
 	copy.name = self.name;
@@ -312,6 +315,7 @@
 {
 	if ((self = [super init]))
 	{
+		self.version = [inCoder decodeIntegerForKey:@"version"];
 		self.name = [inCoder decodeObjectForKey:@"name"];
 		self.identifier = [inCoder decodeObjectForKey:@"identifier"];
 		self.mediaType = [inCoder decodeObjectForKey:@"mediaType"];
@@ -373,6 +377,7 @@
 
 - (void) encodeWithCoder:(NSCoder*)inCoder
 {
+	[inCoder encodeInteger:self.version forKey:@"version"];
 	[inCoder encodeObject:self.name forKey:@"name"];
 	[inCoder encodeObject:self.identifier forKey:@"identifier"];
 	[inCoder encodeObject:self.mediaType forKey:@"mediaType"];
