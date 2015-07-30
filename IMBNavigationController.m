@@ -13,7 +13,6 @@
 @property (nonatomic, strong) NSMutableArray *navigationStack;
 @property (nonatomic) NSInteger currentIndex;
 @property (nonatomic) id<IMBNavigationLocation> currentLocation;
-@property (nonatomic, unsafe_unretained) IBOutlet id<IMBNavigable> delegate;
 
 @end
 
@@ -23,6 +22,7 @@
 
 @synthesize navigationStack = _navigationStack;
 @synthesize currentIndex = _currentIndex;
+@synthesize locationProvider = _locationProvider;
 @synthesize delegate = _delegate;
 @synthesize goingBackOrForward = _goingBackOrForward;
 
@@ -42,24 +42,57 @@
 
 - (instancetype)init
 {
-    return [self initWithDelegate:nil];
+    return [self initWithLocationProvider:nil];
 }
 
 /**
  Designated Initializer.
  */
-- (instancetype)initWithDelegate:(id<IMBNavigable>)delegate
+- (instancetype)initWithLocationProvider:(id<IMBNavigable>)locationProvider
 {
     self = [super init];
     if (self) {
-        self.delegate = delegate;
+        self.locationProvider = locationProvider;
         self.navigationStack = [NSMutableArray array];
         [self reset];
     }
     return self;
 }
 
+- (void)awakeFromNib
+{
+    NSAssert(self.locationProvider != nil, @"%@: location provider must not be nil", self);
+}
+
+#pragma mark - Validation
+
+- (void)validateLocations
+{
+    NSUInteger locationIndex = 0;
+    while (locationIndex < [self.navigationStack count]) {
+        if (![self.locationProvider isValidLocation:self.navigationStack[locationIndex]]) {
+            [self.navigationStack removeObjectAtIndex:locationIndex];
+            self.currentIndex = self.currentIndex - 1;
+        } else {
+            locationIndex++;
+        }
+    }
+    if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
+        [self.delegate didChangeNavigationController:self];
+    };
+    NSLog(@"%@", self);
+}
+
 #pragma mark - Navigation
+
+/**
+ Re-fetch current location from location provider and set on receiver.
+ @discussion Calling this method ensures that current location of receiver and location provider are in sync.
+ */
+- (void)synchronizeCurrentLocation
+{
+    self.currentLocation = [self.locationProvider currentLocation];
+}
 
 - (void)pushLocation:(id<IMBNavigationLocation>)location
 {
@@ -80,61 +113,121 @@
     if (self.currentIndex >= 0 && [self.delegate respondsToSelector:@selector(didGoForwardToLatestLocation)]) {
         [self.delegate didGoForwardToLatestLocation];
     };
+    if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
+        [self.delegate didChangeNavigationController:self];
+    };
     NSLog(@"%@", self);
 }
 
 - (void)goBackward
 {
+    [self _goStepsBackward:1];
+
+    if (self.currentIndex == 0 && [self.delegate respondsToSelector:@selector(didGoBackToOldestLocation)]) {
+        [self.delegate didGoBackToOldestLocation];
+    } else if ( [self.delegate respondsToSelector:@selector(didGotoIntermediateLocation)]) {
+        [self.delegate didGotoIntermediateLocation];
+    }
+    if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
+        [self.delegate didChangeNavigationController:self];
+    };
+    NSLog(@"%@", self);
+}
+
+- (void)_goStepsBackward:(NSUInteger)numberOfSteps
+{
     self.goingBackOrForward = YES;
     
-    // current location may have changed. Push it (which will result in: replace it
-    // if -replaceOnPushBy is correctly implemented by the actual location class)
+    [self synchronizeCurrentLocation];
     
-    [self pushLocation:[self.delegate currentLocation]];
-    
-    NSInteger proposedIndex = self.currentIndex - 1;
+    NSInteger proposedIndex = self.currentIndex - numberOfSteps;
     if ([self validIndex:proposedIndex]) {
         id location = self.navigationStack[proposedIndex];
         
-        if (location) {
-            [self.delegate gotoLocation:location];
+        if (location && [self.locationProvider gotoLocation:location]) {
             self.currentIndex = proposedIndex;
-        }
-        if (self.currentIndex == 0 && [self.delegate respondsToSelector:@selector(didGoBackToOldestLocation)]) {
-            [self.delegate didGoBackToOldestLocation];
-        } else if ( [self.delegate respondsToSelector:@selector(didGotoIntermediateLocation)]) {
-            [self.delegate didGotoIntermediateLocation];
+        } else {
+            [self.navigationStack removeObjectAtIndex:proposedIndex];
+            self.currentIndex = self.currentIndex - 1;
+            [self _goStepsBackward:numberOfSteps];
         }
     }
     self.goingBackOrForward = NO;
-    NSLog(@"%@", self);
 }
 
 - (void)goForward
 {
+    [self _goStepsForward:1];
+    
+    if ([self atTopOfNavigation] && [self.delegate respondsToSelector:@selector(didGoForwardToLatestLocation)]) {
+        [self.delegate didGoForwardToLatestLocation];
+    } else if ( [self.delegate respondsToSelector:@selector(didGotoIntermediateLocation)]) {
+        [self.delegate didGotoIntermediateLocation];
+    }
+    if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
+        [self.delegate didChangeNavigationController:self];
+    };
+    NSLog(@"%@", self);
+}
+
+- (void)_goStepsForward:(NSUInteger)numberOfSteps
+{
     self.goingBackOrForward = YES;
     
-    // current location may have changed. Push it (which will result in: replace it
-    // if -replaceOnPushBy is correctly implemented by the actual location class)
+    [self synchronizeCurrentLocation];
     
-    [self pushLocation:[self.delegate currentLocation]];
-    
-    NSInteger proposedIndex = self.currentIndex + 1;
+    NSInteger proposedIndex = self.currentIndex + numberOfSteps;
     if ([self validIndex:proposedIndex]) {
         id location = self.navigationStack[proposedIndex];
         
-        if (location) {
-            [self.delegate gotoLocation:location];
+        if (location && [self.locationProvider gotoLocation:location]) {
             self.currentIndex = proposedIndex;
-        }
-        if ([self atTopOfNavigation] && [self.delegate respondsToSelector:@selector(didGoForwardToLatestLocation)]) {
-            [self.delegate didGoForwardToLatestLocation];
-        } else if ( [self.delegate respondsToSelector:@selector(didGotoIntermediateLocation)]) {
-            [self.delegate didGotoIntermediateLocation];
+        } else {
+            [self.navigationStack removeObjectAtIndex:proposedIndex];
+            [self _goStepsForward:numberOfSteps];
         }
     }
     self.goingBackOrForward = NO;
-    NSLog(@"%@", self);
+}
+
+#pragma mark - Query State
+
+- (BOOL)canGoBackward
+{
+    return self.currentIndex > 0;
+}
+
+- (BOOL)canGoForward
+{
+    return self.currentIndex < ([self.navigationStack count] - 1);
+}
+
+#pragma mark - Buttons
+
+/**
+ Sets appropriate target and action on back button and makes it known to delegate.
+ */
+- (void)setupBackButton:(NSControl *)button
+{
+    button.target = self;
+    button.action = @selector(goBackward:);
+    
+    if ([self.delegate respondsToSelector:@selector(didSetupBackButton:)]) {
+        [self.delegate didSetupBackButton:button];
+    }
+}
+
+/**
+ Sets appropriate target and action on forward button and makes it known to delegate.
+ */
+- (void)setupForwardButton:(NSControl *)button
+{
+    button.target = self;
+    button.action = @selector(goForward:);
+    
+    if ([self.delegate respondsToSelector:@selector(didSetupForwardButton:)]) {
+        [self.delegate didSetupForwardButton:button];
+    }
 }
 
 #pragma mark - Actions
@@ -158,7 +251,13 @@
 
 - (NSRange)rangeToTopOfNavigation
 {
-    return NSMakeRange(self.currentIndex+1, [self.navigationStack count] - (self.currentIndex+1));
+    NSInteger loc = self.currentIndex+1;
+    
+    if (loc > 0) {
+        NSInteger len = [self.navigationStack count] - loc;
+        return NSMakeRange(loc, len);
+    }
+    return NSMakeRange(0, 0);
 }
 
 - (BOOL)atTopOfNavigation

@@ -25,15 +25,35 @@
 
 /**
  Does everything that needs to be done to establish location within the receiver.
+ @return Whether receiver could go to location.
  */
-- (id<IMBNavigable>)gotoLocation:(id<IMBNavigationLocation>)location;
+- (BOOL)gotoLocation:(id<IMBNavigationLocation>)location;
 
 /**
  @return The receiver's current location.
  */
 - (id<IMBNavigationLocation>)currentLocation;
 
+/**
+ @return Whether location is valid in current context of receiver.
+ */
+- (BOOL)isValidLocation:(id<IMBNavigationLocation>)location;
+
+@end
+
+@protocol IMBNavigationControllerDelegate <NSObject>
+
 @optional
+
+/**
+ Called immediately after a new back button was set up on navigation controller.
+ */
+- (void)didSetupBackButton:(NSControl *)newButton;
+
+/**
+ Called immediately after a new forward button was set up on navigation controller.
+ */
+- (void)didSetupForwardButton:(NSControl *)newButton;
 
 /**
  Called after navigation controller reached bottom of navigation stack.
@@ -51,23 +71,45 @@
  */
 - (void)didGotoIntermediateLocation;
 
+- (void)didChangeNavigationController:(IMBNavigationController *)navigationController;
+
 @end
 
 #pragma mark -
 
 @interface IMBNavigationController : NSObject {
-    __unsafe_unretained id<IMBNavigable> _delegate;
+    __unsafe_unretained id<IMBNavigationControllerDelegate> _delegate;
+    __unsafe_unretained id<IMBNavigable> _locationProvider;
     NSMutableArray *_navigationStack;
     NSInteger _currentIndex;
     BOOL _goingBackOrForward;
 }
+
+@property (nonatomic, unsafe_unretained) IBOutlet id<IMBNavigationControllerDelegate> delegate;
+@property (nonatomic, unsafe_unretained) IBOutlet id<IMBNavigable> locationProvider;
 
 @property (nonatomic) BOOL goingBackOrForward;
 
 /**
  Designated Initializer.
  */
-- (instancetype)initWithDelegate:(id<IMBNavigable>)delegate;
+- (instancetype)initWithLocationProvider:(id<IMBNavigable>)locationProvider;
+
+/**
+ Sets appropriate target and action on back button and makes it known to delegate.
+ */
+- (void)setupBackButton:(NSControl *)button;
+
+/**
+ Sets appropriate target and action on forward button and makes it known to delegate.
+ */
+- (void)setupForwardButton:(NSControl *)button;
+
+#pragma mark - Validation
+
+- (void)validateLocations;
+
+#pragma mark - Navigation
 
 /**
  Invokes -gotoLocation on delegate with the previous location.
@@ -88,5 +130,11 @@
  Clears the whole history of locations stack without going to any location.
  */
 - (void)reset;
+
+#pragma mark - Query State
+
+- (BOOL)canGoBackward;
+
+- (BOOL)canGoForward;
 
 @end
