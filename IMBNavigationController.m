@@ -94,6 +94,19 @@
     self.currentLocation = [self.locationProvider currentLocation];
 }
 
+/**
+ Replaces the current location with the location provided.
+ @discussion This can be useful if the state of the location changed since it was put onto the navigation stack. If the navigation stack is empty pushes location onto stack instead.
+ */
+- (void)updateCurrentLocationWithLocation:(id<IMBNavigationLocation>)location
+{
+    if (self.currentIndex >= 0) {
+        [self setCurrentLocation:location];
+    } else {
+        [self pushLocation:location];
+    }
+}
+
 - (void)pushLocation:(id<IMBNavigationLocation>)location
 {
     // If current index is not top of stack we must pop locations above
@@ -103,12 +116,8 @@
         [self.navigationStack removeObjectsInRange:[self rangeToTopOfNavigation]];
     }
     
-    if ([self.currentLocation replaceOnPushBy:location]) {
-        self.currentLocation = location;
-    } else {
-        [self.navigationStack addObject:location];
-        self.currentIndex = [self.navigationStack count] - 1;   // Always point to last object after push
-    }
+    [self.navigationStack addObject:location];
+    self.currentIndex = [self.navigationStack count] - 1;   // Always point to last object after push
 
     if (self.currentIndex >= 0 && [self.delegate respondsToSelector:@selector(didGoForwardToLatestLocation)]) {
         [self.delegate didGoForwardToLatestLocation];
