@@ -489,7 +489,7 @@ static IMBPanelController* sSharedPanelController = nil;
 - (void) setupInfoWindow
 {
 	// set up special button
-	NSButton *but = [[self window] standardWindowButton:NSWindowCloseButton];
+	/*NSButton *but = [[self window] standardWindowButton:NSWindowCloseButton];
 	NSView *container = [but superview];
 	float containerWidth = [container frame].size.width;
 	NSRect frame = [but frame];
@@ -601,7 +601,7 @@ static IMBPanelController* sSharedPanelController = nil;
 		{
 			[run addAttribute:NSCursorAttributeName value:[NSCursor pointingHandCursor] range:NSMakeRange(0,[run length])];
 		}
-	};
+	};*/
 }
 
 
