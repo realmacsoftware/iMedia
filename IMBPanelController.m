@@ -274,7 +274,7 @@ static IMBPanelController* sSharedPanelController = nil;
 {
 	// Make sure that add tabs to the window doesn't trigger premature library loading. We want to do this lazily...
 	
-	_isLoadingWindow = YES;
+	//_isLoadingWindow = YES;
 	
     // There's generally no need for the media browser to be key window...
 	
