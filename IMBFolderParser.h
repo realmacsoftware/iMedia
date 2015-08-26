@@ -69,12 +69,14 @@
 {
 	NSString* _fileUTI;
 	NSUInteger _displayPriority;
+	BOOL _followAliases;
 	BOOL _isUserAdded;
 }
 
 @property (retain) NSString* fileUTI;
 @property (assign) NSUInteger displayPriority;
-@property BOOL isUserAdded;	
+@property (assign) BOOL followAliases;
+@property BOOL isUserAdded;
 
 // Subclasses can pverride this method to exclude certain objects. Default implementation returns YES to include
 // all files of given UTI...

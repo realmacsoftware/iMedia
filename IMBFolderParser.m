@@ -75,6 +75,7 @@
 
 @synthesize fileUTI = _fileUTI;
 @synthesize displayPriority = _displayPriority;
+@synthesize followAliases = _followAliases;
 @synthesize isUserAdded = _isUserAdded;
 
 
@@ -87,6 +88,7 @@
 	{
 		self.fileUTI = nil;
 		self.displayPriority = 5;	// default middle-of-the-pack priority
+		self.followAliases = YES;
 		self.isUserAdded = NO;
 	}
 	
@@ -163,10 +165,8 @@
 - (BOOL) populateNode:(IMBNode*)inNode error:(NSError**)outError
 {
 	NSError* error = nil;
-	NSAutoreleasePool* pool = nil;
 	NSInteger index = 0;
-	BOOL ok;
-    BOOL result = YES;
+	BOOL ok,result = YES;
 	
 	// Scan the folder for files and directories...
 	
@@ -174,7 +174,7 @@
 
 	NSArray* urls = [fileManager contentsOfDirectoryAtURL:
 		inNode.mediaSource 
-		includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLLocalizedNameKey,NSURLIsDirectoryKey,NSURLIsPackageKey,nil] 
+		includingPropertiesForKeys:@[NSURLLocalizedNameKey,NSURLIsDirectoryKey,NSURLIsPackageKey,NSURLIsSymbolicLinkKey]
 		options:NSDirectoryEnumerationSkipsHiddenFiles 
 		error:&error];
 
@@ -196,102 +196,126 @@
 		
 		for (NSURL* url in urls)
 		{
-			if (index%32 == 0)
+			@autoreleasepool
 			{
-				IMBDrain(pool);
-				pool = [[NSAutoreleasePool alloc] init];
-			}
-
-			// Get some info about the file or folder...
-			
-			NSString* localizedName = nil;
-			ok = [url getResourceValue:&localizedName forKey:NSURLLocalizedNameKey error:&error];
-			if (!ok) continue;
-			
-			NSNumber* isDirectory = nil;
-			ok = [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error];
-			if (!ok) continue;
-
-			NSNumber* isPackage = nil;
-			ok = [url getResourceValue:&isPackage forKey:NSURLIsPackageKey error:&error];
-			if (!ok) continue;
-			
-			// If we found a folder (that is not a package, then remember it for later. Folders will be added
-			// after regular files...
-			
-			if ([isDirectory boolValue] && ![isPackage boolValue])
-			{
-				if (![IMBConfig isLibraryAtURL:url])
+				NSString* uti;
+				ok = [url getResourceValue:&uti forKey:NSURLTypeIdentifierKey error:&error];
+				if (!ok) continue;
+				
+				// If we have an alias and are supposed to follow aliases, then resolve it before doing anything else...
+				
+				if (self.followAliases)
 				{
-					[folders addObject:url];
+					NSNumber* isSymlink = nil;
+					ok = [url getResourceValue:&isSymlink forKey:NSURLIsSymbolicLinkKey error:&error];
+					if (!ok) continue;
+					
+					if ([isSymlink boolValue])
+					{
+						url = [url URLByResolvingSymlinksInPath];
+
+						ok = [url getResourceValue:&uti forKey:NSURLTypeIdentifierKey error:&error];
+						if (!ok) continue;
+					}
+					else if (UTTypeConformsTo((CFStringRef)uti,kUTTypeAliasFile))
+					{
+						NSData* bookmark = [NSURL bookmarkDataWithContentsOfURL:url error:nil];
+						url = [NSURL URLByResolvingBookmarkData:bookmark
+							options:NSURLBookmarkResolutionWithoutUI
+							relativeToURL:nil
+							bookmarkDataIsStale:nil
+							error:&error];
+						
+						url = [url filePathURL];
+
+						ok = [url getResourceValue:&uti forKey:NSURLTypeIdentifierKey error:&error];
+						if (!ok) continue;
+					}
 				}
-				else
+				
+				// Get some info about the file or folder...
+				
+				NSString* localizedName = nil;
+				ok = [url getResourceValue:&localizedName forKey:NSURLLocalizedNameKey error:&error];
+				if (!ok) continue;
+				
+				NSNumber* isDirectory = nil;
+				ok = [url getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error];
+				if (!ok) continue;
+
+				NSNumber* isPackage = nil;
+				ok = [url getResourceValue:&isPackage forKey:NSURLIsPackageKey error:&error];
+				if (!ok) continue;
+				
+				// If we found a folder (that is not a package, then remember it for later. Folders will be added
+				// after regular files...
+				
+				if ([isDirectory boolValue] && ![isPackage boolValue])
 				{
-					// NSLog(@"IGNORING LIBRARY PATH: %@", path);
+					if (![IMBConfig isLibraryAtURL:url])
+					{
+						[folders addObject:url];
+					}
+					else
+					{
+						// NSLog(@"IGNORING LIBRARY PATH: %@", path);
+					}
 				}
-			}
-			
-			// Regular files are added immediately (if they have the correct UTI)...
-			
-            NSString *type;
-            ok = [url getResourceValue:&type forKey:NSURLTypeIdentifierKey error:&error];
-			
-            if (ok && UTTypeConformsTo((CFStringRef)type, (CFStringRef)_fileUTI))
-            {
-				IMBObject* object = [self objectForURL:url name:localizedName index:index++];
-                
-                if ([self canUseObject:object forPopulatingNode:inNode])
-                {
-                    [objects addObject:object];
-                    inNode.displayedObjectCount++;
-                }
+				
+				// Regular files are added immediately (if they have the correct UTI)...
+				
+				if (ok && UTTypeConformsTo((CFStringRef)uti, (CFStringRef)_fileUTI))
+				{
+					IMBObject* object = [self objectForURL:url name:localizedName index:index++];
+					
+					if ([self canUseObject:object forPopulatingNode:inNode])
+					{
+						[objects addObject:object];
+						inNode.displayedObjectCount++;
+					}
+				}
 			}
 		}
-				
-		IMBDrain(pool);
 
 		// Now we can actually handle the folders. Add a subnode and an IMBNodeObject for each folder...
 				
 		for (NSURL* url in folders)
 		{
-			if (index%32 == 0)
+			@autoreleasepool
 			{
-				IMBDrain(pool);
-				pool = [[NSAutoreleasePool alloc] init];
-			}
-			
-			NSString* name;
-			if (![url getResourceValue:&name forKey:NSURLLocalizedNameKey error:&error]) continue;
-			
-			NSNumber* hasSubfolders = [self directoryHasVisibleSubfolders:url error:&error];
-			if (!hasSubfolders) continue;
-			
-			IMBNode* subnode = [[IMBNode alloc] initWithParser:self topLevel:NO];
-			subnode.icon = [self iconForItemAtURL:url error:NULL];
-			subnode.name = name;
-			
-            NSString* path = [url path];
-			subnode.identifier = [self identifierForPath:path];
-            
-			subnode.mediaSource = url;
-			subnode.isLeafNode = ![hasSubfolders boolValue];
-			subnode.groupType = kIMBGroupTypeFolder;
-			subnode.isIncludedInPopup = NO;
-			subnode.watchedPath = path;					// These two lines are important to make file watching work for nested 
-			subnode.watcherType = kIMBWatcherTypeNone;	// subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
-			
-            [subnodes addObject:subnode];
-			[subnode release];
+				NSString* name;
+				if (![url getResourceValue:&name forKey:NSURLLocalizedNameKey error:&error]) continue;
+				
+				NSNumber* hasSubfolders = [self directoryHasVisibleSubfolders:url error:&error];
+				if (!hasSubfolders) continue;
+				
+				IMBNode* subnode = [[IMBNode alloc] initWithParser:self topLevel:NO];
+				subnode.icon = [self iconForItemAtURL:url error:NULL];
+				subnode.name = name;
+				
+				NSString* path = [url path];
+				subnode.identifier = [self identifierForPath:path];
+				
+				subnode.mediaSource = url;
+				subnode.isLeafNode = ![hasSubfolders boolValue];
+				subnode.groupType = kIMBGroupTypeFolder;
+				subnode.isIncludedInPopup = NO;
+				subnode.watchedPath = path;					// These two lines are important to make file watching work for nested 
+				subnode.watcherType = kIMBWatcherTypeNone;	// subfolders. See IMBLibraryController _reloadNodesWithWatchedPath:
+				
+				[subnodes addObject:subnode];
+				[subnode release];
 
-			IMBFolderObject* object = [[IMBFolderObject alloc] init];
-			object.representedNodeIdentifier = subnode.identifier;
-			object.location = url;
-			object.name = name;
-			object.metadata = nil;
-			object.parserIdentifier = self.identifier;
-			object.index = index++;
-			[objects addObject:object];
-			[object release];
+				IMBFolderObject* object = [[IMBFolderObject alloc] init];
+				object.representedNodeIdentifier = subnode.identifier;
+				object.location = url;
+				object.name = name;
+				object.metadata = nil;
+				object.parserIdentifier = self.identifier;
+				object.index = index++;
+				[objects addObject:object];
+				[object release];
+			}
 		}
 		
 		inNode.objects = objects;
@@ -302,7 +326,6 @@
         result = NO;
     }
 	
-    IMBDrain(pool);
 	return result;
 }
 
