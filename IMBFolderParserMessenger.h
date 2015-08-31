@@ -66,10 +66,12 @@
 {
 	NSString* _fileUTI;
 	NSUInteger _displayPriority;
+	BOOL _followAliases;
 }
 
 @property (retain) NSString* fileUTI;
 @property (assign) NSUInteger displayPriority;
+@property (assign) BOOL followAliases;
 
 @end
 
