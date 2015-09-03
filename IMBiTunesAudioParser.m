@@ -658,6 +658,7 @@
 	if ([[inTrackDict objectForKey:@"Location"] length] == 0) return NO;
 	if ([[inTrackDict objectForKey:@"Has Video"] boolValue] == 1) return NO;
 	if (![[inTrackDict objectForKey:@"Location"] hasPrefix:@"file:"]) return NO;
+	if ([[inTrackDict objectForKey:@"Location"] hasSuffix:@".m4p"]) return NO;
 	
 	return YES;
 }
