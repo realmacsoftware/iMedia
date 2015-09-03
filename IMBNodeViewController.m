@@ -164,7 +164,9 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
             NSScrollView *scrollView = [objectView enclosingScrollView];
             NSClipView *objectClipView = [scrollView contentView];
             
-            NSPoint objectViewOrigin = NSMakePoint(0, self.objectViewRelativeScrollPosition * objectClipView.documentRect.size.height);
+            CGFloat maxScrollPosition = objectClipView.documentRect.size.height - objectClipView.frame.size.height;
+            CGFloat desiredScrollPosition = self.objectViewRelativeScrollPosition * objectClipView.documentRect.size.height;
+            NSPoint objectViewOrigin = NSMakePoint(0, MIN(maxScrollPosition, desiredScrollPosition));
             
             [objectClipView scrollToPoint:objectViewOrigin];
             [scrollView reflectScrolledClipView:objectClipView];
@@ -172,13 +174,6 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
         success = YES;
     }
     return success;
-}
-
-#pragma mark IMBNavigationLocation Protocol
-
-- (BOOL)replaceOnPushBy:(id)otherLocation
-{
-    return [self.nodeIdentifier isEqualToString:((IMBNodeViewControllerState *)otherLocation).nodeIdentifier];
 }
 
 #pragma mark Description
@@ -870,8 +865,9 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
         if (row >=0 && !self.navigationController.goingBackOrForward) {
             IMBNodeViewControllerState *state = [IMBNodeViewControllerState stateOfController:self];
             
+            // Current scroll position and view height might have changed since state was pushed
             if ([self isValidLocation:state]) {
-                [self.navigationController pushLocation:state];
+                [self.navigationController updateCurrentLocationWithLocation:state];
             }
         }
         
@@ -1149,7 +1145,7 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 {
     ibBackButton = newButton;
     ibBackButton.enabled = NO;
-    ibBackButton.hidden = YES;
+    ibBackButton.hidden = NO;
     
     if ([ibBackButton isKindOfClass:[NSButton class]] && !((NSButton *)ibBackButton).image) {
         ((NSButton *)ibBackButton).image = [NSImage imageNamed:NSImageNameGoLeftTemplate];
@@ -1160,7 +1156,7 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 {
     ibForwardButton = newButton;
     ibForwardButton.enabled = NO;
-    ibForwardButton.hidden = YES;
+    ibForwardButton.hidden = NO;
 
     if ([ibForwardButton isKindOfClass:[NSButton class]] && !((NSButton *)ibForwardButton).image) {
         ((NSButton *)ibForwardButton).image = [NSImage imageNamed:NSImageNameGoRightTemplate];
@@ -1170,9 +1166,9 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 - (void)didChangeNavigationController:(IMBNavigationController *)navigationController
 {
     ibBackButton.enabled = [navigationController canGoBackward];
-    ibBackButton.hidden = !(ibBackButton.enabled);
+    ibBackButton.hidden = NO;
     ibForwardButton.enabled = [navigationController canGoForward];
-    ibForwardButton.hidden =!(ibForwardButton.enabled);
+    ibForwardButton.hidden = NO;
 }
 
 
