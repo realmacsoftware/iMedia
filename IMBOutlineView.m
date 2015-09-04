@@ -437,4 +437,12 @@ NSString* IMBIsDefaultAppearanceAttributeName = @"IMBIsDefaultAppearanceAttribut
 }
 
 
+// If we do have an appearance set, then disable Yosemite style translucency, as it interferres too much...
+
+- (BOOL) allowsVibrancy
+{
+	return _appearance != nil ? NO : YES;
+}
+
+
 @end
