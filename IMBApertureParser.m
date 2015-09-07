@@ -701,7 +701,7 @@
 
 - (NSDictionary*) childrenInfoForNode:(NSDictionary*)inNodeDict images:(NSDictionary*)inImages
 {
-    return [NSDictionary dictionaryWithObjectsAndKeys:nil];
+    return [NSDictionary dictionary];
 }
 
 

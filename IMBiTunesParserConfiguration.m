@@ -14,7 +14,7 @@
 IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
 ^id<IMBAppleMediaLibraryParserDelegate>(MLMediaType mediaType)
 {
-    NSSet *identifiersOfNonUserCreatedGroups = [NSSet setWithObjects:nil];
+    NSSet *identifiersOfNonUserCreatedGroups = [NSSet set];
     
     return [[IMBiTunesParserConfiguration alloc] initWithMediaSourceIdentifier:MLMediaSourceiTunesIdentifier
                                                     AppleMediaLibraryMediaType:mediaType
@@ -61,15 +61,13 @@ IMBMLParserConfigurationFactory IMBMLiTunesParserConfigurationFactory =
 
 - (BOOL)shouldUseMediaGroup:(MLMediaGroup *)mediaGroup
 {
-    NSSet *unqualifiedGroupIdentifiers = [NSSet setWithObjects:
-                                          nil];
+    NSSet *unqualifiedGroupIdentifiers = [NSSet set];
     return (![unqualifiedGroupIdentifiers containsObject:mediaGroup.identifier]);
 }
 
 - (BOOL)shouldReuseMediaObjectsOfParentGroupForGroup:(MLMediaGroup *)mediaGroup
 {
-    NSSet *qualifiedGroupIdentifiers = [NSSet setWithObjects:
-                                        nil];
+    NSSet *qualifiedGroupIdentifiers = [NSSet set];
     
     //    NSLog(@"Identifier for media group %@: %@", mediaGroup.name, mediaGroup.identifier);
     return [qualifiedGroupIdentifiers containsObject:mediaGroup.identifier];

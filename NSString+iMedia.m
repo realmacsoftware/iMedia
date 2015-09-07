@@ -54,8 +54,6 @@
 
 #import "NSString+iMedia.h"
 #import "NSFileManager+iMedia.h"
-#include <openssl/bio.h>
-#include <openssl/evp.h>
 #include <sys/stat.h>
 
 
@@ -366,7 +364,7 @@
     // This is for self expressed in time interval since 1970
     
     if (!date) {
-        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+        NSNumberFormatter *f = [[[NSNumberFormatter alloc] init] autorelease];
         f.numberStyle = NSNumberFormatterDecimalStyle;
         f.allowsFloats = YES;
         f.decimalSeparator = @".";
