@@ -195,6 +195,12 @@ typedef void (^IMBCompletionBlock)(id inResult,NSError* inError);
 
 #pragma mark MACROS
 
+#ifdef DEBUG
+#define DebugLog(...) NSLog(__VA_ARGS__)
+#else
+#define DebugLog(...)
+#endif
+
 #ifndef IMBRelease
 #define IMBRelease(object) if (object) {[object release]; object=nil;}
 #endif

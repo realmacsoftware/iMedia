@@ -80,7 +80,7 @@
     if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
         [self.delegate didChangeNavigationController:self];
     };
-    NSLog(@"%@", self);
+    DebugLog(@"%@", self);
 }
 
 #pragma mark - Navigation
@@ -125,7 +125,7 @@
     if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
         [self.delegate didChangeNavigationController:self];
     };
-    NSLog(@"%@", self);
+    DebugLog(@"%@", self);
 }
 
 - (void)goBackward
@@ -140,7 +140,7 @@
     if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
         [self.delegate didChangeNavigationController:self];
     };
-    NSLog(@"%@", self);
+    DebugLog(@"%@", self);
 }
 
 - (void)_goStepsBackward:(NSUInteger)numberOfSteps
@@ -176,7 +176,7 @@
     if ([self.delegate respondsToSelector:@selector(didChangeNavigationController:)]) {
         [self.delegate didChangeNavigationController:self];
     };
-    NSLog(@"%@", self);
+    DebugLog(@"%@", self);
 }
 
 - (void)_goStepsForward:(NSUInteger)numberOfSteps
@@ -287,7 +287,7 @@
 {
     NSString *description = @"\n";
     
-    for (NSInteger index = 0; index < [self.navigationStack count]; index++) {
+    for (NSInteger index = self.currentIndex; index < [self.navigationStack count]; index++) {
         NSString *rowPrefix = nil;
         if (index == self.currentIndex) {
             rowPrefix = @"-->";

@@ -180,7 +180,7 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@ (Scroll pos. %.8f %%)", self.nodeIdentifier, self.objectViewRelativeScrollPosition * 100.0];
+    return [NSString stringWithFormat:@"%@ (Scroll pos. %.1f %%)", self.nodeIdentifier, self.objectViewRelativeScrollPosition * 100.0];
 }
 @end
 
@@ -1126,11 +1126,14 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
     return [IMBNodeViewControllerState stateOfController:self];
 }
 
+/**
+ Returns whether the receiver can match the provided location with an existing row.
+ @discussion Since location preserves a state that has been determined earlier it might well be that the location is no longer valid in the treeview (e.g. the user already collapsed its parent node)
+ */
 - (BOOL)isValidLocation:(id<IMBNavigationLocation>)location
 {
     IMBNode *targetNode = nil;
     NSInteger row = [self.nodeOutlineView rowForNode:&targetNode withIdentifier:((IMBNodeViewControllerState *)location).nodeIdentifier];
-    NSLog(@"Found row %ld of of total rows in outline view: %ld", row, [self.nodeOutlineView numberOfRows]);
     return (row >= 0);
 }
 

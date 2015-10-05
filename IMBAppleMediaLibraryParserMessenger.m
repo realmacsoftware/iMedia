@@ -115,7 +115,7 @@ NSString *kIMBMediaRootGroupAttributeLibraryURL = @"URL";
     Class myClass = [self class];
     dispatch_once([myClass parserInstancesOnceTokenRef], ^
                   {
-#warning Better encapsulate parser initialization in designated initializer of parser 
+                      // JJ/FIXME: Better encapsulate parser initialization in designated initializer of parser
                       IMBAppleMediaLibraryParser *parser = (IMBAppleMediaLibraryParser *)[self newParser];
                       MLMediaType mediaType = [IMBAppleMediaLibraryParser MLMediaTypeForIMBMediaType:[myClass mediaType]];
                       parser.configuration = [myClass parserConfigurationFactory](mediaType);
