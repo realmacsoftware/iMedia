@@ -1,12 +1,4 @@
-[submodule "ObjectiveFlickr"]
-	path = ObjectiveFlickr
-	url = git://github.com/iMediaSandboxing/objectiveflickr.git
-	fetchRecurseSubmodules = true
 [submodule "XPCKit"]
 	path = XPCKit
-	url = git://github.com/realmacsoftware/XPCKit.git
-	fetchRecurseSubmodules = true
-[submodule "PhFacebook"]
-	path = PhFacebook
-	url = git://github.com/iMediaSandboxing/PhFacebook.git
+	url = git@github.com:realmacsoftware/XPCKit.git
 	fetchRecurseSubmodules = true
