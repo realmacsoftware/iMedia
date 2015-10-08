@@ -65,7 +65,6 @@
 #import "IMBParser.h"
 #import "IMBNode.h"
 #import "IMBNodeCell.h"
-#import "IMBFlickrNode.h"
 #import "IMBNodeObject.h"
 #import "NSView+iMedia.h"
 #import "NSImage+iMedia.h"
@@ -988,26 +987,6 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 	{
 		cell.badgeType = kIMBBadgeTypeWarning;
 		cell.badgeError = node.error;
-	}
-	else if ([node respondsToSelector:@selector(license)])
-	{
-		IMBFlickrNodeLicense license = [((IMBFlickrNode *)node) license];
-		if (license < IMBFlickrNodeLicense_Undefined) license = IMBFlickrNodeLicense_Undefined;
-		if (license > IMBFlickrNodeLicense_CommercialUse) license = IMBFlickrNodeLicense_CommercialUse;
-		// These are file names.  Ideally we should put localized AX Descriptions on them.
-		NSArray *names = [NSArray arrayWithObjects:@"any", @"CC", @"remix", @"commercial", nil];
-		NSString *fileName = [names objectAtIndex:license];
-		
-		if (license)
-		{
-			NSImage *image = [[[NSImage alloc] initByReferencingFile:[IMBBundle() pathForResource:fileName ofType:@"pdf"]] autorelease];
-			[image setSize:NSMakeSize(16.0,16.0)];
-			cell.badgeIcon = image;
-		}
-		else
-		{
-			cell.badgeIcon = nil;
-		}
 	}
 	else
 	{
