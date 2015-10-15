@@ -484,7 +484,6 @@
 		D0C911EE1521965C006655C9 /* IMBAudioNodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C911EC1521965C006655C9 /* IMBAudioNodeViewController.m */; };
 		D0C911F1152196FE006655C9 /* IMBLinkNodeViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C911EF152196FD006655C9 /* IMBLinkNodeViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C911F2152196FE006655C9 /* IMBLinkNodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C911F0152196FD006655C9 /* IMBLinkNodeViewController.m */; };
-		D0CA93E7104917A400725DA3 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0CA93E6104917A400725DA3 /* QTKit.framework */; };
 		D0CA9427104932CD00725DA3 /* IMBiTunesAudioParser.h in Headers */ = {isa = PBXBuildFile; fileRef = D0CA9425104932CD00725DA3 /* IMBiTunesAudioParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0CA94C91049455B00725DA3 /* itunes-icon-audiobooks.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CA94B91049455B00725DA3 /* itunes-icon-audiobooks.png */; };
 		D0CA94CA1049455B00725DA3 /* itunes-icon-folder7.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CA94BA1049455B00725DA3 /* itunes-icon-folder7.png */; };
@@ -1245,7 +1244,6 @@
 				D0DA9AE1102EB7BD008EC9F9 /* Carbon.framework in Frameworks */,
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
 				D09930FD1010FF9700C527B7 /* Quartz.framework in Frameworks */,
-				D0CA93E7104917A400725DA3 /* QTKit.framework in Frameworks */,
 				CEF69569106421CB005D7E72 /* QuickLook.framework in Frameworks */,
 				CEF6960010643A25005D7E72 /* WebKit.framework in Frameworks */,
 				D0904DDC152D700E003FDD08 /* Security.framework in Frameworks */,

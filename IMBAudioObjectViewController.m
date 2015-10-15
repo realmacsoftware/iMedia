@@ -69,7 +69,6 @@
 #import "NSObject+iMedia.h"
 #import "NSWorkspace+iMedia.h"
 #import "NSFileManager+iMedia.h"
-#import <QTKit/QTKit.h>
 
 
 //----------------------------------------------------------------------------------------------------------------------
