@@ -123,7 +123,7 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" copiesOnScroll="NO" id="Fhr-EZ-z9Z">
                                             <rect key="frame" x="1" y="1" width="407" height="472"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <ikImageBrowserView autoresizesSubviews="NO" zoomValue="0.4985358715057373" constrainsToOriginalSize="YES" id="694" customClass="IMBImageBrowserView">
                                                     <rect key="frame" x="1" y="0.0" width="406" height="472"/>
