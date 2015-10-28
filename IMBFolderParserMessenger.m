@@ -176,17 +176,23 @@
 - (NSArray*) parserInstancesWithError:(NSError**)outError
 {
 	IMBFolderParser* parser = (IMBFolderParser*)[self newParser];
-	parser.identifier = [[self class] identifier];
-	parser.mediaType = self.mediaType;
-	parser.mediaSource = self.mediaSource;
-	parser.fileUTI = self.fileUTI;
-	parser.displayPriority = self.displayPriority;
-	parser.followAliases = self.followAliases;
-	parser.isUserAdded = self.isUserAdded;
 	
-	NSArray* parsers = [NSArray arrayWithObject:parser];
-	[parser release];
-	return parsers;
+	if (parser)
+	{
+		parser.identifier = [[self class] identifier];
+		parser.mediaType = self.mediaType;
+		parser.mediaSource = self.mediaSource;
+		parser.fileUTI = self.fileUTI;
+		parser.displayPriority = self.displayPriority;
+		parser.followAliases = self.followAliases;
+		parser.isUserAdded = self.isUserAdded;
+		
+		NSArray* parsers = [NSArray arrayWithObject:parser];
+		[parser release];
+		return parsers;
+	}
+	
+	return nil;
 }
 
 
