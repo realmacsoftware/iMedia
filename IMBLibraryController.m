@@ -844,10 +844,10 @@ static NSMutableDictionary* sLibraryControllers = nil;
 		
 	if (inOldNode != nil && inOldNode.version > inNewNode.version)
 	{
-		NSLog(@"%s Version %d of inNewNode is obsolete, because version %d was already requested...",
-			__FUNCTION__,
-			(int)inNewNode.version,
-			(int)inOldNode.version);
+//		NSLog(@"%s Version %d of inNewNode is obsolete, because version %d was already requested...",
+//			__FUNCTION__,
+//			(int)inNewNode.version,
+//			(int)inOldNode.version);
 		
 		return;
 	}
