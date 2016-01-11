@@ -1526,6 +1526,7 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 	{
 		[ibNodeOutlineView selectRowIndexes:[NSIndexSet indexSet] byExtendingSelection:NO];
         [self installObjectViewForNode:nil];
+		[(IMBObjectViewController*)self.objectViewController setCurrentNode:nil];
 	}
 }
 

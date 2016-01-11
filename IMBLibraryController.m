@@ -842,7 +842,7 @@ static NSMutableDictionary* sLibraryControllers = nil;
 	
 	// Log an error if we are supposed to remove an old node, but it already removed from the tree...
 		
-	if (inOldNode != nil && inOldNode.version > inNewNode.version)
+	if (inOldNode != nil && inNewNode != nil && inOldNode.version > inNewNode.version)
 	{
 //		NSLog(@"%s Version %d of inNewNode is obsolete, because version %d was already requested...",
 //			__FUNCTION__,
