@@ -428,7 +428,7 @@
 
 	// Render the thumbnail...
 	
-	if (error == nil)
+	if ((error == nil) && (source != nil))
 	{
 		if (shouldScaleDown)
 		{
