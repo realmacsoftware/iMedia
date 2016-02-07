@@ -656,6 +656,8 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 - (void) loadThumbnail
 {
+	if ([IMBConfig suspendBackgroundTasks]) return;
+
 	if (self.needsImageRepresentation && !self.isLoadingThumbnail)
 	{
 		_isLoadingThumbnail = YES;
@@ -713,6 +715,8 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 - (void) loadMetadata
 {
+	if ([IMBConfig suspendBackgroundTasks]) return;
+
 	if (self.metadata == nil && !self.isLoadingThumbnail)
 	{
 		IMBParserMessenger* messenger = self.parserMessenger;

@@ -70,6 +70,7 @@ static NSString* sIMBViewerAppPathsKey = @"viewerAppPaths";
 static NSString* sIMBEditorAppPathsKey = @"editorAppPaths";
 static NSString* sIMBFlickrDownloadSizeKey = @"flickrDownloadSize";
 
+static BOOL sSuspendBackgroundTasks = NO;
 static BOOL sUseGlobalViewType = NO;
 static BOOL sClientAppCanHandleSSBs = NO;
 
@@ -166,6 +167,21 @@ static BOOL sClientAppCanHandleSSBs = NO;
 + (BOOL) showsGroupNodes
 {
 	return [[self prefsValueForKey:sIMBShowsGroupNodesKey] boolValue];
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
++ (void) setSuspendBackgroundTasks:(BOOL)inSuspend
+{
+	sSuspendBackgroundTasks = inSuspend;
+}
+
+
++ (BOOL) suspendBackgroundTasks
+{
+	return sSuspendBackgroundTasks;
 }
 
 
