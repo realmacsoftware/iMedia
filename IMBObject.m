@@ -400,7 +400,11 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	}
 	else if ([[self URL] isFileURL])
 	{
-		icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFileType:self.type];
+		NSString* iconType = self.type;
+		if (iconType != nil)
+		{
+			icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFileType:iconType];
+		}
 	}
 	
 	return icon;

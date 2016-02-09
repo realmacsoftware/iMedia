@@ -1458,7 +1458,7 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 			selectedNodeIdentifier = identifier;
 		}
 	
-		if ([identifier isEqualToString:selectedNodeIdentifier])
+		if (selectedNodeIdentifier && [identifier isEqualToString:selectedNodeIdentifier])
 		{
 			[self selectNode:node];
 			found = YES;
