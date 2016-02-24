@@ -691,17 +691,25 @@ NSString* const kIMBiPhotoNodeObjectTypeFace  = @"faces";
 - (NSString*) imagePathForFaceIndex:(NSNumber*)inFaceIndex inImageWithKey:(NSString*)inImageKey
 {
 	NSString* imagePath = [self thumbnailPathForImageKey:inImageKey];
-	
-    if (imagePath) {
-        return [NSString stringWithFormat:@"%@_face%@.%@",
-                [imagePath stringByDeletingPathExtension],
-                inFaceIndex,
-                [imagePath pathExtension]];
-    } else {
-        NSBundle* bundle = [NSBundle bundleForClass:[self class]];
-        NSString* path = [bundle pathForResource:@"missing-thumbnail" ofType:@"jpg"];
-        return path;
-    }
+
+	if (imagePath) {
+		NSFileManager *fileManager = [NSFileManager defaultManager];
+		NSString *facePath = [NSString stringWithFormat:@"%@_face%@.%@",
+							  [imagePath stringByDeletingPathExtension],
+							  inFaceIndex,
+							  [imagePath pathExtension]];
+
+		if ([fileManager fileExistsAtPath:facePath]) {
+			return facePath;
+		}
+		else if ([fileManager fileExistsAtPath:imagePath]) {
+			return imagePath;
+		}
+	}
+
+	NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+	NSString* path = [bundle pathForResource:@"missing-thumbnail" ofType:@"jpg"];
+	return path;
 }
 
 
