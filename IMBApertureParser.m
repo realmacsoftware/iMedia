@@ -223,16 +223,52 @@
 {
 	NSDictionary* plist = self.plist;
 	NSDictionary* images = [plist objectForKey:@"Master Image List"];
-	
+	NSArray* albums = [plist objectForKey:@"List of Albums"];
+
 	// Population of events and faces node fundamentally different from album node
 	
 	if ([self isFacesNode:inNode]) {
 		NSDictionary* faces = [plist objectForKey:@"List of Faces"];
 		[self populateFacesNode:inNode withFaces:faces images:images];
 	} else {
-		NSArray* albums = [plist objectForKey:@"List of Albums"];
-		[self addSubNodesToNode:inNode albums:albums images:images]; 
+		[self addSubNodesToNode:inNode albums:albums images:images];
 		[self populateNode:inNode albums:albums images:images]; 
+	}
+
+	// If we are populating the root nodes, then also populate the "Photos" node and mirror its objects array
+	// into the objects array of the root node. Please note that this is non-standard parser behavior, which is
+	// implemented here, to achieve the desired "feel" in the browser...
+
+	if (inNode.isTopLevelNode)
+	{
+		BOOL result = YES;
+		NSUInteger photosAlbumIndex = [self indexOfAllPhotosAlbumInAlbumList:albums];
+
+		if (photosAlbumIndex != NSNotFound)
+		{
+			NSInteger photosNodeIndex = photosAlbumIndex;
+
+			for (NSInteger albumIndex = 0; albumIndex < photosAlbumIndex; albumIndex++)
+			{
+				NSDictionary* albumDict = [albums objectAtIndex:albumIndex];
+				NSString* albumType = [self typeForAlbum:albumDict];
+
+				if (! [self shouldUseAlbumType:albumType])
+				{
+					photosNodeIndex--;
+				}
+			}
+
+			NSArray* subnodes = inNode.subnodes;
+			if ((photosNodeIndex >= 0) && (photosNodeIndex < [subnodes count]))
+			{
+				IMBNode* photosNode = [subnodes objectAtIndex:photosNodeIndex];
+				result = [self populateNode:photosNode error:outError];
+				inNode.objects = photosNode.objects;
+			}
+		}
+
+		return result;
 	}
 
 	return YES;
