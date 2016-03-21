@@ -2079,11 +2079,22 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 
 
 // Use this method in your host app to tell the current object view (icon, list, or combo view)
-// that it needs to re-display itself (e.g. when a badge on an image needs to be updated)
+// that it needs to re-display itself (e.g. when a badge on an image needs to be updated). To be
+// on the safe side when the view hierarchy is layer-based, redraw the whole subtree...
 
 - (void) setObjectContainerViewNeedsDisplay:(BOOL)inFlag
 {
-	[ibObjectContainerView setNeedsDisplay:inFlag];
+	[self _setObjectContainerView:ibObjectContainerView needsDisplay:inFlag];
+}
+
+- (void) _setObjectContainerView:(NSView*)inView needsDisplay:(BOOL)inFlag
+{
+	[inView setNeedsDisplay:inFlag];
+
+	for (NSView* subview in inView.subviews)
+	{
+		[self _setObjectContainerView:subview needsDisplay:inFlag];
+	}
 }
 
 
