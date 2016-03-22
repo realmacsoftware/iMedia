@@ -126,7 +126,7 @@
 		}
 	}
 
-	return YES;
+	return NO;
 }
 
 #if LOAD_SMART_COLLECTIONS
