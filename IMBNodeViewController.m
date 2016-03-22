@@ -1511,12 +1511,14 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 		{
 			NSInteger row = [ibNodeOutlineView rowForItem:inNode];
 			[ibNodeOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-			if ((inNode.accessibility == kIMBResourceIsAccessible) &&
-                !(inNode.isPopulated || inNode.isLoading))
+			[self _setView:ibNodeOutlineView needsDisplay:YES];
+			
+			if ((inNode.accessibility == kIMBResourceIsAccessible) && !(inNode.isPopulated || inNode.isLoading))
             {
                 [self.libraryController populateNode:inNode]; // Not redundant! Needed if selection doesn't change due to previous line!
-                [self.nodeOutlineView setNeedsDisplay];
+                [self _setView:ibNodeOutlineView needsDisplay:YES];
             }
+			
 			[self installObjectViewForNode:inNode];
 			[(IMBObjectViewController*)self.objectViewController setCurrentNode:inNode];
             self.selectedNodeIdentifier = inNode.identifier;
@@ -2084,16 +2086,16 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 
 - (void) setObjectContainerViewNeedsDisplay:(BOOL)inFlag
 {
-	[self _setObjectContainerView:ibObjectContainerView needsDisplay:inFlag];
+	[self _setView:ibObjectContainerView needsDisplay:inFlag];
 }
 
-- (void) _setObjectContainerView:(NSView*)inView needsDisplay:(BOOL)inFlag
+- (void) _setView:(NSView*)inView needsDisplay:(BOOL)inFlag
 {
 	[inView setNeedsDisplay:inFlag];
 
 	for (NSView* subview in inView.subviews)
 	{
-		[self _setObjectContainerView:subview needsDisplay:inFlag];
+		[self _setView:subview needsDisplay:inFlag];
 	}
 }
 
