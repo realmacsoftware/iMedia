@@ -124,6 +124,8 @@
 		else if (databaseVersionLong >= 700000) {
 			return NO;
 		}
+		
+		return YES;
 	}
 
 	return NO;
