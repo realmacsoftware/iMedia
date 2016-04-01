@@ -642,8 +642,13 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 	{
         NSURL *aURL = [NSURL fileURLWithPath:path isDirectory:YES];
         
-        NSNumber *isDirectory;
-        if ([aURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL] && [isDirectory boolValue])
+        NSNumber *isDirectory = nil;
+		[aURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
+
+		NSNumber *isPackage = nil;
+		[aURL getResourceValue:&isPackage forKey:NSURLIsPackageKey error:NULL];
+		
+        if (isDirectory.boolValue == YES && isPackage.boolValue == NO)
 		{
 			[inOutlineView setDropItem:nil dropChildIndex:NSOutlineViewDropOnItemIndex]; // Target the whole view
 			return NSDragOperationCopy;
