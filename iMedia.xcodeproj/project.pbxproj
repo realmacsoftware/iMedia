@@ -183,6 +183,8 @@
 		8F6164EA1AE6C0BF00F1259D /* IMBLightroom6Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F6164E61AE6C0BF00F1259D /* IMBLightroom6Parser.m */; };
 		8F6164EB1AE6C0BF00F1259D /* IMBLightroom6VideoParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F6164E71AE6C0BF00F1259D /* IMBLightroom6VideoParser.h */; };
 		8F6164EC1AE6C0BF00F1259D /* IMBLightroom6VideoParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F6164E81AE6C0BF00F1259D /* IMBLightroom6VideoParser.m */; };
+		8F7478D11CB3C15A0027E21F /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F7478CF1CB3C15A0027E21F /* FMDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8F7478D21CB3C15A0027E21F /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F7478D01CB3C15A0027E21F /* FMDatabaseQueue.m */; };
 		8F76F8621770D259007B56FC /* IMBLightroom5VideoParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F76F8601770D259007B56FC /* IMBLightroom5VideoParser.h */; };
 		8F76F8631770D259007B56FC /* IMBLightroom5VideoParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F76F8611770D259007B56FC /* IMBLightroom5VideoParser.m */; };
 		8F93177E10A9FC53002CDB19 /* IMBPyramidObjectPromise.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F93177C10A9FC53002CDB19 /* IMBPyramidObjectPromise.h */; };
@@ -798,6 +800,8 @@
 		8F6164E61AE6C0BF00F1259D /* IMBLightroom6Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBLightroom6Parser.m; sourceTree = "<group>"; };
 		8F6164E71AE6C0BF00F1259D /* IMBLightroom6VideoParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBLightroom6VideoParser.h; sourceTree = "<group>"; };
 		8F6164E81AE6C0BF00F1259D /* IMBLightroom6VideoParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBLightroom6VideoParser.m; sourceTree = "<group>"; };
+		8F7478CF1CB3C15A0027E21F /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseQueue.h; path = fmdb/src/fmdb/FMDatabaseQueue.h; sourceTree = "<group>"; };
+		8F7478D01CB3C15A0027E21F /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseQueue.m; path = fmdb/src/fmdb/FMDatabaseQueue.m; sourceTree = "<group>"; };
 		8F76F8601770D259007B56FC /* IMBLightroom5VideoParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBLightroom5VideoParser.h; sourceTree = "<group>"; };
 		8F76F8611770D259007B56FC /* IMBLightroom5VideoParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBLightroom5VideoParser.m; sourceTree = "<group>"; };
 		8F93177C10A9FC53002CDB19 /* IMBPyramidObjectPromise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBPyramidObjectPromise.h; sourceTree = "<group>"; };
@@ -2210,6 +2214,8 @@
 				D0F2DB971098262D004280C1 /* FMDatabaseAdditions.m */,
 				8F39FC591CA2995F00BBFA3D /* FMDatabasePool.h */,
 				8F39FC5A1CA2995F00BBFA3D /* FMDatabasePool.m */,
+				8F7478CF1CB3C15A0027E21F /* FMDatabaseQueue.h */,
+				8F7478D01CB3C15A0027E21F /* FMDatabaseQueue.m */,
 				D0F2DB991098262D004280C1 /* FMResultSet.h */,
 				D0F2DB9A1098262D004280C1 /* FMResultSet.m */,
 				8F39FC5D1CA29A5300BBFA3D /* FMResultSet+iMedia.h */,
@@ -2454,6 +2460,7 @@
 				3091F6BD15C9508E005019A1 /* IMBURLGetSizeOperation.h in Headers */,
 				3091F6BF15C9508E005019A1 /* IMBURLDownloadOperation.h in Headers */,
 				D0DC63F515ECAB9400DAD84E /* IMBAccessRightsController.h in Headers */,
+				8F7478D11CB3C15A0027E21F /* FMDatabaseQueue.h in Headers */,
 				D0A00A9915F47A7100596789 /* IMBAccessRightsViewController.h in Headers */,
 				3000ADEC1612F6DA00EDC78E /* IMBTableViewAppearance+iMediaPrivate.h in Headers */,
 				30BA9D221A9C8A3900FDFA3A /* IMBAppleMediaLibraryParser.h in Headers */,
@@ -3222,6 +3229,7 @@
 				D054B0011529A65100EBFA1C /* IMBGarageBandParser.m in Sources */,
 				D05D398F152A280F00E30C43 /* IMBFileWatcher.m in Sources */,
 				D05D3990152A280F00E30C43 /* IMBKQueue.m in Sources */,
+				8F7478D21CB3C15A0027E21F /* FMDatabaseQueue.m in Sources */,
 				D05D3991152A280F00E30C43 /* IMBFNSubscribeFileWatcher.m in Sources */,
 				D05D3992152A280F00E30C43 /* IMBFSEventsWatcher.m in Sources */,
 				D05D3993152A280F00E30C43 /* IMBMainThreadProxy.m in Sources */,
