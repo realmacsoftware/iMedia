@@ -714,7 +714,33 @@ static NSArray* sSupportedUTIs = nil;
 			NSNumber* id_local = [NSNumber numberWithLong:[results longForColumn:@"id_local"]];
 			NSString* path = [results stringForColumn:@"absolutePath"];
 			NSString* name = [results stringForColumn:@"name"];
-			
+
+			// Folders within Mobile Downloads.lrdata have custom names recorded in a info.lua file
+			NSString* parentPathExtension = [[path stringByDeletingLastPathComponent] pathExtension];
+
+			if ([parentPathExtension caseInsensitiveCompare:@"lrdata"] == NSOrderedSame) {
+				NSString* infoPath = [path stringByAppendingPathComponent:@"info.lua"];
+
+				if ([[NSFileManager defaultManager] isReadableFileAtPath:infoPath]) {
+					NSString* infoString = [NSString stringWithContentsOfFile:infoPath usedEncoding:NULL error:NULL];
+					NSRange nameStartRange = [infoString rangeOfString:@"name = \""];
+
+					if (nameStartRange.location != NSNotFound) {
+						NSInteger searchStart = nameStartRange.location + nameStartRange.length;
+						NSRange searchRange = NSMakeRange(searchStart, [infoString length] - searchStart);
+						NSRange nameEndRange = [infoString rangeOfString:@"\",\n" options:NSLiteralSearch range:searchRange];
+
+						if (nameStartRange.location != NSNotFound) {
+							NSRange nameRange = NSMakeRange(searchStart, nameEndRange.location - searchStart);
+
+							if (nameRange.length > 0) {
+								name = [infoString substringWithRange:nameRange];
+							}
+						}
+					}
+				}
+			}
+
 			if (name == nil) {
 				name = NSLocalizedStringWithDefaultValue(
 														 @"IMBLightroomParser.Unnamed",
@@ -786,6 +812,7 @@ static NSArray* sSupportedUTIs = nil;
 		NSNumber* parentRootFolder = [self rootFolderFromAttributes:attributes];
 		NSString* parentRootPath = [self rootPathFromAttributes:inParentNode.attributes];
 		NSString* query = [(id<IMBLightroomParser>)self folderNodesQuery];
+
 		NSString* pathFromRootAccept = nil;
 		NSString* pathFromRootReject = nil;
 		
@@ -810,48 +837,27 @@ static NSArray* sSupportedUTIs = nil;
 			}
 			
 			IMBNode *node = nil;
-			
+
 			if ([pathFromRoot length] > 0) {
-				NSDictionary* attributes = [self attributesWithRootFolder:parentRootFolder
-																  idLocal:id_local
-																 rootPath:parentRootPath
-															 pathFromRoot:pathFromRoot
-																 nodeType:IMBLightroomNodeTypeFolder];
-				NSString* path = [self absolutePathFromAttributes:attributes];
-				NSString* name = [pathFromRoot lastPathComponent];
-				NSString* infoPath = [path stringByAppendingPathComponent:@"Info.lua"];
-
-				if ([[NSFileManager defaultManager] isReadableFileAtPath:infoPath]) {
-					NSString* infoString = [NSString stringWithContentsOfFile:infoPath usedEncoding:NULL error:NULL];
-					NSRange nameStartRange = [infoString rangeOfString:@"info = \""];
-
-					if (nameStartRange.location != NSNotFound) {
-						NSInteger searchStart = nameStartRange.location + nameStartRange.length;
-						NSRange searchRange = NSMakeRange(searchStart, [infoString length] - searchStart);
-						NSRange nameEndRange = [infoString rangeOfString:@"\",\n" options:NSLiteralSearch range:searchRange];
-
-						if (nameStartRange.location != NSNotFound) {
-							NSRange nameRange = NSMakeRange(searchStart, nameEndRange.location - searchStart);
-
-							if (nameRange.length > 0) {
-								name = [infoString substringWithRange:nameRange];
-							}
-						}
-					}
-				}
-
 				node = [[[IMBNode alloc] initWithParser:self topLevel:NO] autorelease];
 				
 				node.icon = [[self class] folderIcon];
-				node.name = name;
+				node.name = [pathFromRoot lastPathComponent];
 				node.isLeafNode = NO;
 
 				node.identifier = [self identifierWithFolderId:id_local];
 				
 				[subnodes addObject:node];
 			
+				NSDictionary* attributes = [self attributesWithRootFolder:parentRootFolder
+																  idLocal:id_local
+																 rootPath:parentRootPath
+															 pathFromRoot:pathFromRoot
+																 nodeType:IMBLightroomNodeTypeFolder];
+
 				node.attributes = attributes;
 
+				NSString* path = [self absolutePathFromAttributes:attributes];
 
 				IMBFolderObject* object = [[[IMBFolderObject alloc] init] autorelease];
 				object.representedNodeIdentifier = node.identifier;
