@@ -172,14 +172,11 @@
 		30FFEBFE150A0AA70009C1D0 /* im.edia.iPhoto.xpc in Copy XPCServices */ = {isa = PBXBuildFile; fileRef = 30FFEBEC150A08DB0009C1D0 /* im.edia.iPhoto.xpc */; };
 		6523FF231B0CE589004FD6D2 /* IMBItemizableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 30BC5C641AFF22BE002BF87F /* IMBItemizableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-<<<<<<< HEAD
-=======
 		8F31EA721B599A47002A07C4 /* IMBiPhotoParser.h in Headers */ = {isa = PBXBuildFile; fileRef = D0CB9174150F7753007716FA /* IMBiPhotoParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8F39FC5B1CA2995F00BBFA3D /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F39FC591CA2995F00BBFA3D /* FMDatabasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8F39FC5C1CA2995F00BBFA3D /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F39FC5A1CA2995F00BBFA3D /* FMDatabasePool.m */; };
 		8F39FC5F1CA29A5300BBFA3D /* FMResultSet+iMedia.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F39FC5D1CA29A5300BBFA3D /* FMResultSet+iMedia.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8F39FC601CA29A5300BBFA3D /* FMResultSet+iMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F39FC5E1CA29A5300BBFA3D /* FMResultSet+iMedia.m */; };
->>>>>>> 84c988f... Updated to latest FMDatabase from https://github.com/ccgus/fmdb
 		8F47B39110C416050013ED25 /* IMBOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F47B38F10C416050013ED25 /* IMBOrderedDictionary.h */; };
 		8F47B39210C416050013ED25 /* IMBOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F47B39010C416050013ED25 /* IMBOrderedDictionary.m */; };
 		8F6164E91AE6C0BF00F1259D /* IMBLightroom6Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 8F6164E51AE6C0BF00F1259D /* IMBLightroom6Parser.h */; };
