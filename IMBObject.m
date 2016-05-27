@@ -400,7 +400,11 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 	}
 	else if ([[self URL] isFileURL])
 	{
-		icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFileType:self.type];
+		NSString* iconType = self.type;
+		if (iconType != nil)
+		{
+			icon = [[NSWorkspace imb_threadSafeWorkspace] iconForFileType:iconType];
+		}
 	}
 	
 	return icon;
@@ -656,6 +660,8 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 - (void) loadThumbnail
 {
+	if ([IMBConfig suspendBackgroundTasks]) return;
+
 	if (self.needsImageRepresentation && !self.isLoadingThumbnail)
 	{
 		_isLoadingThumbnail = YES;
@@ -713,6 +719,8 @@ NSString* kIMBObjectPasteboardType = @"com.karelia.imedia.IMBObject";
 
 - (void) loadMetadata
 {
+	if ([IMBConfig suspendBackgroundTasks]) return;
+
 	if (self.metadata == nil && !self.isLoadingThumbnail)
 	{
 		IMBParserMessenger* messenger = self.parserMessenger;

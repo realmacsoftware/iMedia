@@ -364,7 +364,7 @@
     // This is for self expressed in time interval since 1970
     
     if (!date) {
-        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+        NSNumberFormatter *f = [[[NSNumberFormatter alloc] init] autorelease];
         f.numberStyle = NSNumberFormatterDecimalStyle;
         f.allowsFloats = YES;
         f.decimalSeparator = @".";
@@ -379,7 +379,14 @@
 	[formatter setDateStyle:NSDateFormatterMediumStyle];    // medium date
 	[formatter setTimeStyle:NSDateFormatterShortStyle];     // no seconds
 
-	NSString *result = [formatter stringFromDate:date];
+	// date should never be nil but clang analyis detects a possibility of
+	// nil date if [timeInterval integerValue] above is 0. Let's cover the
+	// case explicitly to quiet clang analysis.
+	NSString* result = nil;
+	if (date != nil)
+	{
+		result = [formatter stringFromDate:date];
+	}
 
 	[formatter release];
 	[parser release];

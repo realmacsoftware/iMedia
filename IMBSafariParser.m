@@ -197,7 +197,8 @@
 	
 	@synchronized(self)
 	{
-		if ([self.modificationDate compare:modificationDate] == NSOrderedAscending)
+		// If for some reason the modification date could not be fetched, or the modification is newer, recache
+		if ((modificationDate == nil) || ([self.modificationDate compare:modificationDate] == NSOrderedAscending))
 		{
 			self.plist = nil;
 		}

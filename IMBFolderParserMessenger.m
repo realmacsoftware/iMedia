@@ -69,6 +69,7 @@
 
 @synthesize fileUTI = _fileUTI;
 @synthesize displayPriority = _displayPriority;
+@synthesize followAliases = _followAliases;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -87,6 +88,8 @@
 
 
 //----------------------------------------------------------------------------------------------------------------------
+
+
 // All different types of folder parser messengers (image, audio, movie) use the same XPC service
 // (but have different identifiers)
 
@@ -105,6 +108,7 @@
 	{
 		self.fileUTI = nil;
 		self.displayPriority = 5;	// default middle-of-the-pack priority
+		self.followAliases = YES;
 	}
 	
 	return self;
@@ -127,6 +131,7 @@
 	{
 		self.fileUTI = [inCoder decodeObjectForKey:@"fileUTI"];
 		self.displayPriority = [inCoder decodeIntegerForKey:@"displayPriority"];
+		self.followAliases = [inCoder decodeBoolForKey:@"followAliases"];
 	}
 	
 	return self;
@@ -138,6 +143,7 @@
 	[super encodeWithCoder:inCoder];
 	[inCoder encodeObject:self.fileUTI forKey:@"fileUTI"];
 	[inCoder encodeInteger:self.displayPriority forKey:@"displayPriority"];
+	[inCoder encodeBool:self.followAliases forKey:@"followAliases"];
 }
 
 
@@ -150,6 +156,7 @@
 	
 	copy.fileUTI = self.fileUTI;
 	copy.displayPriority = self.displayPriority;
+	copy.followAliases = self.followAliases;
 	
 	return copy;
 }
@@ -169,16 +176,23 @@
 - (NSArray*) parserInstancesWithError:(NSError**)outError
 {
 	IMBFolderParser* parser = (IMBFolderParser*)[self newParser];
-	parser.identifier = [[self class] identifier];
-	parser.mediaType = self.mediaType;
-	parser.mediaSource = self.mediaSource;
-	parser.fileUTI = self.fileUTI;
-	parser.displayPriority = self.displayPriority;
-	parser.isUserAdded = self.isUserAdded;
 	
-	NSArray* parsers = [NSArray arrayWithObject:parser];
-	[parser release];
-	return parsers;
+	if (parser)
+	{
+		parser.identifier = [[self class] identifier];
+		parser.mediaType = self.mediaType;
+		parser.mediaSource = self.mediaSource;
+		parser.fileUTI = self.fileUTI;
+		parser.displayPriority = self.displayPriority;
+		parser.followAliases = self.followAliases;
+		parser.isUserAdded = self.isUserAdded;
+		
+		NSArray* parsers = [NSArray arrayWithObject:parser];
+		[parser release];
+		return parsers;
+	}
+	
+	return nil;
 }
 
 

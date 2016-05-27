@@ -64,6 +64,11 @@
 + (void)setPrefs:(NSDictionary *)inClassDict forClass:(Class)inClass;
 + (NSDictionary *)prefsForClass:(Class)inClass;
 
+// Use this method to suspend any iMedia background work when the host app requires it for whatever reason...
+
++ (void) setSuspendBackgroundTasks:(BOOL)inSuspend;
++ (BOOL) suspendBackgroundTasks;
+
 // Determines whether Group labels are visible in the node view (IMBOutlineView)...
 
 + (void) setShowsGroupNodes:(BOOL)inState;

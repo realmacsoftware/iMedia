@@ -66,6 +66,17 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
+// Do not display any DRM protected files from Apple Music, as these cannot be used outside iTunes and QT Player anyways...
+
+- (BOOL) canUseObject:(IMBObject*)inObject forPopulatingNode:(IMBNode*)inNode
+{
+    return ! [inObject.URL.pathExtension isEqualToString:@"m4p"];
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 // Creates a thumbnail for our audio file. Use Quicklook to access the cover art...
 
 - (id) thumbnailForObject:(IMBObject*)inObject error:(NSError**)outError

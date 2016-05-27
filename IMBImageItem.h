@@ -54,7 +54,6 @@
 
 
 #import <Quartz/Quartz.h>
-#import <QTKit/QTKit.h>
 
 
 @protocol IMBImageItem <NSObject>

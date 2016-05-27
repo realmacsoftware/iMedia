@@ -149,15 +149,18 @@ IMBMLParserConfigurationFactory IMBMLPhotosParserConfigurationFactory =
 
 - (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
 {
-    NSAssert(mediaGroup.identifier != nil, @"Identifier of media group %@ must not be nil",mediaGroup.name);
+    NSAssert(mediaGroup.identifier != nil, @"Identifier of media group %@ must not be nil",mediaGroup);
     
     NSString *keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
     
     // Gee, was hard to find out that this does the trick to enrich contents of attributes dictionary
     if (!keyPhotoKey) {
         [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
-        mediaGroup = [self.mediaSource mediaGroupForIdentifier:mediaGroup.identifier];
-        keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
+        
+        if (mediaGroup.identifier) {
+            mediaGroup = [self.mediaSource mediaGroupForIdentifier:mediaGroup.identifier];
+            keyPhotoKey = mediaGroup.attributes[@"KeyPhotoKey"];
+        }
     }
     if (keyPhotoKey) {
         return [self.mediaSource mediaObjectForIdentifier:keyPhotoKey];

@@ -110,12 +110,9 @@
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
-	NSMutableDictionary *defaultDefaults
-	= [NSMutableDictionary dictionaryWithObjectsAndKeys:
-	   
-	   //	   [NSNumber numberWithBool:YES], @"WebIconDatabaseEnabled",
-	   
-	   nil];
+	NSMutableDictionary *defaultDefaults = [NSMutableDictionary dictionary];
+	//NSMutableDictionary *defaultDefaults = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"WebIconDatabaseEnabled"];
+
 	NSUserDefaultsController* controller = [NSUserDefaultsController sharedUserDefaultsController];
 	NSUserDefaults* defaults = [controller defaults];
 	

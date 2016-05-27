@@ -12,10 +12,10 @@
 
 @protocol IMBNavigationLocation <NSObject>
 
-/**
- Determines whether the receiver is to be replaced by other location when other location is pushed directly on top of it.
- */
-- (BOOL)replaceOnPushBy:(id)otherLocation;
+///**
+// Determines whether the receiver is to be replaced by other location when other location is pushed directly on top of it.
+// */
+//- (BOOL)replaceOnPushBy:(id)otherLocation;
 
 @end
 
@@ -125,6 +125,12 @@
  Pushes a location onto the history of locations stack. Removes all forward locations.
  */
 - (void)pushLocation:(id)location;
+
+/**
+ Replaces the current location with the location provided.
+ @discussion This can be useful if the state of the location changed since it was put onto the navigation stack. If the navigation stack is empty pushes location onto stack instead.
+ */
+- (void)updateCurrentLocationWithLocation:(id<IMBNavigationLocation>)location;
 
 /**
  Clears the whole history of locations stack without going to any location.

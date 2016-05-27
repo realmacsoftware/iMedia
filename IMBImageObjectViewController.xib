@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment identifier="macosx"/>
+        <deployment version="1060" identifier="macosx"/>
+        <development version="6300" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
         <plugIn identifier="com.apple.imagekit.ibplugin" version="9059"/>
     </dependencies>
@@ -56,7 +57,7 @@
                                     <scrollView horizontalLineScroll="127.66666412353516" horizontalPageScroll="10" verticalLineScroll="120" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="570">
                                         <rect key="frame" x="-1" y="0.0" width="409" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <clipView key="contentView" copiesOnScroll="NO" id="h2l-Ev-723">
+                                        <clipView key="contentView" copiesOnScroll="NO" id="WWP-De-3as">
                                             <rect key="frame" x="1" y="1" width="407" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
@@ -103,7 +104,7 @@
                                     <scrollView horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="575">
                                         <rect key="frame" x="-1" y="0.0" width="409" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <clipView key="contentView" id="MPZ-gC-DZ9">
+                                        <clipView key="contentView" id="slP-Zm-Coe">
                                             <rect key="frame" x="1" y="23" width="407" height="450"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
@@ -226,7 +227,7 @@
                                     <scrollView horizontalLineScroll="82" horizontalPageScroll="10" verticalLineScroll="82" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="595">
                                         <rect key="frame" x="0.0" y="0.0" width="408" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <clipView key="contentView" id="Hpr-1K-ETC">
+                                        <clipView key="contentView" id="HY4-lD-3pT">
                                             <rect key="frame" x="1" y="1" width="406" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
@@ -316,10 +317,10 @@
                     </connections>
                 </slider>
                 <segmentedControl verticalHuggingPriority="750" id="518">
-                    <rect key="frame" x="5" y="7" width="74" height="20"/>
+                    <rect key="frame" x="7" y="8" width="70" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <animations/>
-                    <segmentedCell key="cell" controlSize="small" state="on" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="519">
+                    <segmentedCell key="cell" controlSize="small" state="on" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectOne" id="519">
                         <font key="font" metaFont="smallSystem"/>
                         <segments>
                             <segment image="NSIconViewTemplate" imageScaling="none" width="22"/>

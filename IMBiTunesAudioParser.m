@@ -254,7 +254,8 @@
 	
 	@synchronized(self)
 	{
-		if ([self.modificationDate compare:modificationDate] == NSOrderedAscending)
+		// If for some reason the modification date could not be fetched, or the modification is newer, recache
+		if ((modificationDate == nil) || ([self.modificationDate compare:modificationDate] == NSOrderedAscending))
 		{
 			self.atomic_plist = nil;
 		}
@@ -658,6 +659,7 @@
 	if ([[inTrackDict objectForKey:@"Location"] length] == 0) return NO;
 	if ([[inTrackDict objectForKey:@"Has Video"] boolValue] == 1) return NO;
 	if (![[inTrackDict objectForKey:@"Location"] hasPrefix:@"file:"]) return NO;
+	if ([[inTrackDict objectForKey:@"Location"] hasSuffix:@".m4p"]) return NO;
 	
 	return YES;
 }
