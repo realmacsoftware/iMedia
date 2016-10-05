@@ -181,7 +181,7 @@ IMBLightroomNodeType;
 + (NSImage*) largeFolderIcon;
 
 - (NSNumber*) idLocalFromAttributes:(NSDictionary*)inAttributes;
-- (BOOL) canOpenImageFileAtPath:(NSString*)inPath;
+- (BOOL) canOpenFileAtPath:(NSString*)inPath;
 - (IMBObject*) objectWithPath:(NSString*)inPath
 					  idLocal:(NSNumber*)idLocal
 						 name:(NSString*)inName
