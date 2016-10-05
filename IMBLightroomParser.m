@@ -459,6 +459,11 @@ static NSArray* sSupportedImageUTIs = nil;
 
 - (id) thumbnailForObject:(IMBObject*)inObject error:(NSError**)outError
 {
+	if ([self.mediaType isEqualToString:kIMBMediaTypeMovie])
+	{
+		return (id)[self thumbnailFromQuicklookForObject:inObject error:outError];
+	}
+
 	NSError* error = nil;
 	CGImageRef imageRepresentation = nil;
 	NSData *jpegData = [self previewDataForObject:inObject maximumSize:[NSNumber numberWithFloat:256.0]];
@@ -580,6 +585,11 @@ static NSArray* sSupportedImageUTIs = nil;
 
 - (NSData*) bookmarkForObject:(IMBObject*)inObject error:(NSError**)outError
 {
+	if ([self.mediaType isEqualToString:kIMBMediaTypeMovie])
+	{
+		return [self bookmarkForLocalFileObject:inObject error:outError];
+	}
+
 	NSData* jpegData = [self previewDataForObject:inObject maximumSize:nil];
 
 	if (jpegData != nil) {
@@ -1487,11 +1497,14 @@ static NSArray* sSupportedImageUTIs = nil;
 - (IMBResourceAccessibility) accessibilityForObject:(IMBObject*)inObject
 {
     IMBResourceAccessibility accessibility = kIMBResourceDoesNotExist;
+	
+    NSString* path = [self.mediaType isEqualToString:kIMBMediaTypeImage] ?
+		((IMBLightroomObject*)inObject).absolutePyramidPath :
+		inObject.location.path;
     
-    NSString* absolutePyramidPath = ((IMBLightroomObject*)inObject).absolutePyramidPath;
-    
-    if (absolutePyramidPath) {
-        accessibility = [[NSURL fileURLWithPath:absolutePyramidPath] imb_accessibility];
+    if (path)
+	{
+        accessibility = [[NSURL fileURLWithPath:path] imb_accessibility];
     }
 
     return accessibility;
