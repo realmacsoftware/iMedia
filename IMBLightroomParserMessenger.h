@@ -71,7 +71,7 @@
 @end
 
 
-@interface IMBLightroomsMovieParserMessenger : IMBLightroomParserMessenger
+@interface IMBLightroomMovieParserMessenger : IMBLightroomParserMessenger
 
 @end
 
