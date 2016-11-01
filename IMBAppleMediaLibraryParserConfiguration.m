@@ -174,8 +174,8 @@
  */
 - (MLMediaObject *)keyMediaObjectForMediaGroup:(MLMediaGroup *)mediaGroup
 {
-        NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
-        MLMediaObject *mediaObject = [mediaObjects lastObject];
+    NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:mediaGroup];
+    MLMediaObject *mediaObject = [mediaObjects lastObject];
     return mediaObject;
 }
 
