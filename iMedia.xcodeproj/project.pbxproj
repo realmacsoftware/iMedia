@@ -941,7 +941,7 @@
 		D05D3A1B152AD30500E30C43 /* im.edia.FSEvents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = im.edia.FSEvents.entitlements; sourceTree = "<group>"; };
 		D063A1EE1A28AC5500ED8BC3 /* ToolbarMovieFolderIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ToolbarMovieFolderIcon.icns; sourceTree = "<group>"; };
 		D065383515EFDC810081D8D3 /* IMBAccessRightsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IMBAccessRightsViewController.xib; sourceTree = "<group>"; };
-		D0760AC210C5027100F2119C /* IMBProject.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = IMBProject.xcconfig; sourceTree = SOURCE_ROOT; };
+		D0760AC210C5027100F2119C /* iMedia.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = iMedia.xcconfig; sourceTree = SOURCE_ROOT; };
 		D08070BD10442CD700891137 /* IMBMovieObjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBMovieObjectViewController.h; sourceTree = "<group>"; };
 		D08070BE10442CD700891137 /* IMBMovieObjectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBMovieObjectViewController.m; sourceTree = "<group>"; };
 		D08070C110442CE100891137 /* IMBAudioObjectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBAudioObjectViewController.h; sourceTree = "<group>"; };
@@ -1123,9 +1123,6 @@
 		D0CE6E1C11F6FA09005EE5B4 /* IMBMetadataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBMetadataTransformer.m; sourceTree = "<group>"; };
 		D0CE6E4111F6FD54005EE5B4 /* NSDictionary+iMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+iMedia.h"; sourceTree = "<group>"; };
 		D0CE6E4211F6FD54005EE5B4 /* NSDictionary+iMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+iMedia.m"; sourceTree = "<group>"; };
-		D0CF005310C50908009EC68F /* IMBTargetDebug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = IMBTargetDebug.xcconfig; sourceTree = SOURCE_ROOT; };
-		D0CF005410C50908009EC68F /* IMBTargetRelease.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = IMBTargetRelease.xcconfig; sourceTree = SOURCE_ROOT; };
-		D0CF005510C50908009EC68F /* IMBTargetTest.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = IMBTargetTest.xcconfig; sourceTree = SOURCE_ROOT; };
 		D0D635E81035B4C500FF8631 /* IMBLightroomParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBLightroomParser.h; sourceTree = "<group>"; };
 		D0D635E91035B4C500FF8631 /* IMBLightroomParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMBLightroomParser.m; sourceTree = "<group>"; };
 		D0D635EA1035B4C500FF8631 /* IMBApertureParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMBApertureParser.h; sourceTree = "<group>"; };
@@ -1402,10 +1399,7 @@
 		0867D691FE84028FC02AAC07 /* iMedia */ = {
 			isa = PBXGroup;
 			children = (
-				D0760AC210C5027100F2119C /* IMBProject.xcconfig */,
-				D0CF005310C50908009EC68F /* IMBTargetDebug.xcconfig */,
-				D0CF005410C50908009EC68F /* IMBTargetRelease.xcconfig */,
-				D0CF005510C50908009EC68F /* IMBTargetTest.xcconfig */,
+				D0760AC210C5027100F2119C /* iMedia.xcconfig */,
 				32DBCF5E0370ADEE00C91783 /* iMedia.pch */,
 				08FB77AEFE84172EC02AAC07 /* iMedia Framework */,
 				307F968B183D0396004F87E0 /* iMediaTests */,
@@ -2730,59 +2724,19 @@
 				LastUpgradeCheck = 0460;
 				TargetAttributes = {
 					307F9690183D090D004F87E0 = {
-						DevelopmentTeam = 6372P8EH2J;
+						DevelopmentTeam = "<UNDEFINED>";
 						TestTargetID = 8DC2EF4F0486A6940098B216;
 					};
-					30B83ACE1701AFDB000EC74E = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					30FFEBEB150A08DB0009C1D0 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					8DC2EF4F0486A6940098B216 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
 					D02CD49E1224F22400C773A2 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D054AFEE152984FA00EBFA1C = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D05D399D152ACD1300E30C43 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D05D39AE152ACD2400E30C43 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D05D39BF152ACD3300E30C43 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D05D39D0152ACD5E00E30C43 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D05D39E1152ACD6800E30C43 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D05D39F2152ACD8800E30C43 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D05D3A05152AD0D000E30C43 = {
-						DevelopmentTeam = 6372P8EH2J;
+						DevelopmentTeam = "<UNDEFINED>";
 					};
 					D09933541011B26E00C527B7 = {
-						DevelopmentTeam = 6372P8EH2J;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 1;
 							};
 						};
-					};
-					D0E96CEE1518C9BF004F3EE7 = {
-						DevelopmentTeam = 6372P8EH2J;
-					};
-					D0F2DDBC152485130059DF8D = {
-						DevelopmentTeam = 6372P8EH2J;
 					};
 				};
 			};
@@ -3483,7 +3437,6 @@
 /* Begin XCBuildConfiguration section */
 		1DEB91AE08733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0CF005310C50908009EC68F /* IMBTargetDebug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
@@ -3500,7 +3453,6 @@
 		};
 		1DEB91AF08733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0CF005410C50908009EC68F /* IMBTargetRelease.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
@@ -3516,7 +3468,7 @@
 		};
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0760AC210C5027100F2119C /* IMBProject.xcconfig */;
+			baseConfigurationReference = D0760AC210C5027100F2119C /* iMedia.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -3531,7 +3483,7 @@
 		};
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0760AC210C5027100F2119C /* IMBProject.xcconfig */;
+			baseConfigurationReference = D0760AC210C5027100F2119C /* iMedia.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -3628,6 +3580,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3661,6 +3614,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -3686,6 +3640,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3719,6 +3674,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -3764,6 +3720,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3797,6 +3754,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -3822,6 +3780,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3855,6 +3814,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -3880,6 +3840,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3913,6 +3874,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -3938,6 +3900,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3971,6 +3934,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -3996,6 +3960,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4029,6 +3994,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -4054,6 +4020,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4087,6 +4054,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -4112,6 +4080,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4145,6 +4114,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -4170,6 +4140,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4203,6 +4174,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -4223,7 +4195,6 @@
 		};
 		D09933581011B27000C527B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0CF005310C50908009EC68F /* IMBTargetDebug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TestApp/iMediaTester.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "";
@@ -4245,7 +4216,6 @@
 		};
 		D09933591011B27000C527B7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0CF005410C50908009EC68F /* IMBTargetRelease.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TestApp/iMediaTester.entitlements;
 				FRAMEWORK_SEARCH_PATHS = "";
@@ -4272,6 +4242,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4306,6 +4277,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -4332,6 +4304,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4365,6 +4338,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(TARGET_NAME).entitlements";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
