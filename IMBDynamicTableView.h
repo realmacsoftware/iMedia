@@ -50,8 +50,6 @@
 #import <Cocoa/Cocoa.h>
 #import "IMBTableView.h"
 
-// Forward declaration:
-@protocol IMBDynamicTableViewDelegate;
 
 @interface IMBDynamicTableView : IMBTableView
 {
@@ -67,9 +65,8 @@
 
 - (BOOL)wantsThumbnails;
 
-@property(assign) id <IMBDynamicTableViewDelegate> delegate;
-
 @end
+
 
 // If you are getting duplicate protocol declaration warnings because you already declare dummy
 // compatibility protocols in your host application, just make sure IMB_HOST_APP_DECLARES_DUMMY_PROTOCOLS
@@ -79,6 +76,7 @@
 @protocol NSTableViewDelegate <NSObject> @end
 #endif
 #endif
+
 
 // We declare some extra protocol messages to let the delegate know when the visible rows are changing.
 // It is important to create a delegate signature that will not conflict with standard Cocoa delegate signatures. In short, that means don't use the prefix "tableView:".
