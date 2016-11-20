@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11761" systemVersion="16C48b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <development version="6300" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
-        <plugIn identifier="com.apple.imagekit.ibplugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11761"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="11761"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="IMBImageObjectViewController">
@@ -20,7 +20,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <arrayController objectClassName="IMBObject" editable="NO" automaticallyPreparesContent="YES" selectsInsertedObjects="NO" avoidsEmptySelection="NO" id="465" customClass="IMBObjectArrayController">
             <declaredKeys>
                 <string>name</string>
@@ -46,7 +46,6 @@
                 <tabView drawsBackground="NO" type="noTabsNoBorder" id="566">
                     <rect key="frame" x="0.0" y="35" width="408" height="474"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <animations/>
                     <font key="font" metaFont="system"/>
                     <tabViewItems>
                         <tabViewItem label="Tab" identifier="1" id="568">
@@ -58,42 +57,36 @@
                                         <rect key="frame" x="-1" y="0.0" width="409" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" copiesOnScroll="NO" id="WWP-De-3as">
-                                            <rect key="frame" x="1" y="1" width="407" height="472"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <rect key="frame" x="1" y="1" width="392" height="472"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <ikImageBrowserView autoresizesSubviews="NO" zoomValue="0.5090641975402832" constrainsToOriginalSize="YES" id="571" customClass="IMBImageBrowserView">
                                                     <rect key="frame" x="0.0" y="0.0" width="406" height="472"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <animations/>
                                                     <ikCellsStyle key="cellsStyleMask" shadowed="YES" outlined="YES" titled="YES"/>
                                                     <autoresizingMask key="contentResizingMask" heightSizable="YES"/>
-                                                    <size key="cellSize" width="129" height="129"/>
+                                                    <size key="cellSize" width="132" height="132"/>
                                                     <connections>
                                                         <binding destination="465" name="content" keyPath="arrangedObjects" id="648"/>
-                                                        <binding destination="465" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="648" id="649"/>
                                                         <binding destination="-2" name="zoomValue" keyPath="iconSize" previousBinding="649" id="650"/>
+                                                        <binding destination="465" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="648" id="649"/>
                                                         <outlet property="dataSource" destination="-2" id="654"/>
                                                         <outlet property="delegate" destination="-2" id="631"/>
                                                         <outlet property="dragDestinationDelegate" destination="-2" id="632"/>
                                                     </connections>
                                                 </ikImageBrowserView>
                                             </subviews>
-                                            <animations/>
                                         </clipView>
-                                        <animations/>
                                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="572">
                                             <rect key="frame" x="-100" y="-100" width="303" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="573">
-                                            <rect key="frame" x="392" y="1" width="16" height="472"/>
+                                            <rect key="frame" x="393" y="1" width="15" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                         </scroller>
                                     </scrollView>
                                 </subviews>
-                                <animations/>
                             </view>
                         </tabViewItem>
                         <tabViewItem label="View" identifier="2" id="567">
@@ -105,13 +98,12 @@
                                         <rect key="frame" x="-1" y="0.0" width="409" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="slP-Zm-Coe">
-                                            <rect key="frame" x="1" y="23" width="407" height="450"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <rect key="frame" x="1" y="0.0" width="392" height="473"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" headerView="678" id="578" customClass="IMBDynamicTableView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="407" height="450"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="392" height="450"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <animations/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -141,19 +133,19 @@
                                                             <sortDescriptor key="sortDescriptorPrototype" selector="caseInsensitiveCompare:" sortKey="name"/>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <connections>
-                                                                <binding destination="465" name="textColor" keyPath="arrangedObjects.shouldDisableTitle" id="683">
-                                                                    <dictionary key="options">
-                                                                        <string key="NSValueTransformerName">IMBDisableTitleToColorTransformer</string>
-                                                                    </dictionary>
-                                                                </binding>
                                                                 <binding destination="465" name="value" keyPath="arrangedObjects.imageTitle" id="690">
                                                                     <dictionary key="options">
                                                                         <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
                                                                     </dictionary>
                                                                 </binding>
+                                                                <binding destination="465" name="textColor" keyPath="arrangedObjects.shouldDisableTitle" id="683">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSValueTransformerName">IMBDisableTitleToColorTransformer</string>
+                                                                    </dictionary>
+                                                                </binding>
                                                             </connections>
                                                         </tableColumn>
-                                                        <tableColumn identifier="size" editable="NO" width="111" minWidth="96" maxWidth="120" id="672">
+                                                        <tableColumn identifier="size" editable="NO" width="96" minWidth="96" maxWidth="120" id="672">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="Size">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -167,16 +159,16 @@
                                                             <sortDescriptor key="sortDescriptorPrototype" selector="imb_metadataSizeCompare:" sortKey="metadata"/>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <connections>
-                                                                <binding destination="465" name="textColor" keyPath="arrangedObjects.shouldDisableTitle" id="689">
-                                                                    <dictionary key="options">
-                                                                        <string key="NSValueTransformerName">IMBDisableTitleToColorTransformer</string>
-                                                                    </dictionary>
-                                                                </binding>
                                                                 <binding destination="465" name="value" keyPath="arrangedObjects.metadata" id="677">
                                                                     <dictionary key="options">
                                                                         <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
                                                                         <bool key="NSConditionallySetsEditable" value="NO"/>
                                                                         <string key="NSValueTransformerName">IMBMetadataTransformer</string>
+                                                                    </dictionary>
+                                                                </binding>
+                                                                <binding destination="465" name="textColor" keyPath="arrangedObjects.shouldDisableTitle" id="689">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSValueTransformerName">IMBDisableTitleToColorTransformer</string>
                                                                     </dictionary>
                                                                 </binding>
                                                             </connections>
@@ -195,28 +187,21 @@
                                                     </connections>
                                                 </tableView>
                                             </subviews>
-                                            <animations/>
-                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </clipView>
-                                        <animations/>
                                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="0.0049140052869915962" horizontal="YES" id="577">
                                             <rect key="frame" x="-100" y="-100" width="393" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="576">
-                                            <rect key="frame" x="392" y="23" width="16" height="450"/>
+                                            <rect key="frame" x="393" y="23" width="15" height="450"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                         </scroller>
                                         <tableHeaderView key="headerView" id="678">
-                                            <rect key="frame" x="0.0" y="0.0" width="407" height="23"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="392" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                         </tableHeaderView>
                                     </scrollView>
                                 </subviews>
-                                <animations/>
                             </view>
                         </tabViewItem>
                         <tabViewItem label="Item 2" identifier="Item 2" id="581">
@@ -228,18 +213,17 @@
                                         <rect key="frame" x="0.0" y="0.0" width="408" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="HY4-lD-3pT">
-                                            <rect key="frame" x="1" y="1" width="406" height="472"/>
+                                            <rect key="frame" x="1" y="1" width="391" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowHeight="80" id="598" customClass="IMBComboTableView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="406" height="472"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="391" height="472"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <animations/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn width="403" minWidth="40" maxWidth="1000" id="599">
+                                                        <tableColumn width="388" minWidth="40" maxWidth="1000" id="599">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -252,15 +236,15 @@
                                                             </textFieldCell>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <connections>
-                                                                <binding destination="465" name="textColor" keyPath="arrangedObjects.shouldDisableTitle" id="686">
-                                                                    <dictionary key="options">
-                                                                        <string key="NSValueTransformerName">IMBDisableTitleToColorTransformer</string>
-                                                                    </dictionary>
-                                                                </binding>
                                                                 <binding destination="465" name="value" keyPath="arrangedObjects.name" id="659">
                                                                     <dictionary key="options">
                                                                         <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
                                                                         <bool key="NSConditionallySetsEditable" value="NO"/>
+                                                                    </dictionary>
+                                                                </binding>
+                                                                <binding destination="465" name="textColor" keyPath="arrangedObjects.shouldDisableTitle" id="686">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSValueTransformerName">IMBDisableTitleToColorTransformer</string>
                                                                     </dictionary>
                                                                 </binding>
                                                             </connections>
@@ -274,23 +258,17 @@
                                                     </connections>
                                                 </tableView>
                                             </subviews>
-                                            <animations/>
-                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </clipView>
-                                        <animations/>
                                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="597">
                                             <rect key="frame" x="-100" y="-100" width="393" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="596">
-                                            <rect key="frame" x="391" y="1" width="16" height="472"/>
+                                            <rect key="frame" x="392" y="1" width="15" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                         </scroller>
                                     </scrollView>
                                 </subviews>
-                                <animations/>
                             </view>
                         </tabViewItem>
                     </tabViewItems>
@@ -301,7 +279,6 @@
                 <slider verticalHuggingPriority="750" id="544">
                     <rect key="frame" x="85" y="10" width="64" height="15"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <animations/>
                     <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="545">
                         <font key="font" metaFont="smallSystem"/>
                     </sliderCell>
@@ -319,8 +296,7 @@
                 <segmentedControl verticalHuggingPriority="750" id="518">
                     <rect key="frame" x="7" y="8" width="70" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <animations/>
-                    <segmentedCell key="cell" controlSize="small" state="on" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectOne" id="519">
+                    <segmentedCell key="cell" controlSize="small" state="on" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectOne" id="519">
                         <font key="font" metaFont="smallSystem"/>
                         <segments>
                             <segment image="NSIconViewTemplate" imageScaling="none" width="22"/>
@@ -335,7 +311,6 @@
                 <searchField wantsLayer="YES" verticalHuggingPriority="750" id="516">
                     <rect key="frame" x="278" y="8" width="118" height="19"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                    <animations/>
                     <searchFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" bezelStyle="round" id="517">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -348,7 +323,6 @@
                 <textField verticalHuggingPriority="750" id="493">
                     <rect key="frame" x="154" y="10" width="119" height="14"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <animations/>
                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="Object Count" id="494">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -363,7 +337,6 @@
                     </connections>
                 </textField>
             </subviews>
-            <animations/>
         </customView>
     </objects>
     <resources>
