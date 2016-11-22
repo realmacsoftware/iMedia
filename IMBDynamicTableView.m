@@ -64,8 +64,6 @@
 
 @implementation IMBDynamicTableView
 
-@dynamic delegate;
-
 - (id)initWithCoder:(NSCoder *)coder
 {
     self = [super initWithCoder:coder];
@@ -119,7 +117,7 @@
 	{
         _viewsNeedUpdate = NO;
         // Update any views that the delegate wants to give us
-        if ([[self delegate] respondsToSelector:@selector(dynamicTableView:viewForRow:)])
+        if ([delegate respondsToSelector:@selector(dynamicTableView:viewForRow:)])
 		{
 			
             if (visibleRowsNeedsUpdate)
