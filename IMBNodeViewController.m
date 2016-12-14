@@ -132,6 +132,13 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
     return self;
 }
 
+- (void) dealloc
+{
+	IMBRelease(_nodeIdentifier);
+	
+	[super dealloc];
+}
+
 /** Convenience factory */
 + (instancetype)stateOfController:(IMBNodeViewController *)controller
 {
@@ -182,6 +189,7 @@ static NSMutableDictionary* sRegisteredNodeViewControllerClasses = nil;
 {
     return [NSString stringWithFormat:@"%@ (Scroll pos. %.1f %%)", self.nodeIdentifier, self.objectViewRelativeScrollPosition * 100.0];
 }
+
 @end
 
 #pragma mark -
