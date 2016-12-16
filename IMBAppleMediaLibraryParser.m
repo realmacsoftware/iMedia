@@ -25,7 +25,7 @@
 #if MEASURE_EXECUTION_TIME
     #define START_MEASURE(id) NSDate *start ## id = [NSDate date]
     #define STOP_MEASURE(id)  NSDate *stop ## id  = [NSDate date]
-    #define LOG_MEASURED_TIME(id, ...) NSLog(@"Took %f secs to execute %@", [stop ## id timeIntervalSinceDate:start ## id], [NSString stringWithFormat: __VA_ARGS__])
+    #define LOG_MEASURED_TIME(id, ...) NSLog(@"Took %f secs to %@", [stop ## id timeIntervalSinceDate:start ## id], [NSString stringWithFormat: __VA_ARGS__])
 #else
     #define START_MEASURE(id)
     #define STOP_MEASURE(id)
@@ -94,13 +94,13 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     NSDictionary *libraryOptions = @{MLMediaLoadIncludeSourcesKey : [NSArray arrayWithObject:[self.configuration mediaSourceIdentifier]]};
     self.AppleMediaLibrary = [[MLMediaLibrary alloc] initWithOptions:libraryOptions];
     STOP_MEASURE(4);
-    LOG_MEASURED_TIME(4, @"Create library object for %@", [self.configuration mediaSourceIdentifier]);
+    LOG_MEASURED_TIME(4, @"create library object for %@", [self.configuration mediaSourceIdentifier]);
     
     START_MEASURE(5);
     NSDictionary *mediaSources = [IMBAppleMediaLibraryPropertySynchronizer mediaSourcesForMediaLibrary:self.AppleMediaLibrary];
     self.AppleMediaSource = mediaSources[[self.configuration mediaSourceIdentifier]];
     STOP_MEASURE(5);
-    LOG_MEASURED_TIME(5, @"Create media source for %@", [self.configuration mediaSourceIdentifier]);
+    LOG_MEASURED_TIME(5, @"create media source for %@", [self.configuration mediaSourceIdentifier]);
     return self;
 }
 
@@ -142,7 +142,10 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 - (BOOL) populateNode:(IMBNode *)inParentNode error:(NSError **)outError
 {
     NSError *error = nil;
+    START_MEASURE(6);
     MLMediaGroup *parentGroup = [self mediaGroupForNode:inParentNode];
+    STOP_MEASURE(6);
+    LOG_MEASURED_TIME(6, @"get handle on media group %@", parentGroup.name);
     NSArray *childGroups = [parentGroup childGroups];
 
     // Create the objects array on demand  - even if turns out to be empty after exiting this method, because without creating an array we would cause an endless loop...
@@ -156,7 +159,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
         START_MEASURE(1);
         NSArray *mediaObjects = [IMBAppleMediaLibraryPropertySynchronizer mediaObjectsForMediaGroup:parentGroup];
         STOP_MEASURE(1);
-        LOG_MEASURED_TIME(1, @"fetch of media Objects for group %@", parentGroup.name);
+        LOG_MEASURED_TIME(1, @"fetch media Objects for group %@", parentGroup.name);
 
 #if CREATE_MEDIA_OBJECTS_CONCURRENTLY
         dispatch_group_t dispatchGroup = dispatch_group_create();
@@ -195,7 +198,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 #endif
 #endif
         STOP_MEASURE(2);
-        LOG_MEASURED_TIME(2, @"IMBObjects creation for group %@", parentGroup.name);
+        LOG_MEASURED_TIME(2, @"create IMBObjects for group %@", parentGroup.name);
     }
     
     NSMutableArray* subnodes = [inParentNode mutableArrayForPopulatingSubnodes];
@@ -247,7 +250,7 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     if (!inParentNode.objects) inParentNode.objects = objects;
 
     STOP_MEASURE(3);
-    LOG_MEASURED_TIME(3, @"subnodes creation for group %@", parentGroup.name);
+    LOG_MEASURED_TIME(3, @"create subnodes for group %@", parentGroup.name);
     
     if (*outError) *outError = error;
     return YES;
