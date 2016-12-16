@@ -33,6 +33,7 @@
 #endif
 
 NSString *kIMBMLMediaGroupAttributeKeyKeyPhotoKey = @"KeyPhotoKey";
+NSString *kIMBMLMediaObjectAttributeKeyOriginalURL = @"originalURL";
 NSString *kIMBMLMediaGroupTypeAlbum = @"Album";
 NSString *kIMBMLMediaGroupTypeFolder = @"Folder";
 NSString *kIMBMLMediaGroupTypeEventsFolder = @"EventsFolder";
@@ -558,9 +559,12 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
 {
     if (mediaObject.name) {
         return mediaObject.name;
-    } else {
-        return [[mediaObject.URL lastPathComponent] stringByDeletingPathExtension];
     }
+    NSString *originalURL = mediaObject.attributes[kIMBMLMediaObjectAttributeKeyOriginalURL];
+    if (originalURL) {
+        return [[originalURL lastPathComponent] stringByDeletingPathExtension];
+    }
+    return [[mediaObject.URL lastPathComponent] stringByDeletingPathExtension];
 }
 
 /**
