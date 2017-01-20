@@ -176,7 +176,19 @@
 - (NSRect) badgeRectForRow:(NSInteger)inRow
 {
 	IMBNodeCell* cell = (IMBNodeCell*)[self preparedCellAtColumn:0 row:inRow];
-	NSRect bounds = NSInsetRect([self rectOfRow:inRow],9.0,0.0);
+
+	// To correctly place the badge rect, we need to account for the table's intercellSpacing.
+	// This can be done either by taking the whole rect of the row and subtracting the pertinent
+	// spacing, but in this case we would still have to be assuming there is only one column
+	// in order to be confident that the rect is on the right edge of the appropriate column.
+	// It doesn't really matter which of these options we take but either one relies on the
+	// assumption that we haven't added an additional column:
+
+	NSAssert([self numberOfColumns] == 1, @"We must reconsider placement of the badge rect in the row, because we've added an additional column to the outline view.");
+
+//	NSRect bounds = NSInsetRect([self rectOfRow:inRow],[self intercellSpacing].width / 2.0,0.0);
+	NSRect bounds = [self frameOfCellAtColumn:0 row:inRow];
+
 	return [cell badgeRectForBounds:bounds flipped:YES];
 }
 
