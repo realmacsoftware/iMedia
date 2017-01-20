@@ -151,24 +151,29 @@
 
 - (NSNumber*) databaseVersion
 {
-	FMDatabase *database = [self database];
-	NSNumber *databaseVersion = nil;
-	
-	if (database != nil) {		
+	__block NSNumber *databaseVersion = nil;
+
+	FMDatabasePool		*libraryDatabasePool	= [self libraryDatabasePool];
+
+	[libraryDatabasePool inDatabase:^(FMDatabase *libraryDatabase) {
+		if (libraryDatabase == nil) {
+			return;
+		}
+
 		NSString* query =	@" SELECT value"
 		@" FROM Adobe_variablesTable avt"
 		@" WHERE avt.name = ?"
 		@" LIMIT 1";
-		
-		FMResultSet* results = [database executeQuery:query, @"Adobe_DBVersion"];
-		
-		if ([results next]) {				
+
+		FMResultSet* results = [libraryDatabase executeQuery:query, @"Adobe_DBVersion"];
+
+		if ([results next]) {
 			databaseVersion = [NSNumber numberWithLong:[results longForColumn:@"value"]];
 		}
-		
+
 		[results close];
-	}
-	
+	}];
+
 	return databaseVersion;
 }
 
@@ -254,11 +259,16 @@
 
 - (NSString*) pyramidPathForImage:(NSNumber*)idLocal
 {
-	FMDatabase *database = [self database];
-	NSString *uuid = nil;
-	NSString *digest = nil;
+	__block NSString *uuid = nil;
+	__block NSString *digest = nil;
 
-	if (database != nil) {
+	FMDatabasePool		*libraryDatabasePool	= [self libraryDatabasePool];
+
+	[libraryDatabasePool inDatabase:^(FMDatabase *libraryDatabase) {
+		if (libraryDatabase == nil) {
+			return;
+		}
+		
 		NSString* query =	@" SELECT alf.id_global uuid, ids.digest"
 		@" FROM Adobe_imageDevelopSettings ids"
 		@" INNER JOIN Adobe_images ai ON ai.id_local = ids.image"
@@ -266,7 +276,7 @@
 		@" WHERE ids.image = ?"
 		@" ORDER BY alf.id_global ASC";
 
-		FMResultSet* results = [database executeQuery:query, idLocal];
+		FMResultSet* results = [libraryDatabase executeQuery:query, idLocal];
 
         // JJ/2012-10-02: For some reason we may get multiple rows with some of them not properly filled. Try best we can.
 
@@ -277,7 +287,7 @@
         }
 
 		[results close];
-	}
+	}];
 
 	if ((uuid != nil) && (digest != nil)) {
 		NSString* prefixOne = [uuid substringToIndex:1];
@@ -601,14 +611,14 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
-- (FMDatabase*) libraryDatabase
+- (FMDatabasePool*) createLibraryDatabasePool;
 {
 	[[self class] imb_throwAbstractBaseClassExceptionForSelector:_cmd];
 	
 	return nil;
 }
 
-- (FMDatabase*) previewsDatabase
+- (FMDatabasePool*) createThumbnailDatabasePool;
 {
 	[[self class] imb_throwAbstractBaseClassExceptionForSelector:_cmd];
 	

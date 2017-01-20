@@ -1,7 +1,7 @@
 /*
  iMedia Browser Framework <http://karelia.com/imedia/>
  
- Copyright (c) 2005-2012 by Karelia Software et al.
+ Copyright (c) 2005-2016 by Karelia Software et al.
  
  iMedia Browser is based on code originally developed by Jason Terhorst,
  further developed for Sandvox by Greg Hulands, Dan Wood, and Terrence Talbot.
@@ -64,7 +64,7 @@
 
 #pragma mark CLASSES
 
-@class FMDatabase;
+@class FMDatabasePool;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -91,21 +91,13 @@ IMBLightroomNodeType;
 	NSString* _appPath;
 	NSString* _dataPath;
 	BOOL _shouldDisplayLibraryName;
-
-	// We keep a separate FMDatabase instance for each thread that we are invoked from.
-	// SQLite is basically threadsafe, but I have seen issues when using the same database
-	// instance across multiple threads, and we can't predict which thread we will be called on.
-	NSMutableDictionary* _databases;
-	NSMutableDictionary* _thumbnailDatabases;
+	FMDatabasePool* _libraryDatabasePool;
+	FMDatabasePool* _thumbnailDatabasePool;
 }
 
 @property (retain) NSString* appPath;
 @property (retain) NSString* atomicDataPath;
 @property (assign) BOOL shouldDisplayLibraryName;
-@property (nonatomic, retain) NSMutableDictionary *databases;
-@property (nonatomic, retain) NSMutableDictionary *thumbnailDatabases;
-@property (retain,readonly) FMDatabase* database;
-@property (retain,readonly) FMDatabase* thumbnailDatabase;
 
 + (NSString*) identifier;
 + (NSString*) lightroomPath;
@@ -124,15 +116,14 @@ IMBLightroomNodeType;
 							  pathFromRoot:(NSString*)inPathFromRoot
                                   nodeType:(IMBLightroomNodeType)inNodeType;
 
+// Returns a cached FMDatabasePool
+- (FMDatabasePool*) libraryDatabasePool;
+- (FMDatabasePool*) thumbnailDatabasePool;
 
-// Returns a cached FMDatabase for the current thread
-- (FMDatabase*) database;
-- (FMDatabase*) thumbnailDatabase;
-
-// Unconditionally creates an autoreleased FMDatabase instance. Used 
-// by the above caching accessors to instantiate as needed per-thread.
-- (FMDatabase*) libraryDatabase;
-- (FMDatabase*) previewsDatabase;
+// Unconditionally creates an autoreleased FMDatabasePool instance
+// Used by the above caching accessors. May be overridden by subclasses
+- (FMDatabasePool*) createLibraryDatabasePool;
+- (FMDatabasePool*) createThumbnailDatabasePool;
 
 - (NSString*)pyramidPathForImage:(NSNumber*)idLocal;
 - (NSData*)previewDataForObject:(IMBObject*)inObject maximumSize:(NSNumber*)maximumSize;
