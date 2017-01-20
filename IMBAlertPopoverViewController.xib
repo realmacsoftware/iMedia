@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="1070" identifier="macosx"/>
-        <development version="6300" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FMAlertPopoverViewController">
@@ -21,7 +22,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="3347" userLabel="Sheet">
             <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -32,7 +33,6 @@
                         <constraint firstAttribute="height" constant="32" id="4518"/>
                         <constraint firstAttribute="width" constant="32" id="4519"/>
                     </constraints>
-                    <animations/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="3615"/>
                 </imageView>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="250" translatesAutoresizingMaskIntoConstraints="NO" id="3618">
@@ -40,7 +40,6 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="248" id="4521"/>
                     </constraints>
-                    <animations/>
                     <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="&lt;Do not Localize&gt;" id="3619">
                         <font key="font" metaFont="systemBold"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -52,7 +51,6 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="94" id="4524"/>
                     </constraints>
-                    <animations/>
                     <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="&lt;Do not Localize&gt;" id="3621">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -64,7 +62,6 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="17" id="4523"/>
                     </constraints>
-                    <animations/>
                     <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="&lt;Do not Localize&gt;" id="3623">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
@@ -76,7 +73,6 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="72" id="4517"/>
                     </constraints>
-                    <animations/>
                     <buttonCell key="cell" type="push" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4339">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -87,7 +83,6 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="72" id="4520"/>
                     </constraints>
-                    <animations/>
                     <buttonCell key="cell" type="push" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4344">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -98,30 +93,26 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="72" id="4522"/>
                     </constraints>
-                    <animations/>
                     <buttonCell key="cell" type="push" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4349">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
                 </button>
-                <box hidden="YES" autoresizesSubviews="NO" title="Box" boxType="custom" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="4462">
+                <box hidden="YES" autoresizesSubviews="NO" boxType="custom" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="4462">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
-                    <view key="contentView">
+                    <view key="contentView" id="JVM-Gc-BvU">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="4485">
+                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="4485">
                                 <rect key="frame" x="144" y="84" width="32" height="32"/>
-                                <animations/>
                             </progressIndicator>
                         </subviews>
-                        <animations/>
                     </view>
                     <constraints>
-                        <constraint firstItem="4485" firstAttribute="centerX" secondItem="4462" secondAttribute="centerX" id="8zh-nC-YHL"/>
-                        <constraint firstItem="4485" firstAttribute="centerY" secondItem="4462" secondAttribute="centerY" id="AcH-55-yNL"/>
+                        <constraint firstItem="4485" firstAttribute="centerY" secondItem="4462" secondAttribute="centerY" id="O7A-6h-bYg"/>
+                        <constraint firstItem="4485" firstAttribute="centerX" secondItem="4462" secondAttribute="centerX" id="myK-8b-PUw"/>
                     </constraints>
-                    <animations/>
                     <color key="borderColor" white="0.90000000000000002" alpha="0.5" colorSpace="calibratedWhite"/>
                     <color key="fillColor" white="0.92000000000000004" alpha="0.75" colorSpace="calibratedWhite"/>
                 </box>
@@ -148,7 +139,6 @@
                 <constraint firstItem="4462" firstAttribute="leading" secondItem="3347" secondAttribute="leading" id="4545"/>
                 <constraint firstItem="4348" firstAttribute="top" secondItem="3620" secondAttribute="bottom" constant="8" symbolic="YES" id="4546"/>
             </constraints>
-            <animations/>
         </customView>
     </objects>
 </document>
