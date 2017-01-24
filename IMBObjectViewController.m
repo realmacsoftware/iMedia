@@ -323,7 +323,7 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 
 
 #pragma mark 
-#pragma mark Lifetime
+#pragma mark Object Lifecycle
 
 
 - (id) initWithNibName:(NSString*)inNibName bundle:(NSBundle*)inBundle
@@ -376,6 +376,8 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
         }
     }
 	
+    if ([IMBConfig useGlobalViewType]) [IMBConfig removeObserver:self forKeyPath:kGlobalViewTypeKey];
+    
     IMBRelease(_observedVisibleItems);
 	
 	// Other cleanup...
