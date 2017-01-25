@@ -12,6 +12,8 @@ GCC_PREPROCESSOR_DEFINITIONS[config=Release] = MAS=1
 
 // Build settings (are these still needed?)
 
+GCC_OPTIMIZATION_LEVEL[config=Debug] = 0
+
 COPY_PHASE_STRIP[config=Debug][sdk=*] = NO
 SKIP_INSTALL[config=Release][sdk=*] = YES
 
