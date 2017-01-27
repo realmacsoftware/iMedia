@@ -126,11 +126,9 @@
 		else if (databaseVersionLong >= 600000) {
 			return NO;
 		}
-
-		return YES;
 	}
 
-	return NO;
+	return YES;
 }
 
 #if LOAD_SMART_COLLECTIONS
