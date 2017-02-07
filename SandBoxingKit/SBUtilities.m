@@ -39,6 +39,30 @@
  */
 #define ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC 1
 
+/**
+ We would prefer the more comfortable NSOperationQueue over dispatch_async()/dispatch_semaphore_... but it
+ turns out that requesting a root media group in the context of the AppleMediaLibraryParser takes about
+ twice as long compared to dispatch_async() and thus accounts for the vast majority of the time spent to
+ "open" a an Apple Media Library framework based library.
+ 
+ I know this sounds crazy but our measurements regarding the matter are unambiguous (as of 2017/02/07).
+ 
+ We still keep the alternate NSOperationQueue implementation for future use in case our observations render no longer relevant.
+ */
+#define USE_DISPATCH_ASYNC_INSTEAD_OF_OP_QUEUE 1
+
+/**
+ The maximum number of concurrent execution of requests to performSelectorAsync()
+ 
+ @Discussion
+ We had instances where the Facebook parser hung up on us when about 60 some parallel requests were issued
+ (this might correlate with the fact that all Facebook requests reach out to the internet).
+ 
+ Going beyond eight parallel resources does not seem to gain any better performance on any of the parsers.
+ */
+const NSInteger kMaximumPerformAsyncConcurrency = 8;
+
+
 #pragma mark
 #pragma mark Sandbox Check
 
@@ -209,31 +233,68 @@ CFTypeRef SBPreferencesCopyAppValue(CFStringRef inKey,CFStringRef inBundleIdenti
 
 //----------------------------------------------------------------------------------------------------------------------
 
+#if USE_DISPATCH_ASYNC_INSTEAD_OF_OP_QUEUE
 
 /**
- returns an NSOperationQueue limited to 8 jobs, intended to restrain parallelity when dispatching events with GCD
+ Returns a serial queue.
  
- @Discussion
- We had instances where the Facebook parser hung up on us when about 60 some parallel requests were issued
- (this might correlate with the fact that all Facebook requests reach out to the internet).
- 
- Going beyond eight parallel resources did not seem to gain any better performance on any of the parsers.
+ @see SBPerformSelectorAsync().
  */
-NSOperationQueue* constrainedTargetQueue()
+dispatch_queue_t _SBSerialTargetDispatchQueue()
+{
+    static dispatch_queue_t sSharedInstance = NULL;
+    static dispatch_once_t sOnceToken = 0;
+    
+    dispatch_once(&sOnceToken,
+                  ^{
+                      sSharedInstance = dispatch_queue_create("com.sandboxingkit.sbutilities", NULL);
+                  });
+    
+    return sSharedInstance;
+    
+}
+
+/**
+ Returns a dispatch semaphore limited to a maximum number of jobs, intended to restrain parallelity when dispatching events with GCD
+ 
+ @see kMaximumPerformAsyncConcurrency
+ */
+dispatch_semaphore_t _SBDispatchSemaphore()
+{
+    static dispatch_semaphore_t sSharedInstance = NULL;
+    static dispatch_once_t sOnceToken = 0;
+    
+    dispatch_once(&sOnceToken,
+                  ^{
+                      sSharedInstance = dispatch_semaphore_create(kMaximumPerformAsyncConcurrency);
+                  });
+    
+    return sSharedInstance;
+}
+
+#else
+
+/**
+ Returns an NSOperationQueue limited to a maximum number of jobs, intended to restrain parallelity when dispatching events with GCD
+ 
+ @see kMaximumPerformAsyncConcurrency
+ */
+NSOperationQueue* _SBConstrainedTargetOperationQueue()
 {
 	static NSOperationQueue* sSharedInstance = NULL;
 	static dispatch_once_t sOnceToken = 0;
     
     dispatch_once(&sOnceToken,
                   ^{
-                     const NSInteger kMaximumThumbnailLoadingConcurrency = 8;
                      sSharedInstance = [[NSOperationQueue alloc] init];
-                     [sSharedInstance setMaxConcurrentOperationCount:kMaximumThumbnailLoadingConcurrency];
+                     [sSharedInstance setMaxConcurrentOperationCount:kMaximumPerformAsyncConcurrency];
                   });
     
  	return sSharedInstance;
+    
 }
 
+#endif
 
 // Dispatch a message with optional argument object to a target object asynchronously. When connnection (which must
 // be an XPCConnection) is supplied the message will be transferred to an XPC service for execution. Please note  
@@ -294,38 +355,50 @@ void SBPerformSelectorAsync(id inConnection,id inTarget,SEL inSelector,id inObje
 //        NSLog(@"Asynchronous perform on target object %@", targetCopy);
 //        NSLog(@"Asynchronous perform with parameter object %@", objectCopy);
         
-        
         dispatch_retain(returnHandlerQueue);
-
-		[constrainedTargetQueue() addOperationWithBlock:^()
-  		{
-            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			NSError* error = nil;
-			id result = nil;
-
-			if (objectCopy)
-			{
-				result = [targetCopy performSelector:inSelector withObject:objectCopy withObject:(id)&error];
-			} 
-			else
-			{
-				result = [targetCopy performSelector:inSelector withObject:(id)&error];
-			}
-
-			// Copy the results and send them back to the caller. This provides the exact same workflow as with XPC.
-			// This is extremely useful for debugging purposes, but leads to a performance hit in non-sandboxed
-			// host apps. For this reason the following line may be commented out once our code base is stable...
-			
-#if ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC
-			result = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:result]];
+#if USE_DISPATCH_ASYNC_INSTEAD_OF_OP_QUEUE
+        // dispatch to a serial queue to get the request off the main thread so it does not block it
+        // when it is waiting for a semaphore signal because the maximum number of parallel threads had been reached
+        dispatch_async(_SBSerialTargetDispatchQueue(),^() {
+            dispatch_semaphore_wait(_SBDispatchSemaphore(), DISPATCH_TIME_FOREVER);
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),^() {
+                
+#else
+                [_SBConstrainedTargetOperationQueue() addOperationWithBlock:^() {
 #endif
-			dispatch_async(returnHandlerQueue,^()
-			{
-				inReturnHandler(result,error);
-				dispatch_release(returnHandlerQueue);
-			});
-            [pool drain];
-	   }];
+                    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+                    NSError* error = nil;
+                    id result = nil;
+                    
+                    if (objectCopy)
+                    {
+                        result = [targetCopy performSelector:inSelector withObject:objectCopy withObject:(id)&error];
+                    }
+                    else
+                    {
+                        result = [targetCopy performSelector:inSelector withObject:(id)&error];
+                    }
+                    
+                    // Copy the results and send them back to the caller. This provides the exact same workflow as with XPC.
+                    // This is extremely useful for debugging purposes, but leads to a performance hit in non-sandboxed
+                    // host apps. For this reason the following line may be commented out once our code base is stable...
+                    
+#if ALWAYS_COPY_OBJECTS_ON_PERFORM_SELECTOR_ASYNC
+                    result = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:result]];
+#endif
+                    dispatch_async(returnHandlerQueue,^()
+                                   {
+                                       inReturnHandler(result,error);
+                                       dispatch_release(returnHandlerQueue);
+                                   });
+                    [pool drain];
+#if USE_DISPATCH_ASYNC_INSTEAD_OF_OP_QUEUE
+                    dispatch_semaphore_signal(_SBDispatchSemaphore());
+                });
+            });
+#else
+            }];
+#endif
     }
 }
 
