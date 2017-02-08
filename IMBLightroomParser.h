@@ -158,7 +158,7 @@ IMBLightroomNodeType;
 
 @interface IMBLightroomParser (Subclassers)
 
-- (void) populateSubnodesForRootNode:(IMBNode*)inRootNode;
+- (void) populateSubnodesForRootNode:(IMBNode*)inRootNode error:(NSError**)outError;
 - (void) populateSubnodesForRootFoldersNode:(IMBNode*)inFoldersNode;
 - (void) populateSubnodesForFolderNode:(IMBNode*)inParentNode;
 - (void) populateSubnodesForCollectionNode:(IMBNode*)inRootNode;
