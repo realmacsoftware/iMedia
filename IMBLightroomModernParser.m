@@ -64,6 +64,7 @@
 #import "NSObject+iMedia.h"
 #import "NSFileManager+iMedia.h"
 #import "NSImage+iMedia.h"
+#import "NSURL+iMedia.h"
 #import "NSWorkspace+iMedia.h"
 #import "SBUtilities.h"
 #import <Quartz/Quartz.h>
@@ -92,11 +93,16 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
++ (NSString *)lightroomAppVersion
+{
+    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
+}
+
 // Unique identifier for this parser...
 
 + (NSString*) identifier
 {
-	[[self class] imb_throwAbstractBaseClassExceptionForSelector:_cmd];
+	[self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
 
 	return nil;
 }
@@ -126,21 +132,22 @@
 	if ([self lightroomPath] != nil) {
 		NSArray* libraryPaths = [self libraryPaths];
 		
-		for (NSString* libraryPath in libraryPaths) {
-			IMBLightroomModernParser* parser = [[[[self class] alloc] init] autorelease];
-			parser.identifier = [NSString stringWithFormat:@"%@:/%@",[[self class] identifier],libraryPath];
-			parser.mediaSource = [NSURL fileURLWithPath:libraryPath];
-			parser.mediaType = inMediaType;
-			parser.shouldDisplayLibraryName = libraryPaths.count > 1;
-					
-			if (! [parser checkDatabaseVersion]) {
-				continue;
-			}
-			
-			[parserInstances addObject:parser];
-		}
-	}
-	
+        for (NSString* libraryPath in libraryPaths) {
+            NSURL *libraryPathURL = [NSURL fileURLWithPath:libraryPath];
+            IMBResourceAccessibility libraryAccessibility = [libraryPathURL imb_accessibility];
+            
+            if (libraryAccessibility != kIMBResourceDoesNotExist) {
+                IMBLightroomModernParser* parser = [[[[self class] alloc] init] autorelease];
+                parser.identifier = [NSString stringWithFormat:@"%@:/%@",[[self class] identifier],libraryPath];
+                parser.mediaSource = libraryPathURL;
+                parser.mediaType = inMediaType;
+                parser.shouldDisplayLibraryName = libraryPaths.count > 1;
+                
+                [parserInstances addObject:parser];
+            }
+        }
+    }
+    
 	return parserInstances;
 }
 
@@ -180,8 +187,33 @@
 // This method creates the immediate subnodes of the "Lightroom" root node. The two subnodes are "Folders"  
 // and "Collections"...
 
-- (void) populateSubnodesForRootNode:(IMBNode*)inRootNode
+- (void) populateSubnodesForRootNode:(IMBNode*)inRootNode error:(NSError**)outError
 {
+    if (! [self checkDatabaseVersion]) {
+        if (outError != NULL) {
+            NSString *lightroomVersion = [[self class] lightroomAppVersion];
+            NSString *localizedErrorDescriptionFormat = NSLocalizedStringWithDefaultValue(
+                                                                                          @"IMBLightroomParser.IncompatibleCatalogVersion",
+                                                                                          nil, IMBBundle(),
+                                                                                          @"Catalog %@ is associated with Lightroom version %@ but has an incompatible version.\n\nYou may want to try to open it with Lightroom %@ first to update it. If successful please re-start the application.",
+                                                                                          @"Warning when Lightroom database version check fails");
+            NSString *localizedErrorDescription = [NSString stringWithFormat:localizedErrorDescriptionFormat, [self.mediaSource path], lightroomVersion, lightroomVersion];
+            
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      localizedErrorDescription, NSLocalizedDescriptionKey, nil];
+            
+            *outError = [NSError errorWithDomain:kIMBErrorDomain code:1 userInfo:userInfo];
+        }
+        
+        // Use empty array for subnodes and objects. This prevents further attempts at populating the node
+        [inRootNode mutableArrayForPopulatingSubnodes];
+        inRootNode.objects = [NSArray array];
+
+        //inRootNode.accessibility = kIMBResourceDoesNotExist;
+        
+        return;
+    }
+    
 	NSMutableArray* subnodes = [inRootNode mutableArrayForPopulatingSubnodes];
 	NSMutableArray* objects = [NSMutableArray array];
 	inRootNode.displayedObjectCount = 0;

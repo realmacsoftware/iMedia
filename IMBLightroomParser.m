@@ -368,8 +368,8 @@ static NSArray* sSupportedImageUTIs = nil;
 	// Create subnodes for the root node as needed...
 	
 	if ([inNode isTopLevelNode])
-	{
-		[self populateSubnodesForRootNode:inNode];
+    {
+        [self populateSubnodesForRootNode:inNode error:outError];
 	}
 	else {
 		NSDictionary* attributes = inNode.attributes;
@@ -686,7 +686,7 @@ static NSArray* sSupportedImageUTIs = nil;
 // This method creates the immediate subnodes of the "Lightroom" root node. The two subnodes are "Folders"  
 // and "Collections"...
 
-- (void) populateSubnodesForRootNode:(IMBNode*)inRootNode
+- (void) populateSubnodesForRootNode:(IMBNode*)inRootNode error:(NSError**)outError
 {
 	[self populateSubnodesForCollectionNode:inRootNode];
 }
