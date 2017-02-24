@@ -143,13 +143,6 @@
                 parser.mediaType = inMediaType;
                 parser.shouldDisplayLibraryName = libraryPaths.count > 1;
                 
-                // Check catalog compatibility. Defer if we lack access rights
-                if (libraryAccessibility == kIMBResourceIsAccessible) {
-                    if (! [parser checkDatabaseVersion]) {
-                        continue;
-                    }
-                }
-            
                 [parserInstances addObject:parser];
             }
         }
