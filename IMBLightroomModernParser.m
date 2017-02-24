@@ -93,11 +93,16 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 
++ (NSString *)lightroomAppVersion
+{
+    [self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
+}
+
 // Unique identifier for this parser...
 
 + (NSString*) identifier
 {
-	[[self class] imb_throwAbstractBaseClassExceptionForSelector:_cmd];
+	[self imb_throwAbstractBaseClassExceptionForSelector:_cmd];
 
 	return nil;
 }
