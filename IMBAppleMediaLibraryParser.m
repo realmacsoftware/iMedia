@@ -577,8 +577,17 @@ NSString *kIMBMLMediaGroupTypeFacesFolder = @"FacesFolder";
     return [((NSNumber *)mediaObject.attributes[@"Hidden"]) boolValue];
 }
 
+/**
+ Returns an identifier for the IMBObject that is valid across app sessions.
+ 
+ Returns nil for IMBNodeObjects since computation of the identifier for those is potentially expensive and
+ node objects are not provided to the client app anyhow.
+ */
 - (NSString *)persistentResourceIdentifierForObject:(IMBObject *)inObject
 {
+    if ([inObject isKindOfClass:[IMBNodeObject class]]) {
+        return nil;
+    }
     return [[self mediaObjectForObject:inObject].URL absoluteString];
 }
 
