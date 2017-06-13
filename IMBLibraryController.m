@@ -763,7 +763,7 @@ static NSMutableDictionary* sLibraryControllers = nil;
 	
 	for (IMBNode* node in _subnodes)
 	{
-		if (node.groupType == groupType && node.isGroupNode == YES)
+		if ((node.groupType == groupType) && node.isGroupNode)
 		{
 			return node;
 		}

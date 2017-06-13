@@ -67,6 +67,7 @@
 #import "NSWorkspace+iMedia.h"
 #import "SBUtilities.h"
 #import <Quartz/Quartz.h>
+#import <sqlite3.h>
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -94,7 +95,7 @@
 
 // Unique identifier for this parser...
 
-+ (NSString*) identifier
++ (NSString *)identifier
 {
 	return @"com.karelia.imedia.Lightroom3";
 }
@@ -106,34 +107,32 @@
     return @"com.adobe.Lightroom3";
 }
 
++ (NSString *)lightroomAppVersion
+{
+    return @"3";
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
 
-
-- (FMDatabase*) libraryDatabase
+- (FMDatabasePool*) createLibraryDatabasePool
 {
 	NSString* databasePath = [self.mediaSource path];
 	NSString* readOnlyDatabasePath = [[self class] cloneDatabase:databasePath];
-	FMDatabase* database = [FMDatabase databaseWithPath:readOnlyDatabasePath];
-	
-//	[database setTraceExecution:YES];
-	[database setLogsErrors:YES];
-	
-	return database;
+	FMDatabasePool* databasePool = [[FMDatabasePool alloc] initWithPath:readOnlyDatabasePath flags:SQLITE_OPEN_READONLY vfs:@"unix-none"];
+
+	return [databasePool autorelease];
 }
 
-- (FMDatabase*) previewsDatabase
+- (FMDatabasePool*) createThumbnailDatabasePool
 {
 	NSString* mainDatabasePath = [self.mediaSource path];
 	NSString* rootPath = [mainDatabasePath stringByDeletingPathExtension];
 	NSString* previewPackagePath = [[NSString stringWithFormat:@"%@ Previews", rootPath] stringByAppendingPathExtension:@"lrdata"];
 	NSString* previewDatabasePath = [[previewPackagePath stringByAppendingPathComponent:@"previews"] stringByAppendingPathExtension:@"db"];
-	FMDatabase* database = [FMDatabase databaseWithPath:previewDatabasePath];
-	
-	[database setLogsErrors:YES];
-	
-	return database;
+	FMDatabasePool* databasePool = [[FMDatabasePool alloc] initWithPath:previewDatabasePath flags:SQLITE_OPEN_READONLY vfs:@"unix-none"];
+
+	return [databasePool autorelease];
 }
 
 + (NSString*)cloneDatabase:(NSString*)databasePath
@@ -202,9 +201,11 @@
 		else if (databaseVersionLong >= 400000) {
 			return NO;
 		}
+        
+        return YES;
 	}
 	
-	return YES;
+	return NO;
 }
 
 

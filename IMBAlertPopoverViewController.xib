@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <development version="6300" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <deployment version="1070" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="FMAlertPopoverViewController">
@@ -97,9 +98,9 @@
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
                 </button>
-                <box hidden="YES" autoresizesSubviews="NO" title="Box" boxType="custom" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="4462">
+                <box hidden="YES" autoresizesSubviews="NO" boxType="custom" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="4462">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
-                    <view key="contentView">
+                    <view key="contentView" id="JVM-Gc-BvU">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -109,8 +110,8 @@
                         </subviews>
                     </view>
                     <constraints>
-                        <constraint firstItem="4485" firstAttribute="centerX" secondItem="4462" secondAttribute="centerX" id="8zh-nC-YHL"/>
-                        <constraint firstItem="4485" firstAttribute="centerY" secondItem="4462" secondAttribute="centerY" id="AcH-55-yNL"/>
+                        <constraint firstItem="4485" firstAttribute="centerY" secondItem="4462" secondAttribute="centerY" id="O7A-6h-bYg"/>
+                        <constraint firstItem="4485" firstAttribute="centerX" secondItem="4462" secondAttribute="centerX" id="myK-8b-PUw"/>
                     </constraints>
                     <color key="borderColor" white="0.90000000000000002" alpha="0.5" colorSpace="calibratedWhite"/>
                     <color key="fillColor" white="0.92000000000000004" alpha="0.75" colorSpace="calibratedWhite"/>

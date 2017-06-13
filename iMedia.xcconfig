@@ -1,0 +1,42 @@
+// Use latest SDK and set minimum deployment platform
+
+SDKROOT = macosx
+ARCHS = i386 x86_64
+MACOSX_DEPLOYMENT_TARGET = 10.6
+
+// Precompiled header & defines
+
+GCC_PREFIX_HEADER = iMedia.pch
+GCC_PREPROCESSOR_DEFINITIONS[config=Debug] = DEBUG=1 MAS=1
+GCC_PREPROCESSOR_DEFINITIONS[config=Release] = MAS=1
+
+// Build settings (are these still needed?)
+
+GCC_OPTIMIZATION_LEVEL[config=Debug] = 0
+
+COPY_PHASE_STRIP[config=Debug][sdk=*] = NO
+SKIP_INSTALL[config=Release][sdk=*] = YES
+
+// Use "Mac App Store" code signing identity for both Debug and Release configurations
+
+CODE_SIGN_IDENTITY_Debug = Mac Developer
+CODE_SIGN_IDENTITY_Release = Mac Developer
+CODE_SIGN_IDENTITY = $(CODE_SIGN_IDENTITY_$(CONFIGURATION))
+
+// Xcode 7 doesn't require the development team to be set. The setting "None" in the popup menu is just fine
+// to build this project. Xcode 8 however requires the development team to be set or code signing won't work.
+// It also introduces the new variable "DEVELOPMENT_TEAM", which is not used by Xcode 7. So we'll define
+// it here with an empty string ("None"), so that Xcode 8 fails to build out of the box. This is intentional.
+
+DEVELOPMENT_TEAM = // "None"
+
+// The following line includes the file DevelopmentTeam.xcconfig, one folder level higher, just outside of the
+// iMedia git repository. In this file each developer using iMedia can override the value of DEVELOPMENT_TEAM
+// with his or her own team ID. That way iMedia can build under Xcode 8 again.
+
+#include "../DevelopmentTeam.xcconfig"
+
+// Select automatic provisioning profile.
+
+PROVISIONING_PROFILE = // "automatic" for Xcode 7
+PROVISIONING_PROFILE_SPECIFIER = // "automatic" for Xcode 8

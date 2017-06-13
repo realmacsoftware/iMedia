@@ -222,7 +222,7 @@
 - (NSRect) badgeRectForBounds:(NSRect)inBounds flipped:(BOOL)inFlipped
 {	
 	NSRect badgeRect = inBounds;
-	badgeRect.origin.x = NSMaxX(inBounds) - kIconImageSize + kImageOriginXOffset;
+	badgeRect.origin.x = NSMaxX(inBounds) - kIconImageSize - kImageOriginXOffset;
 	badgeRect.origin.y -= kImageOriginYOffset;
 	badgeRect.size = NSMakeSize(kIconImageSize,kIconImageSize);
 

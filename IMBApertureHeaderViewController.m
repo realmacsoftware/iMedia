@@ -117,6 +117,9 @@
 
 - (void) dealloc
 {
+	IMBRelease(_headerMessage);
+	IMBRelease(_headerTitle);
+
 	[super dealloc];
 }
 

@@ -70,14 +70,7 @@
 #import "NSFileManager+iMedia.h"
 #import "NSDictionary+iMedia.h"
 #import "NSImage+iMedia.h"
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-
-#pragma mark GLOBALS
-
-static dispatch_once_t sOnceToken = 0;
+#import "NSObject+iMedia.h"
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -89,21 +82,6 @@ static dispatch_once_t sOnceToken = 0;
 
 
 //----------------------------------------------------------------------------------------------------------------------
-
-
-// Returns the list of parsers this messenger instantiated
-
-+ (NSMutableArray *)parsers
-{
-    static NSMutableArray *parsers = nil;
-    
-    static dispatch_once_t onceToken = 0;
-    dispatch_once(&onceToken, ^{
-        parsers = [[NSMutableArray alloc] init];
-    });
-    return parsers;
-}
-
 
 - (id) init
 {
@@ -159,31 +137,6 @@ static dispatch_once_t sOnceToken = 0;
 
 + (NSString*) identifier
 {
-	if ([IMBLightroom6Parser lightroomPath])
-	{
-		return [IMBLightroom6Parser identifier];
-	}
-	else if ([IMBLightroom5Parser lightroomPath])
-	{
-		return [IMBLightroom5Parser identifier];
-	}
-	else if ([IMBLightroom4Parser lightroomPath])
-	{
-		return [IMBLightroom4Parser identifier];
-	}
-	else if ([IMBLightroom3Parser lightroomPath])
-	{
-		return [IMBLightroom3Parser identifier];
-	}
-	else if ([IMBLightroom2Parser lightroomPath])
-	{
-		return [IMBLightroom2Parser identifier];
-	}
-	else if ([IMBLightroom1Parser lightroomPath])
-	{
-		return [IMBLightroom1Parser identifier];
-	}
-	
 	return nil;
 }
 
@@ -207,9 +160,9 @@ static dispatch_once_t sOnceToken = 0;
 
 - (NSArray*) parserInstancesWithError:(NSError**)outError
 {
-    Class messengerClass = [self class];
-    NSMutableArray *parsers = [messengerClass parsers];
-    dispatch_once(&sOnceToken,
+	Class messengerClass = [self class];
+	NSMutableArray *parsers = [messengerClass parsers];
+	dispatch_once([messengerClass onceTokenRef],
     ^{
 		if ([[self class] isInstalled])
 		{
@@ -256,6 +209,31 @@ static dispatch_once_t sOnceToken = 0;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
+// Returns the list of parsers this messenger instantiated
+
++ (NSMutableArray *)parsers
+{
+	static NSMutableArray *parsers = nil;
+
+	static dispatch_once_t onceToken = 0;
+	dispatch_once(&onceToken, ^{
+		parsers = [[NSMutableArray alloc] init];
+	});
+	return parsers;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+// Returns the dispatch-once token
+
++ (dispatch_once_t *)onceTokenRef
+{
+	static dispatch_once_t onceToken = 0;
+
+	return &onceToken;
+}
+
 @end
 
 
@@ -271,6 +249,36 @@ static dispatch_once_t sOnceToken = 0;
 + (NSString*) mediaType
 {
 	return kIMBMediaTypeImage;
+}
+
++ (NSString*) identifier
+{
+	if ([IMBLightroom6Parser lightroomPath])
+	{
+		return [IMBLightroom6Parser identifier];
+	}
+	else if ([IMBLightroom5Parser lightroomPath])
+	{
+		return [IMBLightroom5Parser identifier];
+	}
+	else if ([IMBLightroom4Parser lightroomPath])
+	{
+		return [IMBLightroom4Parser identifier];
+	}
+	else if ([IMBLightroom3Parser lightroomPath])
+	{
+		return [IMBLightroom3Parser identifier];
+	}
+	else if ([IMBLightroom2Parser lightroomPath])
+	{
+		return [IMBLightroom2Parser identifier];
+	}
+	else if ([IMBLightroom1Parser lightroomPath])
+	{
+		return [IMBLightroom1Parser identifier];
+	}
+
+	return nil;
 }
 
 + (NSString*) parserClassName
@@ -310,6 +318,31 @@ static dispatch_once_t sOnceToken = 0;
 	[pool drain];
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// Returns the list of parsers this messenger instantiated
+
++ (NSMutableArray *)parsers
+{
+	static NSMutableArray *parsers = nil;
+
+	static dispatch_once_t onceToken = 0;
+	dispatch_once(&onceToken, ^{
+		parsers = [[NSMutableArray alloc] init];
+	});
+	return parsers;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+// Returns the dispatch-once token
+
++ (dispatch_once_t *)onceTokenRef
+{
+	static dispatch_once_t onceToken = 0;
+
+	return &onceToken;
+}
+
 @end
 
 
@@ -320,11 +353,33 @@ static dispatch_once_t sOnceToken = 0;
 
 // Specify parameters for movie subclass and register it...
  
-@implementation IMBLightroomsMovieParserMessenger
+@implementation IMBLightroomMovieParserMessenger
 
 + (NSString*) mediaType
 {
 	return kIMBMediaTypeMovie;
+}
+
++ (NSString*) identifier
+{
+	if ([IMBLightroom6VideoParser lightroomPath])
+	{
+		return [IMBLightroom6VideoParser identifier];
+	}
+	else if ([IMBLightroom5VideoParser lightroomPath])
+	{
+		return [IMBLightroom5VideoParser identifier];
+	}
+	else if ([IMBLightroom4VideoParser lightroomPath])
+	{
+		return [IMBLightroom4Parser identifier];
+	}
+	else if ([IMBLightroom3VideoParser lightroomPath])
+	{
+		return [IMBLightroom3VideoParser identifier];
+	}
+
+	return nil;
 }
 
 + (NSString*) parserClassName
@@ -354,6 +409,31 @@ static dispatch_once_t sOnceToken = 0;
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	[IMBParserController registerParserMessengerClass:self forMediaType:[self mediaType]];
 	[pool drain];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// Returns the list of parsers this messenger instantiated
+
++ (NSMutableArray *)parsers
+{
+	static NSMutableArray *parsers = nil;
+
+	static dispatch_once_t onceToken = 0;
+	dispatch_once(&onceToken, ^{
+		parsers = [[NSMutableArray alloc] init];
+	});
+	return parsers;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+// Returns the dispatch-once token
+
++ (dispatch_once_t *)onceTokenRef
+{
+	static dispatch_once_t onceToken = 0;
+
+	return &onceToken;
 }
 
 @end

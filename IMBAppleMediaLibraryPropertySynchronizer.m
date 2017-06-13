@@ -101,6 +101,11 @@
             dispatch_semaphore_wait(instance.semaphore, DISPATCH_TIME_FOREVER);
         }
 
+        // Remove instance as observer now, so we don't have a race condition in which the KVO
+        // notification is sent after we released the semaphore.
+		[instance.observedObject removeObserver:instance forKeyPath:instance.key context:NULL];
+		instance.observedObject = nil;
+
 #if !OS_OBJECT_USE_OBJC
         // For targets requiring 10.8 or greater we don't need (and in fact can't use) dispatch_release,
         // because it's handled automatically by ARC.

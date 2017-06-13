@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11761" systemVersion="16C48b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <development version="6300" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
-        <plugIn identifier="com.apple.imagekit.ibplugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11761"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="11761"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="IMBLinkObjectViewController">
@@ -74,7 +74,7 @@
                 <segmentedControl hidden="YES" verticalHuggingPriority="750" id="658">
                     <rect key="frame" x="10" y="7" width="52" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="659">
+                    <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectOne" id="659">
                         <font key="font" metaFont="smallSystem"/>
                         <segments>
                             <segment image="NSListViewTemplate" imageScaling="none" width="23" selected="YES" tag="1"/>
@@ -104,7 +104,7 @@
                                         <rect key="frame" x="-1" y="0.0" width="409" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" copiesOnScroll="NO" id="5Rj-Ap-FDu">
-                                            <rect key="frame" x="1" y="1" width="407" height="472"/>
+                                            <rect key="frame" x="1" y="1" width="392" height="472"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <ikImageBrowserView autoresizesSubviews="NO" zoomValue="0.4985358715057373" constrainsToOriginalSize="YES" id="694" customClass="IMBImageBrowserView">
@@ -127,7 +127,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="692">
-                                            <rect key="frame" x="392" y="1" width="16" height="472"/>
+                                            <rect key="frame" x="393" y="1" width="15" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                     </scrollView>
@@ -143,11 +143,11 @@
                                         <rect key="frame" x="-1" y="0.0" width="409" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="2Hj-pA-25e">
-                                            <rect key="frame" x="1" y="1" width="407" height="472"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <rect key="frame" x="1" y="1" width="392" height="472"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" alternatingRowBackgroundColors="YES" autosaveColumns="NO" id="699" customClass="IMBTableView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="407" height="19"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="392" height="472"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -170,7 +170,7 @@
                                                                 </binding>
                                                             </connections>
                                                         </tableColumn>
-                                                        <tableColumn identifier="name" editable="NO" width="365" minWidth="2" maxWidth="1000" id="701">
+                                                        <tableColumn identifier="name" editable="NO" width="366" minWidth="2" maxWidth="1000" id="701">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -200,14 +200,13 @@
                                                     </connections>
                                                 </tableView>
                                             </subviews>
-                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="698">
                                             <rect key="frame" x="-100" y="-100" width="393" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="697">
-                                            <rect key="frame" x="392" y="1" width="16" height="472"/>
+                                            <rect key="frame" x="393" y="1" width="15" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                     </scrollView>
@@ -223,17 +222,17 @@
                                         <rect key="frame" x="0.0" y="0.0" width="408" height="474"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="y71-Cl-kMT">
-                                            <rect key="frame" x="1" y="1" width="406" height="472"/>
+                                            <rect key="frame" x="1" y="1" width="391" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowHeight="80" id="706" customClass="IMBComboTableView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="406" height="82"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="391" height="472"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn width="387" minWidth="40" maxWidth="1000" id="709">
+                                                        <tableColumn width="388" minWidth="40" maxWidth="1000" id="709">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -263,14 +262,13 @@
                                                     </connections>
                                                 </tableView>
                                             </subviews>
-                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </clipView>
                                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="707">
                                             <rect key="frame" x="-100" y="-100" width="393" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="708">
-                                            <rect key="frame" x="391" y="1" width="16" height="472"/>
+                                            <rect key="frame" x="392" y="1" width="15" height="472"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                     </scrollView>

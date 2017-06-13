@@ -208,23 +208,43 @@ static NSString* kBookmarksPrefsKey = @"accessRightsBookmarks";
 {
 	NSArray* bookmarks = [IMBConfig prefsValueForKey:kBookmarksPrefsKey];
 	self.bookmarks = [NSMutableArray arrayWithArray:bookmarks];
-    
+
+	// If url is nil for any reason, we have to assume that the bookmark is not valuable to us,
+	// e.g. because there was an error decoding it. This appears to be possible for example if
+	// we have some bookmarks around that are no longer satisfactorily protected (?) by security
+	// scoping. I ran into some bookmarks that fail to resolve with security scope, but because they
+	// are held in the list of bookmarks, the app continually assumes it already has security access,
+	// and thus renewed security authorization is not bothered to be persisted.
+	NSMutableArray* bookmarksToRemove = [NSMutableArray array];
+
 	for (NSData* bookmark in self.bookmarks)
 	{
 		NSURL* url = [[self class] _urlForAppScopedBookmark:bookmark];
-        
-        // NOTE: We do not balance -startAccessing... with a corresponding -stopAccessing somewhere else
-        //       since we want to be able to access the resource throughout the lifetime of the process
-        //       (and there is no -applicationWillTerminate equivalent hook for XPC services).
-        //       This should not matter since Apple documentation says that associated kernel resources
-        //       will be reclaimed when the process ends.
-        
-        if ([url respondsToSelector:@selector(startAccessingSecurityScopedResource)])   // True for 10.7.3 and later
-        {
-            [url startAccessingSecurityScopedResource];
-        }
-        
-//        NSLog(@"Entitlements: Loaded from preferences security scoped URL %@", url);
+
+		if (url == nil)
+		{
+			[bookmarksToRemove addObject:bookmark];
+		}
+		else
+		{
+			// NOTE: We do not balance -startAccessing... with a corresponding -stopAccessing somewhere else
+			//       since we want to be able to access the resource throughout the lifetime of the process
+			//       (and there is no -applicationWillTerminate equivalent hook for XPC services).
+			//       This should not matter since Apple documentation says that associated kernel resources
+			//       will be reclaimed when the process ends.
+
+			if ([url respondsToSelector:@selector(startAccessingSecurityScopedResource)])   // True for 10.7.3 and later
+			{
+				[url startAccessingSecurityScopedResource];
+			}
+
+			//        NSLog(@"Entitlements: Loaded from preferences security scoped URL %@", url);
+		}
+	}
+
+	for (NSData* bookmark in bookmarksToRemove)
+	{
+		[self.bookmarks removeObject:bookmark];
 	}
 }
 

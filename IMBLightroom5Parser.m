@@ -56,6 +56,7 @@
 #pragma mark HEADERS
 
 #import "FMDatabase.h"
+#import "FMResultSet+iMedia.h"
 #import "IMBFolderObject.h"
 #import "IMBLightroom5Parser.h"
 #import "IMBLightroomObject.h"
@@ -68,6 +69,7 @@
 #import "NSWorkspace+iMedia.h"
 #import "SBUtilities.h"
 #import <Quartz/Quartz.h>
+#import <sqlite3.h>
 
 
 #define LOAD_SMART_COLLECTIONS 0
@@ -108,6 +110,11 @@
 	return @"com.adobe.Lightroom5";
 }
 
++ (NSString *)lightroomAppVersion
+{
+    return @"5";
+}
+
 // ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -124,9 +131,11 @@
 		else if (databaseVersionLong >= 600000) {
 			return NO;
 		}
+        
+        return YES;
 	}
 
-	return YES;
+	return NO;
 }
 
 #if LOAD_SMART_COLLECTIONS
@@ -235,7 +244,7 @@
 		NSNumber	*fileWidth		= [NSNumber numberWithDouble:[results doubleForColumn:@"fileWidth"]];
 		NSString	*orientation	= [results stringForColumn:@"orientation"];
 		NSString	*caption		= [results stringForColumn:@"caption"];
-		NSString	*pyramidPath	= ([results hasColumnWithName:@"pyramidPath"] ? [results stringForColumn:@"pyramidPath"] : nil);
+		NSString	*pyramidPath	= ([results imb_hasColumnWithName:@"pyramidPath"] ? [results stringForColumn:@"pyramidPath"] : nil);
 		NSString	*name			= caption != nil ? caption : filename;
 		NSString	*path			= [absolutePath stringByAppendingString:filename];
 
@@ -243,15 +252,15 @@
 			pyramidPath = [self pyramidPathForImage:idLocal];
 		}
 
-		if ([self canOpenImageFileAtPath:path]) {
+		if ([self canOpenFileAtPath:path]) {
 			NSMutableDictionary *metadata	= [NSMutableDictionary dictionary];
 
-			[metadata setObject:path forKey:@"MasterPath"];
-			[metadata setObject:idLocal forKey:@"idLocal"];
-			[metadata setObject:path forKey:@"path"];
-			[metadata setObject:fileHeight forKey:@"height"];
-			[metadata setObject:fileWidth forKey:@"width"];
-			[metadata setObject:orientation forKey:@"orientation"];
+			[metadata setValue:path forKey:@"MasterPath"];
+			[metadata setValue:idLocal forKey:@"idLocal"];
+			[metadata setValue:path forKey:@"path"];
+			[metadata setValue:fileHeight forKey:@"height"];
+			[metadata setValue:fileWidth forKey:@"width"];
+			[metadata setValue:orientation forKey:@"orientation"];
 
 			if (name) {
 				[metadata setObject:name forKey:@"name"];
@@ -611,30 +620,25 @@
 
 // ----------------------------------------------------------------------------------------------------------------------
 
-
-- (FMDatabase *)libraryDatabase
+- (FMDatabasePool*) createLibraryDatabasePool
 {
-	NSString	*databasePath	= [self.mediaSource path];
-	FMDatabase	*database		= [FMDatabase databaseWithPath:databasePath];
+	NSString* databasePath = [self.mediaSource path];
+	FMDatabasePool* databasePool = [[FMDatabasePool alloc] initWithPath:databasePath flags:SQLITE_OPEN_READONLY vfs:@"unix-none"];
 
-	//	[database setTraceExecution:YES];
-	[database setLogsErrors:YES];
-
-	return database;
+	return [databasePool autorelease];
 }
 
-- (FMDatabase *)previewsDatabase
+- (FMDatabasePool*) createThumbnailDatabasePool
 {
-	NSString	*mainDatabasePath		= [self.mediaSource path];
-	NSString	*rootPath				= [mainDatabasePath stringByDeletingPathExtension];
-	NSString	*previewPackagePath		= [[NSString stringWithFormat:@"%@ Previews", rootPath] stringByAppendingPathExtension:@"lrdata"];
-	NSString	*previewDatabasePath	= [[previewPackagePath stringByAppendingPathComponent:@"previews"] stringByAppendingPathExtension:@"db"];
-	FMDatabase	*database				= [FMDatabase databaseWithPath:previewDatabasePath];
+	NSString* mainDatabasePath = [self.mediaSource path];
+	NSString* rootPath = [mainDatabasePath stringByDeletingPathExtension];
+	NSString* previewPackagePath = [[NSString stringWithFormat:@"%@ Previews", rootPath] stringByAppendingPathExtension:@"lrdata"];
+	NSString* previewDatabasePath = [[previewPackagePath stringByAppendingPathComponent:@"previews"] stringByAppendingPathExtension:@"db"];
+	FMDatabasePool* databasePool = [[FMDatabasePool alloc] initWithPath:previewDatabasePath flags:SQLITE_OPEN_READONLY vfs:@"unix-none"];
 
-	[database setLogsErrors:YES];
-
-	return database;
+	return [databasePool autorelease];
 }
+
 
 // ----------------------------------------------------------------------------------------------------------------------
 

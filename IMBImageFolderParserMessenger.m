@@ -86,6 +86,11 @@
 	return self;
 }
 
+- (NSString*) metadataDescriptionForMetadata:(NSDictionary*)inMetadata
+{
+	return [NSImage imb_imageMetadataDescriptionForMetadata:inMetadata];
+}
+
 @end
 
 
@@ -117,11 +122,6 @@
 		self.displayPriority = 1;
 	}
 	return self;
-}
-
-- (NSString*) metadataDescriptionForMetadata:(NSDictionary*)inMetadata
-{
-	return [NSImage imb_imageMetadataDescriptionForMetadata:inMetadata];
 }
 
 @end

@@ -67,6 +67,7 @@
 #import "NSWorkspace+iMedia.h"
 #import "SBUtilities.h"
 #import <Quartz/Quartz.h>
+#import <sqlite3.h>
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -104,6 +105,10 @@
     return @"com.adobe.Lightroom4";
 }
 
++ (NSString *)lightroomAppVersion
+{
+    return @"4";
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -121,37 +126,33 @@
 		else if (databaseVersionLong >= 500000) {
 			return NO;
 		}
+        
+        return YES;
 	}
 	
-	return YES;
+	return NO;
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-
-- (FMDatabase*) libraryDatabase
+- (FMDatabasePool*) createLibraryDatabasePool
 {
 	NSString* databasePath = [self.mediaSource path];
-	FMDatabase* database = [FMDatabase databaseWithPath:databasePath];
-	
-//	[database setTraceExecution:YES];
-	[database setLogsErrors:YES];
-	
-	return database;
+	FMDatabasePool* databasePool = [[FMDatabasePool alloc] initWithPath:databasePath flags:SQLITE_OPEN_READONLY vfs:@"unix-none"];
+
+	return [databasePool autorelease];
 }
 
-- (FMDatabase*) previewsDatabase
+- (FMDatabasePool*) createThumbnailDatabasePool
 {
 	NSString* mainDatabasePath = [self.mediaSource path];
 	NSString* rootPath = [mainDatabasePath stringByDeletingPathExtension];
 	NSString* previewPackagePath = [[NSString stringWithFormat:@"%@ Previews", rootPath] stringByAppendingPathExtension:@"lrdata"];
 	NSString* previewDatabasePath = [[previewPackagePath stringByAppendingPathComponent:@"previews"] stringByAppendingPathExtension:@"db"];
-	FMDatabase* database = [FMDatabase databaseWithPath:previewDatabasePath];
-	
-	[database setLogsErrors:YES];
-	
-	return database;
+	FMDatabasePool* databasePool = [[FMDatabasePool alloc] initWithPath:previewDatabasePath flags:SQLITE_OPEN_READONLY vfs:@"unix-none"];
+
+	return [databasePool autorelease];
 }
 
 

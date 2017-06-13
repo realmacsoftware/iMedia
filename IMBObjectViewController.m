@@ -323,7 +323,7 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 
 
 #pragma mark 
-#pragma mark Lifetime
+#pragma mark Object Lifecycle
 
 
 - (id) initWithNibName:(NSString*)inNibName bundle:(NSBundle*)inBundle
@@ -376,6 +376,8 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
         }
     }
 	
+    if ([IMBConfig useGlobalViewType]) [IMBConfig removeObserver:self forKeyPath:kGlobalViewTypeKey];
+    
     IMBRelease(_observedVisibleItems);
 	
 	// Other cleanup...
@@ -384,7 +386,10 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 	IMBRelease(_currentNode);
 	IMBRelease(_clickedObject);
 //	IMBRelease(_progressWindowController);
-	
+
+	IMBRelease(_objectCountFormatPlural);
+	IMBRelease(_objectCountFormatSingular);
+
 	[super dealloc];
 }
 
@@ -1598,7 +1603,8 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 			
 		else
 		{
-			NSURL *location = [inObject location];
+            [inObject requestBookmarkWithError:nil];
+			NSURL *location = [inObject URLByResolvingBookmark];
 			if ([location isFileURL])
 			{			
 				if ([location checkResourceIsReachableAndReturnError:NULL])
@@ -1718,7 +1724,7 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 					@"Menu item in context menu of IMBObjectViewController");
 				
 				item = [[NSMenuItem alloc] initWithTitle:title action:@selector(openInBrowser:) keyEquivalent:@""];
-				[item setRepresentedObject:location];
+				[item setRepresentedObject:inObject];
 				[item setTarget:self];
 				[menu addItem:item];
 				[item release];
@@ -1911,8 +1917,20 @@ static NSMutableDictionary* sRegisteredObjectViewControllerClasses = nil;
 
 - (IBAction) openInBrowser:(id)inSender
 {
-	NSURL* url = (NSURL*)[inSender representedObject];
-	[[NSWorkspace imb_threadSafeWorkspace] openURL:url];
+    IMBObject* object = (IMBObject*)[inSender representedObject];
+    
+    [object requestBookmarkWithCompletionBlock:^(NSError* inError)
+     {
+         if (inError)
+         {
+             [NSApp presentError:inError];
+         }
+         else
+         {
+             NSURL* url = [object URLByResolvingBookmark];
+             if (url) [[NSWorkspace imb_threadSafeWorkspace] openURL:url];
+         }
+     }];
 }
 
 
